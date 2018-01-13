@@ -307,4 +307,24 @@ describe('"check" function promise tests', function () {
                 expect(error).to.not.equal(null);
             });
     });
+
+    it('should process Error exception thrown from inside a user function', function () {
+        function add(a, b) {
+            return new Promise((res, rej) => {
+                throw new Error('Error thrown from inside a user function!')
+            });
+        }
+
+        checkAdd = checkPromise(add);
+
+        checkAdd(2, 5)
+            .then((result) => {
+                console.log('result:', result);
+                expect(result).to.equal(null);
+            })
+            .catch((error) => {
+                expect(error).to.not.equal(null);
+                expect(error.message).to.equal('Error thrown from inside a user function!');
+            });
+    });
 });
