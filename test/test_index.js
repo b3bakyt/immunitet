@@ -272,4 +272,27 @@ describe('"check" function promise tests', function () {
                 expect(error).to.not.equal(null);
             });
     });
+
+    it('should process js Error exception thrown from inside a user function', function () {
+        function add(a, b) {
+            return new Promise((res, rej) => {
+                setTimeout(() => {
+                    throw new Error('Test promise Error!');
+                })
+            });
+        }
+
+        checkAdd = checkPromise(add, {
+            a: 'number'
+        });
+
+        checkAdd('2', 5).then(
+            (result) => {
+                console.error('result:', result);
+            })
+            .catch((error) => {
+                console.error('error:', error);
+                expect(error).to.not.equal(null);
+            });
+    });
 });
