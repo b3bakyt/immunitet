@@ -6,7 +6,6 @@ const {
     should,
 } = Chai;
 
-// The assertion for a promise must be returned.
 describe('immunitet.js lib basic tests', function() {
     it('should be type of "object"', () => {
         assert.typeOf(im, 'object');
@@ -14,6 +13,10 @@ describe('immunitet.js lib basic tests', function() {
 
     it('should have "check" function', () => {
         assert.typeOf(check, 'function');
+    });
+
+    it('should have "checkPromise" function', () => {
+        assert.typeOf(checkPromise, 'function');
     });
 
 });
@@ -24,10 +27,6 @@ describe('"check" function tests', function () {
     }
 
     let checkAdd = check(add);
-
-    // beforeEach(function(){
-    //     checkAdd = check(add)
-    // });
 
     it('should return a decorated function', function () {
         assert.typeOf(checkAdd, 'function')
