@@ -253,15 +253,14 @@ describe('"check" function promise tests', function () {
                 console.error('result:', result);
             })
             .catch((error) => {
-                // console.error('error:', error);
                 expect(error).to.not.equal(null);
             });
     });
 
-    it('should process immunity exception thrown from inside a custom callback', function () {
+    it('should process js Error exception thrown from inside a custom callback', function () {
         checkAdd = checkPromise(add, {
             a: (val) => {
-                throw new ImmunitetException('Test promise immunitet.js exception!');
+                throw new Error('Test promise Error!');
             }
         });
 
@@ -270,7 +269,6 @@ describe('"check" function promise tests', function () {
                 console.error('result:', result);
             })
             .catch((error) => {
-                // console.error('error:', error);
                 expect(error).to.not.equal(null);
             });
     });
