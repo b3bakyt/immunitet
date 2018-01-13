@@ -230,4 +230,16 @@ describe('"check" function promise tests', function () {
             })
             .catch((error) => console.error('error:', error));
     });
+
+    it('should process a single argument', function () {
+        checkAdd = check(add, {
+            a: 'number',
+        });
+
+        checkAdd('2', 5).then(
+            ([result, error]) => {
+                expect(result).to.equal(7);
+            })
+            .catch((error) => console.error('error:', error));
+    });
 });
