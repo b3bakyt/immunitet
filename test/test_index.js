@@ -349,3 +349,30 @@ describe('"check" function promise tests', function () {
             });
     });
 });
+
+describe('"check" function promise arguments', function () {
+    function add(a, b) {
+        return a + b;
+    }
+
+    let checkAdd = check(add);
+
+    it('should accept Promise as an argument', function () {
+        const a = new Promise((resolve, reject) => {
+            setTimeout(() => {
+                resolve(2)
+            })
+        });
+        const b = new Promise((resolve, reject) => {
+            setTimeout(() => {
+                resolve(3)
+            })
+        });
+
+        checkAdd(a, b)
+            .then((result) => {
+                expect(result).to.equal(5);
+            })
+            .catch((error) => console.error('error:', error));
+    });
+});
