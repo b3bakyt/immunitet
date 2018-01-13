@@ -406,3 +406,19 @@ describe('"check" function promise arguments', function () {
             .catch((error) => console.error('error:', error));
     });
 });
+
+describe('"check" function "function" arguments', function () {
+    function add(a, b) {
+        return a() + b();
+    }
+
+    let checkAdd = check(add);
+
+    it('should accept function as an argument', function () {
+        const a = () => 2;
+        const b = () => 3;
+
+        let [result, error] = checkAdd(a, b);
+        expect(result).to.equal(5);
+    });
+});
