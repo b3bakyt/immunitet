@@ -145,6 +145,17 @@ describe('"check" function tests', function () {
         expect(error1).not.equal(null);
     });
 
+    it('should catch ImmunitetException thrown from inside a user function', function () {
+        add = (a, b) => {
+            throw new ImmunitetException('ImmunitetException thrown from inside a user function')
+        };
+
+        checkAdd = check(add);
+
+        let [result, error] = checkAdd(2, 3);
+        expect(error).to.not.equal(null);
+    });
+
     it('system exceptions must be handled externally', function () {
         checkAdd = check(add, {
             a: (argValue) => {
