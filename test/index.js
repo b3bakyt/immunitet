@@ -375,4 +375,34 @@ describe('"check" function promise arguments', function () {
             })
             .catch(([result, error]) => console.error('error:', error));
     });
+
+    it('should pass Promise arguments as it is, if type was specified', function () {
+        function addPromises(a, b) {
+            const handledResults = Promise.all([a, b].map(promise => promise
+                .then(result => result)));
+
+            return handledResults.then(([a, b]) => {
+                    return a + b;
+                })
+        }
+
+        let checkAdd = checkPromise(addPromises, {a:'promise', b:'promise'});
+
+        const a = new Promise((resolve, reject) => {
+            setTimeout(() => {
+                resolve(2)
+            })
+        });
+        const b = new Promise((resolve, reject) => {
+            setTimeout(() => {
+                resolve(3)
+            })
+        });
+
+        checkAdd(a, b)
+            .then((result) => {
+                expect(result).to.equal(5);
+            })
+            .catch((error) => console.error('error:', error));
+    });
 });
