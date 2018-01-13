@@ -9,12 +9,10 @@ const {
 // The assertion for a promise must be returned.
 describe('immunitet.js lib basic tests', function() {
     it('should be type of "object"', () => {
-        console.log('typeof im:', typeof im);
         assert.typeOf(im, 'object');
     });
 
     it('should have "check" function', () => {
-        console.log('typeof im:', typeof im);
         assert.typeOf(check, 'function');
     });
 
@@ -264,7 +262,7 @@ describe('"check" function promise tests', function () {
             }
         });
 
-        checkAdd('2d+23', 5).then(
+        checkAdd(2, 5).then(
             (result) => {
                 console.error('result:', result);
             })
@@ -280,7 +278,7 @@ describe('"check" function promise tests', function () {
             }
         });
 
-        checkAdd('2d+23', 5).then(
+        checkAdd(2, 5).then(
             (result) => {
                 console.error('result:', result);
             })
@@ -289,25 +287,23 @@ describe('"check" function promise tests', function () {
             });
     });
 
-    it('should process js Error exception thrown from inside a user function', function () {
+    it('should process js Error rejected from inside a user function', function () {
         function add(a, b) {
             return new Promise((res, rej) => {
                 setTimeout(() => {
-                    throw new Error('Test promise Error!');
+                    rej(new Error('Error rejected from inside a user function!'));
                 })
             });
         }
 
-        checkAdd = checkPromise(add, {
-            a: 'number'
-        });
+        checkAdd = checkPromise(add);
 
-        checkAdd('2', 5).then(
-            (result) => {
-                console.error('result:', result);
+        checkAdd(2, 5)
+            .then((result) => {
+                console.log('result:', result);
+                expect(result).to.equal(null);
             })
             .catch((error) => {
-                console.error('error:', error);
                 expect(error).to.not.equal(null);
             });
     });
