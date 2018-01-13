@@ -18,4 +18,10 @@ describe('"check" hasPromiseValues function', function () {
         let noPromiseValues = [1, 'test', {}, null, NaN, false, [], {then: () => {}, catch: () => {}}];
         expect(hasPromiseValues(noPromiseValues)).to.equal(false);
     });
+
+    it('should return true if at least one Promise value was given', function () {
+        let noPromiseValues = [1, 'test', {}, null, NaN, false, [], new Promise(() => {})];
+        expect(hasPromiseValues(noPromiseValues)).to.equal(true);
+        expect(hasPromiseValues([new Promise(() => {})])).to.equal(true);
+    });
 });
