@@ -1,11 +1,9 @@
 import {
     isPromise,
-    hasPromiseValues
 } from '../lib/immunitet';
 import Chai from 'chai';
 const {
     expect,
-    assert,
     should,
 } = Chai;
 
