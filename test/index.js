@@ -355,7 +355,7 @@ describe('"check" function promise arguments', function () {
         return a + b;
     }
 
-    let checkAdd = check(add);
+    let checkAdd = checkPromise(add);
 
     it('should accept Promise as an argument', function () {
         const a = new Promise((resolve, reject) => {
@@ -370,9 +370,9 @@ describe('"check" function promise arguments', function () {
         });
 
         checkAdd(a, b)
-            .then((result) => {
+            .then(([result, error]) => {
                 expect(result).to.equal(5);
             })
-            .catch((error) => console.error('error:', error));
+            .catch(([result, error]) => console.error('error:', error));
     });
 });
