@@ -27,4 +27,27 @@ describe('"check" getPromiseValues function', function () {
             })
     });
 
+    it('should preserve order of values', function () {
+        const a = new Promise(resolve => {
+            setTimeout(() => {
+                resolve(2)
+            }, 500)
+        });
+        const b = new Promise(resolve => {
+            setTimeout(() => {
+                resolve(5)
+            })
+        });
+        let mixedValues = [a, 6, b, 'test'];
+        let resolveValues = getPromiseValues(mixedValues);
+        resolveValues
+            .then(result => {
+                expect(result.join(',')).to.equal('2,6,5,test');
+            })
+            .catch(error => {
+                console.error('error:', error);
+                expect(error).to.equal(null);
+            })
+    });
+
 });
