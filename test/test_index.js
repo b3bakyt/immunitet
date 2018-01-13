@@ -212,7 +212,7 @@ describe('"check" function promise tests', function () {
 
     it('should return a Promise with array result', function () {
         checkAdd('2', 5)
-            .then(([result, error]) => {
+            .then((result) => {
                 expect(result).to.equal('25');
             })
             .catch((error) => console.error('error:', error));
