@@ -1,4 +1,4 @@
-import im, {check, ImmunitetException} from '../lib/immunitet';
+import im, {check, checkPromise, ImmunitetException} from '../lib/immunitet';
 import Chai from 'chai';
 const {
     expect,
@@ -208,7 +208,7 @@ describe('"check" function promise tests', function () {
         });
     }
 
-    let checkAdd = check(add);
+    let checkAdd = checkPromise(add);
 
     it('should return a Promise with array result', function () {
         checkAdd('2', 5)
@@ -219,7 +219,7 @@ describe('"check" function promise tests', function () {
     });
 
     it('should process arguments', function () {
-        checkAdd = check(add, {
+        checkAdd = checkPromise(add, {
             a: 'number',
             b: 'number',
         });
@@ -232,7 +232,7 @@ describe('"check" function promise tests', function () {
     });
 
     it('should process a single argument', function () {
-        checkAdd = check(add, {
+        checkAdd = checkPromise(add, {
             a: 'number',
         });
 
@@ -241,5 +241,20 @@ describe('"check" function promise tests', function () {
                 expect(result).to.equal(7);
             })
             .catch((error) => console.error('error:', error));
+    });
+
+    it('should process a wrong promise argument', function () {
+        checkAdd = checkPromise(add, {
+            a: 'number',
+        });
+
+        checkAdd('2d+23', 5).then(
+            (result) => {
+                console.error('result:', result);
+            })
+            .catch((error) => {
+                // console.error('error:', error);
+                expect(error).to.not.equal(null);
+            });
     });
 });
