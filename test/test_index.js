@@ -257,4 +257,21 @@ describe('"check" function promise tests', function () {
                 expect(error).to.not.equal(null);
             });
     });
+
+    it('should process immunity exception thrown from inside a custom callback', function () {
+        checkAdd = checkPromise(add, {
+            a: (val) => {
+                throw new ImmunitetException('Test promise immunitet.js exception!');
+            }
+        });
+
+        checkAdd('2d+23', 5).then(
+            (result) => {
+                console.error('result:', result);
+            })
+            .catch((error) => {
+                // console.error('error:', error);
+                expect(error).to.not.equal(null);
+            });
+    });
 });
