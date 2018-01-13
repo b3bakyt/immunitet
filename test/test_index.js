@@ -225,7 +225,7 @@ describe('"check" function promise tests', function () {
         });
 
         checkAdd('2', '5').then(
-            ([result, error]) => {
+            (result) => {
                 expect(result).to.equal(7);
             })
             .catch((error) => console.error('error:', error));
@@ -237,7 +237,7 @@ describe('"check" function promise tests', function () {
         });
 
         checkAdd('2', 5).then(
-            ([result, error]) => {
+            (result) => {
                 expect(result).to.equal(7);
             })
             .catch((error) => console.error('error:', error));
