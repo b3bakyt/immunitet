@@ -23,4 +23,9 @@ describe('check plugable pattern processors', function () {
         expect(() => pluginPatternProcessors({})).to.throw(Error);
         expect(() => pluginPatternProcessors([])).to.throw(Error);
     });
+
+    it('pluginPatternProcessors func. should throw an exception if filled array is given', function () {
+        let patterns = [1, 'test'];
+        expect(() => pluginPatternProcessors(patterns)).to.throw(Error);
+    });
 });
