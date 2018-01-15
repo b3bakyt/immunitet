@@ -12,8 +12,7 @@ describe('check plugable pattern processors', function () {
         expect(pluginPatternProcessors).to.be.a('function');
     });
 
-    it('pluginPatternProcessors func. should return an object', function () {
-        const pathToPlugins = './data/pattern_plugins';
-        expect(pluginPatternProcessors(pathToPlugins)).to.be.an('object');
+    it('pluginPatternProcessors func. should throw exception if empty value\object is given', function () {
+        expect(pluginPatternProcessors()).to.throw(Error);
     });
 });
