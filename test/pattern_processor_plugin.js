@@ -13,6 +13,6 @@ describe('check plugable pattern processors', function () {
     });
 
     it('pluginPatternProcessors func. should throw exception if empty value\object is given', function () {
-        expect(pluginPatternProcessors()).to.throw(Error);
+        expect(() => pluginPatternProcessors()).to.throw(Error);
     });
 });
