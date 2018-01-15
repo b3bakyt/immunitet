@@ -14,5 +14,13 @@ describe('check plugable pattern processors', function () {
 
     it('pluginPatternProcessors func. should throw exception if empty value\object is given', function () {
         expect(() => pluginPatternProcessors()).to.throw(Error);
+        expect(() => pluginPatternProcessors(null)).to.throw(Error);
+        expect(() => pluginPatternProcessors(undefined)).to.throw(Error);
+        expect(() => pluginPatternProcessors(false)).to.throw(Error);
+        expect(() => pluginPatternProcessors(0)).to.throw(Error);
+        expect(() => pluginPatternProcessors('')).to.throw(Error);
+        expect(() => pluginPatternProcessors(NaN)).to.throw(Error);
+        expect(() => pluginPatternProcessors({})).to.throw(Error);
+        expect(() => pluginPatternProcessors([])).to.throw(Error);
     });
 });
