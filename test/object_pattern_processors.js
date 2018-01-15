@@ -1,4 +1,5 @@
-import im, {check, processObjectPatterns, ImmunitetException} from '../lib/immunitet';
+import im, {check, ImmunitetException} from '../lib/immunitet';
+import {processObjectPatterns} from '../lib/patternProcessors/object_pattern_processor';
 import Chai from 'chai';
 const {
     expect,
