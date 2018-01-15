@@ -19,7 +19,11 @@ describe('check object type pattern processors', function () {
     it('should properly run if object type argument processor is given', function () {
         let checkAdd = check(add, {
             a: {
-                type: 'number',
+                "properties": {
+                    "a": {
+                        "type": "number",
+                    }
+                }
             },
         });
 
