@@ -1,5 +1,6 @@
 import im, {check, pluginPatternProcessors} from '../lib/immunitet';
 import Chai from 'chai';
+import {ImmunitetException} from "../lib/exceptions";
 const {
     expect,
     assert,
@@ -40,18 +41,26 @@ describe('check plugable pattern processors', function () {
     it('should add custom plugin processors', function () {
         let patterns = {
             'minLength': (value, length) => {
+                if ((value+'').length < length)
+                    throw new ImmunitetException('String min length is '+ length + ' symbols!');
 
+                return value;
             },
             'maxLength': (value, length) => {
+                if ((value+'').length > length)
+                    throw new ImmunitetException('String max length is '+ length + ' symbols!');
 
+                return value;
             },
         };
 
         pluginPatternProcessors(patterns);
         const concatString = (a, b) => a + b;
+
         const concatWords = check(concatString, ['minLength:3', 'maxLength:10']);
         const [result, error] = concatWords('be', 'my too long sweet best pest sentence');
 
         expect(error).to.not.equal(null);
+        expect(result).to.equal(null);
     });
 });
