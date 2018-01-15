@@ -31,6 +31,14 @@ describe('check plugable pattern processors', function () {
 
     it('should return true if not empty object is given', function () {
         let patterns = {
+            'minLength': true,
+            'maxLength': true,
+        };
+        expect(pluginPatternProcessors(patterns)).to.equal(true);
+    });
+
+    it('should add custom plugin processors', function () {
+        let patterns = {
             'minLength': (value, length) => {
 
             },
@@ -38,6 +46,12 @@ describe('check plugable pattern processors', function () {
 
             },
         };
-        expect(pluginPatternProcessors(patterns)).to.equal(true);
+
+        pluginPatternProcessors(patterns);
+        const concatString = (a, b) => a + b;
+        const concatWords = check(concatString, ['minLength:3', 'maxLength:10']);
+        const [result, error] = concatWords('be', 'my too long sweet best pest sentence');
+
+        expect(error).to.not.equal(null);
     });
 });
