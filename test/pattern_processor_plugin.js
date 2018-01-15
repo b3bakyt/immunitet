@@ -12,7 +12,7 @@ describe('check plugable pattern processors', function () {
         expect(pluginPatternProcessors).to.be.a('function');
     });
 
-    it('pluginPatternProcessors func. should throw exception if empty value\object is given', function () {
+    it('pluginPatternProcessors func. should throw exception if empty value or object is given', function () {
         expect(() => pluginPatternProcessors()).to.throw(Error);
         expect(() => pluginPatternProcessors(null)).to.throw(Error);
         expect(() => pluginPatternProcessors(undefined)).to.throw(Error);
@@ -27,5 +27,17 @@ describe('check plugable pattern processors', function () {
     it('pluginPatternProcessors func. should throw an exception if filled array is given', function () {
         let patterns = [1, 'test'];
         expect(() => pluginPatternProcessors(patterns)).to.throw(Error);
+    });
+
+    it('should return true if not empty object is given', function () {
+        let patterns = {
+            'minLength': (value, length) => {
+
+            },
+            'maxLength': (value, length) => {
+
+            },
+        };
+        expect(pluginPatternProcessors(patterns)).to.equal(true);
     });
 });
