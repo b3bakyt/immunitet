@@ -1,4 +1,4 @@
-import im, {check, checkPromise, ImmunitetException} from '../lib/immunitet';
+import im, {check, checkValue} from '../lib/immunitet';
 import Chai from 'chai';
 const {
     expect,
@@ -6,7 +6,7 @@ const {
     should,
 } = Chai;
 
-describe('"check" isPromise function', function () {
+describe('"check" function', function () {
     function add(a, b) {
         return a + b;
     }
@@ -116,6 +116,46 @@ describe('"check" isPromise function', function () {
         im.setAlias('toNumericArray', 'split:,|each:number');
 
         let splitString = check(null, 'toNumericArray');
+
+        const [result] = splitString('3,4');
+        expect(result).to.deep.equal([3, 4]);
+    });
+});
+
+describe('"checkValue" function', function () {
+    let checkAdd = null;
+
+    it('should properly run if only one argument processor is given', function () {
+        checkAdd = checkValue({
+            a: 'number',
+        });
+
+        let [result, error] = checkAdd("33");
+        expect(result).to.equal(33);
+    });
+
+    it('should throw Exception if empty arguments given to checkValue', function () {
+        expect(() => checkValue(null)).to.throw(Error);
+        expect(() => checkValue(undefined)).to.throw(Error);
+        expect(() => checkValue('')).to.throw(Error);
+        expect(() => checkValue(0)).to.throw(Error);
+        expect(() => checkValue(false)).to.throw(Error);
+        expect(() => checkValue(NaN)).to.throw(Error);
+        expect(() => checkValue({})).to.throw(Error);
+        expect(() => checkValue([])).to.throw(Error);
+    });
+
+    it('should process a single value', function () {
+        let splitString = checkValue('split:,|each:number');
+
+        const [result] = splitString('3,4');
+        expect(result).to.deep.equal([3, 4]);
+    });
+
+    it('should use a composite processor', function () {
+        im.setAlias('toNumericArray', 'split:,|each:number');
+
+        let splitString = checkValue('toNumericArray');
 
         const [result] = splitString('3,4');
         expect(result).to.deep.equal([3, 4]);
