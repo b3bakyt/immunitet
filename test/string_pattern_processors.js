@@ -161,3 +161,129 @@ describe('"checkValue" function', function () {
         expect(result).to.deep.equal([3, 4]);
     });
 });
+
+describe('"check" function arguments for errors', function () {
+    let add = (a) => a + 5;
+
+    it('should properly run if "min" processor is given', function () {
+        let checkAdd = check(add, {
+            a: 'min:5',
+        });
+
+        let [result] = checkAdd(55);
+        expect(result).to.equal(60);
+
+        let [, error2] = checkAdd(2);
+        expect(error2.message).to.equal('The given value is less then 5');
+
+        let [, error3] = checkAdd(0);
+        expect(error3.message).to.equal('The given value is less then 5');
+
+        let [, error4] = checkAdd(-2);
+        expect(error4.message).to.equal('The given value is less then 5');
+
+        let [result3] = checkAdd('55');
+        expect(result3).to.equal(60);
+
+        checkAdd = check(add, 'min:5s');
+        let [, error5] = checkAdd(-2);
+        expect(error5.message).to.equal('min parameter is not type of number!');
+
+        checkAdd = check(add, 'min:5');
+        let [, error6] = checkAdd('as5');
+        expect(error6.message).to.equal('Given argument is not type of number!');
+    });
+
+    it('should properly run if "max" processor is given', function () {
+        let checkAdd = check(add, {
+            a: 'max:10',
+        });
+
+        let [result] = checkAdd(5);
+        expect(result).to.equal(10);
+
+        let [, error2] = checkAdd(12);
+        expect(error2.message).to.equal('The given value is greater then 10');
+
+        let [result1] = checkAdd(0);
+        expect(result1).to.equal(5);
+
+        let [result2] = checkAdd(-2);
+        expect(result2).to.equal(3);
+
+        let [result3] = checkAdd('3');
+        expect(result3).to.equal(8);
+
+        checkAdd = check(add, 'max:5s');
+        let [, error5] = checkAdd(5);
+        expect(error5.message).to.equal('max parameter is not type of number!');
+
+        checkAdd = check(add, 'max:10');
+        let [, error6] = checkAdd('as5');
+        expect(error6.message).to.equal('Given argument is not type of number!');
+    });
+
+    it('should properly run if "minLength" processor is given', function () {
+        let checkAdd = check(add, {
+            a: 'minLength:2',
+        });
+
+        let [, error] = checkAdd('');
+        expect(error.message).to.equal('String minimum length must be 2 symbols!');
+
+        let [, error2] = checkAdd(4);
+        expect(error2.message).to.equal('String minimum length must be 2 symbols!');
+
+        let [, error3] = checkAdd(0);
+        expect(error3.message).to.equal('String minimum length must be 2 symbols!');
+
+        let [result3] = checkAdd(-1);
+        expect(result3).to.equal(4);
+
+        let [result4] = checkAdd('-1');
+        expect(result4).to.equal('-15');
+
+        checkAdd = check(add, 'minLength:2s');
+        let [, error5] = checkAdd(5);
+        expect(error5.message).to.equal('minLength parameter is not type of number!');
+
+        checkAdd = check(add, 'minLength:2');
+        let [result5] = checkAdd('as5');
+        expect(result5).to.equal('as55');
+    });
+
+    it('should properly run if "maxLength" processor is given', function () {
+        let checkAdd = check(add, {
+            a: 'maxLength:3',
+        });
+
+        let [result] = checkAdd('');
+        expect(result).to.equal('5');
+
+        let [result1] = checkAdd(4);
+        expect(result1).to.equal(9);
+
+        let [result2] = checkAdd(0);
+        expect(result2).to.equal(5);
+
+        let [result3] = checkAdd(-1);
+        expect(result3).to.equal(4);
+
+        let [result4] = checkAdd('-1');
+        expect(result4).to.equal('-15');
+
+        let [result5] = checkAdd(123);
+        expect(result5).to.equal(128);
+
+        let [, error] = checkAdd(5321);
+        expect(error.message).to.equal('String maximum length must be 3 symbols!');
+
+        checkAdd = check(add, 'maxLength:2s');
+        let [, error5] = checkAdd(5);
+        expect(error5.message).to.equal('maxLength parameter is not type of number!');
+
+        checkAdd = check(add, 'maxLength:3');
+        let [result6] = checkAdd('as5');
+        expect(result6).to.equal('as55');
+    });
+});
