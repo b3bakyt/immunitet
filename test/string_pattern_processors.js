@@ -144,19 +144,25 @@ describe('check "number" pattern processor', function () {
         return a + b;
     }
 
-    it('given a non "number" value should return error', function () {
+    it('given empty value "number" processor should return error', function () {
         checkAdd = check(add, {
             a: 'number',
             b: 'number',
         });
-        let [, error1] = checkAdd("-0x42", "");
+        let [, error1] = checkAdd('', 3);
         expect(error1).not.equal(null);
 
-        let [, error2] = checkAdd(NaN, '3');
+        let [, error2] = checkAdd(NaN, 3);
         expect(error2).not.equal(null);
 
-        let [, error3] = checkAdd(2, '3');
+        let [, error3] = checkAdd(null, 3);
         expect(error3).not.equal(null);
+
+        let [, error4] = checkAdd(false, 3);
+        expect(error4).not.equal(null);
+
+        let [, error5] = checkAdd(undefined, 3);
+        expect(error5).not.equal(null);
     });
 
     it('given a non "number" value should return error', function () {
@@ -164,8 +170,7 @@ describe('check "number" pattern processor', function () {
             a: 'number',
             b: 'number',
         });
-        let [result1, error1] = checkAdd(null, 2);
-        expect(result1).to.equal(null);
+        let [, error1] = checkAdd("-0x42", 3);
         expect(error1).not.equal(null);
 
         let [result2, error2] = checkAdd(Infinity, 2);
@@ -176,11 +181,7 @@ describe('check "number" pattern processor', function () {
         expect(result3).to.equal(null);
         expect(error3).not.equal(null);
 
-        let [result4, error4] = checkAdd(undefined, 2);
-        expect(result4).to.equal(null);
-        expect(error4).not.equal(null);
-
-        let [result5, error5] = checkAdd(true, 2);
+        let [result5, error5] = checkAdd('true', 2);
         expect(result5).to.equal(null);
         expect(error5).not.equal(null);
 
@@ -229,6 +230,34 @@ describe('check "number" pattern processor', function () {
         let [result8, error8] = checkAdd({valueOf: () => '3ds'}, 2);
         expect(result8).to.equal(null);
         expect(error8).not.equal(null);
+    });
+});
+
+describe('check "integer" pattern processor', function () {
+    let checkAdd = null;
+    function add(a, b) {
+        return a + b;
+    }
+
+    it('given empty values the "integer" processor should return error', function () {
+        checkAdd = check(add, {
+            a: 'integer',
+            b: 'integer',
+        });
+        let [, error1] = checkAdd('', 3);
+        expect(error1).not.equal(null);
+
+        let [, error2] = checkAdd(NaN, 3);
+        expect(error2).not.equal(null);
+
+        let [, error3] = checkAdd(null, 3);
+        expect(error3).not.equal(null);
+
+        let [, error4] = checkAdd(false, 3);
+        expect(error4).not.equal(null);
+
+        let [, error5] = checkAdd(undefined, 3);
+        expect(error5).not.equal(null);
     });
 });
 
