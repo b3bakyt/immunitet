@@ -851,3 +851,11 @@ describe('check "pattern" pattern processor', function () {
         expect(result3).equal('hello Obama');
     });
 });
+
+describe('check "default" pattern processor', function () {
+
+    it('given undefined value should return default value', function () {
+        let [result] = checkValue('default:true')();
+        expect(result).equal(true);
+    });
+});
