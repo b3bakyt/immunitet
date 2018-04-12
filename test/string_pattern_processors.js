@@ -776,12 +776,12 @@ describe('check "object" pattern processor', function () {
 
 describe('check "pattern" pattern processor', function () {
     let checkAdd = null;
-    function invert(b) {
-        return !b;
+    function hello(val) {
+        return 'hello '+ val;
     }
 
     it('given empty values should return error', function () {
-        checkAdd = check(invert, 'pattern');
+        checkAdd = check(hello, 'pattern');
         let [, error1] = checkAdd('');
         expect(error1).not.equal(null);
 
@@ -799,5 +799,11 @@ describe('check "pattern" pattern processor', function () {
 
         let [, error6] = checkAdd(false);
         expect(error6).not.equal(null);
+    });
+
+    it('given empty pattern should return error', function () {
+        checkAdd = check(hello, 'pattern:');
+        let [, error1] = checkAdd('bob');
+        expect(error1).not.equal(null);
     });
 });
