@@ -534,3 +534,30 @@ describe('check "string" pattern processor', function () {
         expect(result2).equal('Hi fi Hello World');
     });
 });
+
+describe('check "boolean" pattern processor', function () {
+    let checkAdd = null;
+    function intert(b) {
+        return !b;
+    }
+
+    it('given empty values should return error', function () {
+        checkAdd = check(intert, {
+            a: 'boolean',
+        });
+        let [, error1] = checkAdd('');
+        expect(error1).not.equal(null);
+
+        let [, error2] = checkAdd(NaN);
+        expect(error2).not.equal(null);
+
+        let [, error3] = checkAdd(null);
+        expect(error3).not.equal(null);
+
+        let [, error4] = checkAdd(0);
+        expect(error4).not.equal(null);
+
+        let [, error5] = checkAdd(undefined);
+        expect(error5).not.equal(null);
+    });
+});
