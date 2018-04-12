@@ -45,93 +45,6 @@ describe('"check" function', function () {
         expect(result5).to.equal(7);
     });
 
-    it('given a non number value should return error', function () {
-        checkAdd = check(add, {
-            a: 'number',
-            b: 'number',
-        });
-        let [, error1] = checkAdd("-0x42", "");
-        expect(error1).not.equal(null);
-
-        let [, error2] = checkAdd(NaN, '3');
-        expect(error2).not.equal(null);
-
-        let [, error3] = checkAdd(2, '3');
-        expect(error3).not.equal(null);
-    });
-
-    it('given a non number value should return error', function () {
-        checkAdd = check(add, {
-            a: 'number',
-            b: 'number',
-        });
-        let [result1, error1] = checkAdd(null, 2);
-        expect(result1).to.equal(null);
-        expect(error1).not.equal(null);
-
-        let [result2, error2] = checkAdd(Infinity, 2);
-        expect(result2).to.equal(null);
-        expect(error2).not.equal(null);
-
-        let [result3, error3] = checkAdd(true, 2);
-        expect(result3).to.equal(null);
-        expect(error3).not.equal(null);
-
-        let [result4, error4] = checkAdd(undefined, 2);
-        expect(result4).to.equal(null);
-        expect(error4).not.equal(null);
-
-        let [result5, error5] = checkAdd(true, 2);
-        expect(result5).to.equal(null);
-        expect(error5).not.equal(null);
-
-        let [result6, error6] = checkAdd([], 2);
-        expect(result6).to.equal(null);
-        expect(error6).not.equal(null);
-
-        let [result7, error7] = checkAdd({}, 2);
-        expect(result7).to.equal(null);
-        expect(error7).not.equal(null);
-
-        let [result8, error8] = checkAdd('abc', 2);
-        expect(result8).to.equal(null);
-        expect(error8).not.equal(null);
-    });
-
-    it('given a non number value and convert should convert argument to number', function () {
-        checkAdd = check(add, {
-            a: 'number:convert',
-            b: 'number:convert',
-        });
-        let [result1, error1] = checkAdd('3', 2);
-        expect(result1).to.equal(5);
-
-        let [result2, error2] = checkAdd({toString: () => 3}, 2);
-        expect(result2).to.equal(5);
-
-        let [result3, error3] = checkAdd({valueOf: () => '3'}, 2);
-        expect(result3).to.equal(5);
-
-        let [result4, error4] = checkAdd('-7', 2);
-        expect(result4).to.equal(-5);
-
-        let [result5, error5] = checkAdd('abc', 2);
-        expect(result5).to.equal(null);
-        expect(error5).not.equal(null);
-
-        let [result6, error6] = checkAdd('3-', 2);
-        expect(result6).to.equal(null);
-        expect(error6).not.equal(null);
-
-        let [result7, error7] = checkAdd({toString: () => 'abc'}, 2);
-        expect(result7).to.equal(null);
-        expect(error7).not.equal(null);
-
-        let [result8, error8] = checkAdd({valueOf: () => '3ds'}, 2);
-        expect(result8).to.equal(null);
-        expect(error8).not.equal(null);
-    });
-
     it('given a string number should round arguments', function () {
         checkAdd = check(add, {
             a: 'round',
@@ -225,7 +138,101 @@ describe('"checkValue" function', function () {
     });
 });
 
-describe('"check" function arguments for errors', function () {
+describe('check "number" pattern processor', function () {
+    let checkAdd = null;
+    function add(a, b) {
+        return a + b;
+    }
+
+    it('given a non "number" value should return error', function () {
+        checkAdd = check(add, {
+            a: 'number',
+            b: 'number',
+        });
+        let [, error1] = checkAdd("-0x42", "");
+        expect(error1).not.equal(null);
+
+        let [, error2] = checkAdd(NaN, '3');
+        expect(error2).not.equal(null);
+
+        let [, error3] = checkAdd(2, '3');
+        expect(error3).not.equal(null);
+    });
+
+    it('given a non "number" value should return error', function () {
+        checkAdd = check(add, {
+            a: 'number',
+            b: 'number',
+        });
+        let [result1, error1] = checkAdd(null, 2);
+        expect(result1).to.equal(null);
+        expect(error1).not.equal(null);
+
+        let [result2, error2] = checkAdd(Infinity, 2);
+        expect(result2).to.equal(null);
+        expect(error2).not.equal(null);
+
+        let [result3, error3] = checkAdd(true, 2);
+        expect(result3).to.equal(null);
+        expect(error3).not.equal(null);
+
+        let [result4, error4] = checkAdd(undefined, 2);
+        expect(result4).to.equal(null);
+        expect(error4).not.equal(null);
+
+        let [result5, error5] = checkAdd(true, 2);
+        expect(result5).to.equal(null);
+        expect(error5).not.equal(null);
+
+        let [result6, error6] = checkAdd([], 2);
+        expect(result6).to.equal(null);
+        expect(error6).not.equal(null);
+
+        let [result7, error7] = checkAdd({}, 2);
+        expect(result7).to.equal(null);
+        expect(error7).not.equal(null);
+
+        let [result8, error8] = checkAdd('abc', 2);
+        expect(result8).to.equal(null);
+        expect(error8).not.equal(null);
+    });
+
+    it('given a non "number" value and convert should convert argument to number', function () {
+        checkAdd = check(add, {
+            a: 'number:convert',
+            b: 'number:convert',
+        });
+        let [result1, error1] = checkAdd('3', 2);
+        expect(result1).to.equal(5);
+
+        let [result2, error2] = checkAdd({toString: () => 3}, 2);
+        expect(result2).to.equal(5);
+
+        let [result3, error3] = checkAdd({valueOf: () => '3'}, 2);
+        expect(result3).to.equal(5);
+
+        let [result4, error4] = checkAdd('-7', 2);
+        expect(result4).to.equal(-5);
+
+        let [result5, error5] = checkAdd('abc', 2);
+        expect(result5).to.equal(null);
+        expect(error5).not.equal(null);
+
+        let [result6, error6] = checkAdd('3-', 2);
+        expect(result6).to.equal(null);
+        expect(error6).not.equal(null);
+
+        let [result7, error7] = checkAdd({toString: () => 'abc'}, 2);
+        expect(result7).to.equal(null);
+        expect(error7).not.equal(null);
+
+        let [result8, error8] = checkAdd({valueOf: () => '3ds'}, 2);
+        expect(result8).to.equal(null);
+        expect(error8).not.equal(null);
+    });
+});
+
+describe('check "min" pattern processor', function () {
     let add = (a) => a + 5;
 
     it('should properly run if "min" processor is given', function () {
