@@ -218,6 +218,10 @@ describe('check "number" pattern processor', function () {
         let [result8, error8] = checkAdd({valueOf: () => '3ds'}, 2);
         expect(result8).to.equal(null);
         expect(error8).not.equal(null);
+
+        let [result9, error9] = checkValue('number:wrongProcessor')(2);
+        expect(result9).to.equal(null);
+        expect(error9).not.equal(null);
     });
 });
 
