@@ -259,6 +259,39 @@ describe('check "integer" pattern processor', function () {
         let [, error5] = checkAdd(undefined, 3);
         expect(error5).not.equal(null);
     });
+
+    it('given a non "integer" value should return error', function () {
+        checkAdd = check(add, {
+            a: 'integer',
+            b: 'integer',
+        });
+        let [, error1] = checkAdd("-0x42", 3);
+        expect(error1).not.equal(null);
+
+        let [result2, error2] = checkAdd(Infinity, 2);
+        expect(result2).to.equal(null);
+        expect(error2).not.equal(null);
+
+        let [result3, error3] = checkAdd(true, 2);
+        expect(result3).to.equal(null);
+        expect(error3).not.equal(null);
+
+        let [result5, error5] = checkAdd('true', 2);
+        expect(result5).to.equal(null);
+        expect(error5).not.equal(null);
+
+        let [result6, error6] = checkAdd([], 2);
+        expect(result6).to.equal(null);
+        expect(error6).not.equal(null);
+
+        let [result7, error7] = checkAdd({}, 2);
+        expect(result7).to.equal(null);
+        expect(error7).not.equal(null);
+
+        let [result8, error8] = checkAdd('abc', 2);
+        expect(result8).to.equal(null);
+        expect(error8).not.equal(null);
+    });
 });
 
 describe('check "min" pattern processor', function () {
