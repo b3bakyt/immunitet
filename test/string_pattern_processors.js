@@ -517,4 +517,20 @@ describe('check "string" pattern processor', function () {
         expect(result7).to.equal(null);
         expect(error7).not.equal(null);
     });
+
+    it('given a processor should change value', function () {
+        checkAdd = check(concat, {
+            a: 'string:toLowerCase',
+            b: 'string:toUpperCase',
+        });
+        let [result] = checkAdd('Hi', 'Fi');
+        expect(result).equal('hiFI');
+
+        checkAdd = check(concat, {
+            a: 'string:capitalFirst',
+            b: 'string:capitalFirstLetter',
+        });
+        let [result2] = checkAdd('hi fi', ' hello world');
+        expect(result2).equal('Hi fi Hello World');
+    });
 });
