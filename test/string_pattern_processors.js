@@ -895,5 +895,11 @@ describe('check "default" pattern processor', function () {
 
         let [result7] = checkValue('default:11')([2,3]);
         expect(result7).to.deep.equal([2,3]);
+
+        let [result8] = checkValue('default:11')({toString: () => undefined});
+        expect(result8).to.be.an('object');
+
+        let [result9] = checkValue('default:11')({valueOf: () => undefined});
+        expect(result9).to.be.an('object');
     });
 });
