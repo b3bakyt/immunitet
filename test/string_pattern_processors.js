@@ -461,3 +461,31 @@ describe('check "min" pattern processor', function () {
         expect(result6).to.equal('as55');
     });
 });
+
+describe('check "string" pattern processor', function () {
+    let checkAdd = null;
+    function concat(a, b) {
+        return a + b;
+    }
+
+    it('given empty values the "string" processor should return error', function () {
+        checkAdd = check(concat, {
+            a: 'string',
+            b: 'string',
+        });
+        let [, error1] = checkAdd('', 'hi');
+        expect(error1).not.equal(null);
+
+        let [, error2] = checkAdd(NaN, 'hi');
+        expect(error2).not.equal(null);
+
+        let [, error3] = checkAdd(null, 'hi');
+        expect(error3).not.equal(null);
+
+        let [, error4] = checkAdd(false, 'hi');
+        expect(error4).not.equal(null);
+
+        let [, error5] = checkAdd(undefined, 'hi');
+        expect(error5).not.equal(null);
+    });
+});
