@@ -775,35 +775,42 @@ describe('check "object" pattern processor', function () {
 });
 
 describe('check "pattern" pattern processor', function () {
-    let checkAdd = null;
+    let checkHello = null;
     function hello(val) {
         return 'hello '+ val;
     }
 
     it('given empty values should return error', function () {
-        checkAdd = check(hello, 'pattern');
-        let [, error1] = checkAdd('');
+        checkHello = check(hello, 'pattern');
+        let [, error1] = checkHello('');
         expect(error1).not.equal(null);
 
-        let [, error2] = checkAdd(NaN);
+        let [, error2] = checkHello(NaN);
         expect(error2).not.equal(null);
 
-        let [, error3] = checkAdd(null);
+        let [, error3] = checkHello(null);
         expect(error3).not.equal(null);
 
-        let [, error4] = checkAdd(0);
+        let [, error4] = checkHello(0);
         expect(error4).not.equal(null);
 
-        let [, error5] = checkAdd(undefined);
+        let [, error5] = checkHello(undefined);
         expect(error5).not.equal(null);
 
-        let [, error6] = checkAdd(false);
+        let [, error6] = checkHello(false);
         expect(error6).not.equal(null);
     });
 
     it('given empty pattern should return error', function () {
-        checkAdd = check(hello, 'pattern:');
-        let [, error1] = checkAdd('bob');
+        checkHello = check(hello, 'pattern:');
+        let [, error1] = checkHello('bob');
         expect(error1).not.equal(null);
+    });
+
+    it('given wrong pattern should return error', function () {
+        checkHello = check(hello, 'pattern:/[\w]*/');
+        let [result, error] = checkHello('234');
+        expect(error).not.equal(null);
+        expect(result).to.equal(null);
     });
 });
