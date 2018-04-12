@@ -873,4 +873,27 @@ describe('check "default" pattern processor', function () {
         let [result6] = checkValue('default:11')(undefined);
         expect(result6).equal('11');
     });
+
+    it('given non undefined value should return the value', function () {
+        let [result] = checkValue('default:true')(123);
+        expect(result).equal(123);
+
+        let [result2] = checkValue('default:false')('123');
+        expect(result2).equal('123');
+
+        let [result3] = checkValue('default:null')(false);
+        expect(result3).equal(false);
+
+        let [result4] = checkValue('default:11')('true');
+        expect(result4).equal('true');
+
+        let [result5] = checkValue('default:11|number:convert')('34');
+        expect(result5).equal(34);
+
+        let [result6] = checkValue('default:11')({a:1});
+        expect(result6).to.deep.equal({a:1});
+
+        let [result7] = checkValue('default:11')([2,3]);
+        expect(result7).to.deep.equal([2,3]);
+    });
 });
