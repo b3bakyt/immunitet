@@ -627,6 +627,10 @@ describe('check "boolean" pattern processor', function () {
         let [result8] = checkValue('boolean:convert')('false');
         expect(result8).equal(false);
 
+        let [result9, error9] = checkValue('boolean:wrongProcessor')(true);
+        expect(result9).to.equal(null);
+        expect(error9).not.equal(null);
+
     });
 });
 
