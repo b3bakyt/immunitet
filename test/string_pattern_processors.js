@@ -45,18 +45,6 @@ describe('"check" function', function () {
         expect(result5).to.equal(7);
     });
 
-    it('given a string number should round arguments', function () {
-        checkAdd = check(add, {
-            a: 'round',
-            b: 'round',
-        });
-        let [result1, error1] = checkAdd('2.2', 3.3);
-        expect(result1).to.equal(5);
-
-        let [result2] = checkAdd('2.6', 3.51);
-        expect(result2).to.equal(7);
-    });
-
     it('should accept argument processor parameter', function () {
         function addArray(a, b) {
             return a.map((val, key) => val + b[key]);
@@ -291,6 +279,60 @@ describe('check "integer" pattern processor', function () {
         let [result8, error8] = checkAdd('abc', 2);
         expect(result8).to.equal(null);
         expect(error8).not.equal(null);
+    });
+
+    it('given a non "integer" value and round, floor, ceil processors should convert argument to number', function () {
+        checkAdd = check(add, {
+            a: 'integer:round',
+            b: 'integer:ceil',
+        });
+        let [result1, error1] = checkAdd('3', 2);
+        expect(result1).to.equal(5);
+
+        let [result2, error2] = checkAdd({toString: () => 3}, 2);
+        expect(result2).to.equal(5);
+
+        let [result3, error3] = checkAdd({valueOf: () => '3'}, 2);
+        expect(result3).to.equal(5);
+
+        let [result4, error4] = checkAdd('-7', 2);
+        expect(result4).to.equal(-5);
+
+        let [result5, error5] = checkAdd('abc', 2);
+        expect(result5).to.equal(null);
+        expect(error5).not.equal(null);
+
+        let [result6, error6] = checkAdd('3-', 2);
+        expect(result6).to.equal(null);
+        expect(error6).not.equal(null);
+
+        let [result7, error7] = checkAdd({toString: () => 'abc'}, 2);
+        expect(result7).to.equal(null);
+        expect(error7).not.equal(null);
+
+        let [result8, error8] = checkAdd({valueOf: () => '3ds'}, 2);
+        expect(result8).to.equal(null);
+        expect(error8).not.equal(null);
+
+        let [result9, error9] = checkAdd({valueOf: () => '3.3'}, 2);
+        expect(result9).to.equal(5);
+
+        let [result10] = checkAdd(3.3, 2.2);
+        expect(result10).to.equal(6);
+
+        let [result11] = checkAdd(3.6, 2.6);
+        expect(result11).to.equal(7);
+
+        checkAdd = check(add, {
+            a: 'integer:round',
+            b: 'integer:floor',
+        });
+
+        let [result12] = checkAdd(3.3, 2.2);
+        expect(result12).to.equal(5);
+
+        let [result13] = checkAdd(3.6, 2.6);
+        expect(result13).to.equal(6);
     });
 });
 
