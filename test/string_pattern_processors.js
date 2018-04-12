@@ -646,4 +646,31 @@ describe('check "array" pattern processor', function () {
         let [, error6] = checkAdd(false);
         expect(error6).not.equal(null);
     });
+
+    it('given a non "array" value should return error', function () {
+        checkAdd = check(invert, 'array');
+
+        let [, error1] = checkAdd(22);
+        expect(error1).not.equal(null);
+
+        let [result2, error2] = checkAdd(Infinity);
+        expect(result2).to.equal(null);
+        expect(error2).not.equal(null);
+
+        let [result3, error3] = checkAdd('hi');
+        expect(result3).to.equal(null);
+        expect(error3).not.equal(null);
+
+        let [result5, error5] = checkAdd(2.2);
+        expect(result5).to.equal(null);
+        expect(error5).not.equal(null);
+
+        let [result6, error6] = checkAdd(false);
+        expect(result6).to.equal(null);
+        expect(error6).not.equal(null);
+
+        let [result7, error7] = checkAdd({});
+        expect(result7).to.equal(null);
+        expect(error7).not.equal(null);
+    });
 });
