@@ -672,5 +672,18 @@ describe('check "array" pattern processor', function () {
         let [result7, error7] = checkAdd({});
         expect(result7).to.equal(null);
         expect(error7).not.equal(null);
+
+        let [result8, error8] = checkAdd({a: 1, b: 2});
+        expect(result8).to.equal(null);
+        expect(error8).not.equal(null);
+    });
+
+    it('given an Array value should return same value', function () {
+        let [result] = checkValue('array')([]);
+        expect(result).to.deep.equal([]);
+
+        let [result2] = checkValue('array')([1,2,3]);
+        expect(result2).to.deep.equal([1,2,3]);
+
     });
 });
