@@ -540,6 +540,10 @@ describe('check "string" pattern processor', function () {
         });
         let [result2] = checkAdd('hi fi', ' hello world');
         expect(result2).equal('Hi fi Hello World');
+
+        let [result3, error3] = checkValue('string:wrongProcessor')('hello');
+        expect(result3).to.equal(null);
+        expect(error3).not.equal(null);
     });
 });
 
