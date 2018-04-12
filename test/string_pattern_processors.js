@@ -156,12 +156,12 @@ describe('"check" function', function () {
         expect(result).to.deep.equal(['23', '34']);
     });
 
-    it('should accept process each array values', function () {
+    it('should process "each" keyword with arguments to parse array values', function () {
         function addArray(a, b) {
             return a.map((val, key) => val + b[key]);
         }
         checkAdd = check(addArray, {
-            a: 'split:,|each:number',
+            a: 'split:,|each:number:convert',
         });
 
         const [result] = checkAdd('2,3', [3, 4]);
@@ -169,14 +169,14 @@ describe('"check" function', function () {
     });
 
     it('should process a single value', function () {
-        let splitString = check(null, 'split:,|each:number');
+        let splitString = check(null, 'split:,|each:number:convert');
 
         const [result] = splitString('3,4');
         expect(result).to.deep.equal([3, 4]);
     });
 
     it('should use a composite processor', function () {
-        im.setAlias('toNumericArray', 'split:,|each:number');
+        im.setAlias('toNumericArray', 'split:,|each:number:convert');
 
         let splitString = check(null, 'toNumericArray');
 
@@ -190,7 +190,7 @@ describe('"checkValue" function', function () {
 
     it('should properly run if only one argument processor is given', function () {
         checkAdd = checkValue({
-            a: 'number',
+            a: 'number:convert',
         });
 
         let [result, error] = checkAdd("33");
@@ -209,14 +209,14 @@ describe('"checkValue" function', function () {
     });
 
     it('should process a single value', function () {
-        let splitString = checkValue('split:,|each:number');
+        let splitString = checkValue('split:,|each:number:convert');
 
         const [result] = splitString('3,4');
         expect(result).to.deep.equal([3, 4]);
     });
 
     it('should use a composite processor', function () {
-        im.setAlias('toNumericArray', 'split:,|each:number');
+        im.setAlias('toNumericArray', 'split:,|each:number:convert');
 
         let splitString = checkValue('toNumericArray');
 
