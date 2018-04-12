@@ -1,4 +1,4 @@
-import im, {check, ImmunitetException} from '../lib/immunitet';
+import im, {validateFunction, ImmunitetException} from '../lib/immunitet';
 import {processObjectPatterns} from '../lib/patternProcessors/object_pattern_processor';
 import Chai from 'chai';
 const {
@@ -17,7 +17,7 @@ describe('check object type pattern processors', function () {
     });
 
     it('should properly run if object type argument processor is given', function () {
-        // let checkAdd = check(add, {
+        // let checkAdd = validateFunction(add, {
         //     a: {
         //         "properties": {
         //             "a": {

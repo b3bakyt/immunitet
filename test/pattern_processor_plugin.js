@@ -1,4 +1,4 @@
-import im, {check, pluginPatternProcessors} from '../lib/immunitet';
+import im, {validateFunction, pluginPatternProcessors} from '../lib/immunitet';
 import Chai from 'chai';
 import {ImmunitetException} from "../lib/exceptions";
 const {
@@ -57,7 +57,7 @@ describe('check plugable pattern processors', function () {
         pluginPatternProcessors(patterns);
         const concatString = (a, b) => a + b;
 
-        const concatWords = check(concatString, ['minLen:3', 'maxLen:10']);
+        const concatWords = validateFunction(concatString, ['minLen:3', 'maxLen:10']);
         const [result, error] = concatWords('be', 'my too long sweet best pest sentence');
 
         expect(error).to.not.equal(null);

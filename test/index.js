@@ -1,4 +1,4 @@
-import im, {check, checkPromise, ImmunitetException} from '../lib/immunitet';
+import im, {validateFunction, validatePromise, ImmunitetException} from '../lib/immunitet';
 import Chai from 'chai';
 const {
     expect,
@@ -12,11 +12,11 @@ describe('immunitet.js lib basic tests', function() {
     });
 
     it('should have "check" function', () => {
-        assert.typeOf(check, 'function');
+        assert.typeOf(validateFunction, 'function');
     });
 
-    it('should have "checkPromise" function', () => {
-        assert.typeOf(checkPromise, 'function');
+    it('should have "validatePromise" function', () => {
+        assert.typeOf(validatePromise, 'function');
     });
 
 });
@@ -26,7 +26,7 @@ describe('"check" function tests', function () {
         return a + b;
     }
 
-    let checkAdd = check(add);
+    let checkAdd = validateFunction(add);
 
     it('should return a decorated function', function () {
         assert.typeOf(checkAdd, 'function')
@@ -48,14 +48,14 @@ describe('"check" function tests', function () {
     });
 
     it('should properly run if only one argument processor is given', function () {
-        checkAdd = check(add);
+        checkAdd = validateFunction(add);
 
         let [result, error] = checkAdd("33", 2);
         expect(result).to.equal('332');
     });
 
     it('may run a custom function as an argument processor', function () {
-        checkAdd = check(add, {
+        checkAdd = validateFunction(add, {
             a: (argValue) => Math.ceil(argValue),
             b: (argValue) => Math.floor(argValue),
         });
@@ -65,7 +65,7 @@ describe('"check" function tests', function () {
     });
 
     it('may throw an exception from inside a custom function', function () {
-        checkAdd = check(add, {
+        checkAdd = validateFunction(add, {
             a: (argValue) => {
                 throw new ImmunitetException('Test exception');
             },
@@ -81,7 +81,7 @@ describe('"check" function tests', function () {
             throw new ImmunitetException('ImmunitetException thrown from inside a user function')
         };
 
-        checkAdd = check(add);
+        checkAdd = validateFunction(add);
 
         let [result, error] = checkAdd(2, 3);
         expect(error).to.not.equal(null);
@@ -92,13 +92,13 @@ describe('"check" function tests', function () {
             throw new Error('ImmunitetException thrown from inside a user function')
         };
 
-        checkAdd = check(add);
+        checkAdd = validateFunction(add);
 
         expect(() => checkAdd(2, 3)).to.throw(Error);
     });
 
     it('system exceptions must be handled externally', function () {
-        checkAdd = check(add, {
+        checkAdd = validateFunction(add, {
             a: (argValue) => {
                 throw new Error('Test exception');
             },
@@ -118,7 +118,7 @@ describe('"check" function promise tests', function () {
         });
     }
 
-    let checkAdd = checkPromise(add);
+    let checkAdd = validatePromise(add);
 
     it('should return a Promise with array result', function () {
         checkAdd('2', 5)
@@ -129,7 +129,7 @@ describe('"check" function promise tests', function () {
     });
 
     it('should process arguments', function () {
-        checkAdd = checkPromise(add, {
+        checkAdd = validatePromise(add, {
             a: 'number',
             b: 'number',
         });
@@ -142,7 +142,7 @@ describe('"check" function promise tests', function () {
     });
 
     it('should process a single argument', function () {
-        checkAdd = checkPromise(add, {
+        checkAdd = validatePromise(add, {
             a: 'number',
         });
 
@@ -154,7 +154,7 @@ describe('"check" function promise tests', function () {
     });
 
     it('should process a wrong promise argument', function () {
-        checkAdd = checkPromise(add, {
+        checkAdd = validatePromise(add, {
             a: 'number',
         });
 
@@ -168,7 +168,7 @@ describe('"check" function promise tests', function () {
     });
 
     it('should process ImmunitetException thrown from inside a custom processor callback', function () {
-        checkAdd = checkPromise(add, {
+        checkAdd = validatePromise(add, {
             a: (val) => {
                 throw new ImmunitetException('Test promise Error!');
             }
@@ -184,7 +184,7 @@ describe('"check" function promise tests', function () {
     });
 
     it('should process js Error exception thrown from inside a custom callback', function () {
-        checkAdd = checkPromise(add, {
+        checkAdd = validatePromise(add, {
             a: (val) => {
                 throw new Error('Test promise Error!');
             }
@@ -208,7 +208,7 @@ describe('"check" function promise tests', function () {
             });
         }
 
-        checkAdd = checkPromise(add);
+        checkAdd = validatePromise(add);
 
         checkAdd(2, 5)
             .then((result) => {
@@ -227,7 +227,7 @@ describe('"check" function promise tests', function () {
             });
         }
 
-        checkAdd = checkPromise(add);
+        checkAdd = validatePromise(add);
 
         checkAdd(2, 5)
             .then((result) => {
@@ -246,7 +246,7 @@ describe('"check" function promise arguments', function () {
         return a + b;
     }
 
-    let checkAdd = checkPromise(add);
+    let checkAdd = validatePromise(add);
 
     it('should accept Promise as an argument', function () {
         const a = new Promise((resolve, reject) => {
@@ -277,7 +277,7 @@ describe('"check" function promise arguments', function () {
                 })
         }
 
-        let checkAdd = checkPromise(addPromises, {a:'promise', b:'promise'});
+        let checkAdd = validatePromise(addPromises, {a:'promise', b:'promise'});
 
         const a = new Promise((resolve, reject) => {
             setTimeout(() => {
@@ -303,7 +303,7 @@ describe('"check" function "function" arguments', function () {
         return a() + b();
     }
 
-    let checkAdd = check(add);
+    let checkAdd = validateFunction(add);
 
     it('should accept function as an argument', function () {
         const a = () => 2;

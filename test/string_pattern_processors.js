@@ -1,4 +1,4 @@
-import im, {check, checkValue} from '../lib/immunitet';
+import im, {validateFunction, validateValue} from '../lib/immunitet';
 import Chai from 'chai';
 const {
     expect,
@@ -11,10 +11,10 @@ describe('"check" function', function () {
         return a + b;
     }
 
-    let checkAdd = check(add);
+    let checkAdd = validateFunction(add);
 
     it('should properly run if only one argument processor is given', function () {
-        checkAdd = check(add, {
+        checkAdd = validateFunction(add, {
             a: 'number',
         });
 
@@ -23,24 +23,24 @@ describe('"check" function', function () {
     });
 
     it('should properly run if empty argument processor is given', function () {
-        checkAdd = check(add, {});
+        checkAdd = validateFunction(add, {});
 
         let [result1] = checkAdd(5, 2);
         expect(result1).to.equal(7);
 
-        checkAdd = check(add);
+        checkAdd = validateFunction(add);
         let [result2] = checkAdd(5, 2);
         expect(result2).to.equal(7);
 
-        checkAdd = check(add, null);
+        checkAdd = validateFunction(add, null);
         let [result3] = checkAdd(5, 2);
         expect(result3).to.equal(7);
 
-        checkAdd = check(add, undefined);
+        checkAdd = validateFunction(add, undefined);
         let [result4] = checkAdd(5, 2);
         expect(result4).to.equal(7);
 
-        checkAdd = check(add, []);
+        checkAdd = validateFunction(add, []);
         let [result5] = checkAdd(5, 2);
         expect(result5).to.equal(7);
     });
@@ -49,7 +49,7 @@ describe('"check" function', function () {
         function addArray(a, b) {
             return a.map((val, key) => val + b[key]);
         }
-        checkAdd = check(addArray, {
+        checkAdd = validateFunction(addArray, {
             a: 'split:,',
         });
 
@@ -61,7 +61,7 @@ describe('"check" function', function () {
         function addArray(a, b) {
             return a.map((val, key) => val + b[key]);
         }
-        checkAdd = check(addArray, {
+        checkAdd = validateFunction(addArray, {
             a: 'split:,|each:number:convert',
         });
 
@@ -70,7 +70,7 @@ describe('"check" function', function () {
     });
 
     it('should process a single value', function () {
-        let splitString = check(null, 'split:,|each:number:convert');
+        let splitString = validateFunction(null, 'split:,|each:number:convert');
 
         const [result] = splitString('3,4');
         expect(result).to.deep.equal([3, 4]);
@@ -79,18 +79,18 @@ describe('"check" function', function () {
     it('should use a composite processor', function () {
         im.setAlias('toNumericArray', 'split:,|each:number:convert');
 
-        let splitString = check(null, 'toNumericArray');
+        let splitString = validateFunction(null, 'toNumericArray');
 
         const [result] = splitString('3,4');
         expect(result).to.deep.equal([3, 4]);
     });
 });
 
-describe('"checkValue" function', function () {
+describe('"validateValue" function', function () {
     let checkAdd = null;
 
     it('should properly run if only one argument processor is given', function () {
-        checkAdd = checkValue({
+        checkAdd = validateValue({
             a: 'number:convert',
         });
 
@@ -98,19 +98,19 @@ describe('"checkValue" function', function () {
         expect(result).to.equal(33);
     });
 
-    it('should throw Exception if empty arguments given to checkValue', function () {
-        expect(() => checkValue(null)).to.throw(Error);
-        expect(() => checkValue(undefined)).to.throw(Error);
-        expect(() => checkValue('')).to.throw(Error);
-        expect(() => checkValue(0)).to.throw(Error);
-        expect(() => checkValue(false)).to.throw(Error);
-        expect(() => checkValue(NaN)).to.throw(Error);
-        expect(() => checkValue({})).to.throw(Error);
-        expect(() => checkValue([])).to.throw(Error);
+    it('should throw Exception if empty arguments given to validateValue', function () {
+        expect(() => validateValue(null)).to.throw(Error);
+        expect(() => validateValue(undefined)).to.throw(Error);
+        expect(() => validateValue('')).to.throw(Error);
+        expect(() => validateValue(0)).to.throw(Error);
+        expect(() => validateValue(false)).to.throw(Error);
+        expect(() => validateValue(NaN)).to.throw(Error);
+        expect(() => validateValue({})).to.throw(Error);
+        expect(() => validateValue([])).to.throw(Error);
     });
 
     it('should process a single value', function () {
-        let splitString = checkValue('split:,|each:number:convert');
+        let splitString = validateValue('split:,|each:number:convert');
 
         const [result] = splitString('3,4');
         expect(result).to.deep.equal([3, 4]);
@@ -119,7 +119,7 @@ describe('"checkValue" function', function () {
     it('should use a composite processor', function () {
         im.setAlias('toNumericArray', 'split:,|each:number:convert');
 
-        let splitString = checkValue('toNumericArray');
+        let splitString = validateValue('toNumericArray');
 
         const [result] = splitString('3,4');
         expect(result).to.deep.equal([3, 4]);
@@ -133,7 +133,7 @@ describe('check "number" pattern processor', function () {
     }
 
     it('given empty value "number" processor should return error', function () {
-        checkAdd = check(add, {
+        checkAdd = validateFunction(add, {
             a: 'number',
             b: 'number',
         });
@@ -154,7 +154,7 @@ describe('check "number" pattern processor', function () {
     });
 
     it('given a non "number" value should return error', function () {
-        checkAdd = check(add, {
+        checkAdd = validateFunction(add, {
             a: 'number',
             b: 'number',
         });
@@ -187,7 +187,7 @@ describe('check "number" pattern processor', function () {
     });
 
     it('given a non "number" value and convert should convert argument to number', function () {
-        checkAdd = check(add, {
+        checkAdd = validateFunction(add, {
             a: 'number:convert',
             b: 'number:convert',
         });
@@ -219,7 +219,7 @@ describe('check "number" pattern processor', function () {
         expect(result8).to.equal(null);
         expect(error8).not.equal(null);
 
-        let [result9, error9] = checkValue('number:wrongProcessor')(2);
+        let [result9, error9] = validateValue('number:wrongProcessor')(2);
         expect(result9).to.equal(null);
         expect(error9).not.equal(null);
     });
@@ -232,7 +232,7 @@ describe('check "integer" pattern processor', function () {
     }
 
     it('given empty values the "integer" processor should return error', function () {
-        checkAdd = check(add, {
+        checkAdd = validateFunction(add, {
             a: 'integer',
             b: 'integer',
         });
@@ -253,7 +253,7 @@ describe('check "integer" pattern processor', function () {
     });
 
     it('given a non "integer" value should return error', function () {
-        checkAdd = check(add, {
+        checkAdd = validateFunction(add, {
             a: 'integer',
             b: 'integer',
         });
@@ -286,7 +286,7 @@ describe('check "integer" pattern processor', function () {
     });
 
     it('given a non "integer" value and round, floor, ceil processors should convert argument to number', function () {
-        checkAdd = check(add, {
+        checkAdd = validateFunction(add, {
             a: 'integer:round',
             b: 'integer:ceil',
         });
@@ -327,7 +327,7 @@ describe('check "integer" pattern processor', function () {
         let [result11] = checkAdd(3.6, 2.6);
         expect(result11).to.equal(7);
 
-        checkAdd = check(add, {
+        checkAdd = validateFunction(add, {
             a: 'integer:round',
             b: 'integer:floor',
         });
@@ -338,7 +338,7 @@ describe('check "integer" pattern processor', function () {
         let [result13] = checkAdd(3.6, 2.6);
         expect(result13).to.equal(6);
 
-        let [result14, error14] = checkValue('integer:wrongProcessor')(2);
+        let [result14, error14] = validateValue('integer:wrongProcessor')(2);
         expect(result14).to.equal(null);
         expect(error14).not.equal(null);
     });
@@ -348,7 +348,7 @@ describe('check "minimum" pattern processor', function () {
     let add = (a) => a + 5;
 
     it('should properly run if "minimum" processor is given', function () {
-        let checkAdd = check(add, {
+        let checkAdd = validateFunction(add, {
             a: 'minimum:5',
         });
 
@@ -367,17 +367,17 @@ describe('check "minimum" pattern processor', function () {
         let [result3] = checkAdd('55');
         expect(result3).to.equal(60);
 
-        checkAdd = check(add, 'minimum:5s');
+        checkAdd = validateFunction(add, 'minimum:5s');
         let [, error5] = checkAdd(-2);
         expect(error5.message).to.equal('Minimum parameter is not type of number!');
 
-        checkAdd = check(add, 'minimum:5');
+        checkAdd = validateFunction(add, 'minimum:5');
         let [, error6] = checkAdd('as5');
         expect(error6.message).to.equal('Given argument is not type of number!');
     });
 
     it('should properly run if "maximum" processor is given', function () {
-        let checkAdd = check(add, {
+        let checkAdd = validateFunction(add, {
             a: 'maximum:10',
         });
 
@@ -396,17 +396,17 @@ describe('check "minimum" pattern processor', function () {
         let [result3] = checkAdd('3');
         expect(result3).to.equal(8);
 
-        checkAdd = check(add, 'maximum:5s');
+        checkAdd = validateFunction(add, 'maximum:5s');
         let [, error5] = checkAdd(5);
         expect(error5.message).to.equal('Maximum parameter is not type of number!');
 
-        checkAdd = check(add, 'maximum:10');
+        checkAdd = validateFunction(add, 'maximum:10');
         let [, error6] = checkAdd('as5');
         expect(error6.message).to.equal('Given argument is not type of number!');
     });
 
     it('should properly run if "minLength" processor is given', function () {
-        let checkAdd = check(add, {
+        let checkAdd = validateFunction(add, {
             a: 'minLength:2',
         });
 
@@ -425,17 +425,17 @@ describe('check "minimum" pattern processor', function () {
         let [result4] = checkAdd('-1');
         expect(result4).to.equal('-15');
 
-        checkAdd = check(add, 'minLength:2s');
+        checkAdd = validateFunction(add, 'minLength:2s');
         let [, error5] = checkAdd(5);
         expect(error5.message).to.equal('minLength parameter is not type of number!');
 
-        checkAdd = check(add, 'minLength:2');
+        checkAdd = validateFunction(add, 'minLength:2');
         let [result5] = checkAdd('as5');
         expect(result5).to.equal('as55');
     });
 
     it('should properly run if "maxLength" processor is given', function () {
-        let checkAdd = check(add, {
+        let checkAdd = validateFunction(add, {
             a: 'maxLength:3',
         });
 
@@ -460,11 +460,11 @@ describe('check "minimum" pattern processor', function () {
         let [, error] = checkAdd(5321);
         expect(error.message).to.equal('String maximum length must be 3 symbols!');
 
-        checkAdd = check(add, 'maxLength:2s');
+        checkAdd = validateFunction(add, 'maxLength:2s');
         let [, error5] = checkAdd(5);
         expect(error5.message).to.equal('maxLength parameter is not type of number!');
 
-        checkAdd = check(add, 'maxLength:3');
+        checkAdd = validateFunction(add, 'maxLength:3');
         let [result6] = checkAdd('as5');
         expect(result6).to.equal('as55');
     });
@@ -477,7 +477,7 @@ describe('check "string" pattern processor', function () {
     }
 
     it('given empty values should return error', function () {
-        checkAdd = check(concat, {
+        checkAdd = validateFunction(concat, {
             a: 'string',
             b: 'string',
         });
@@ -498,7 +498,7 @@ describe('check "string" pattern processor', function () {
     });
 
     it('given a non "string" value should return error', function () {
-        checkAdd = check(concat, {
+        checkAdd = validateFunction(concat, {
             a: 'string',
             b: 'string',
         });
@@ -527,21 +527,21 @@ describe('check "string" pattern processor', function () {
     });
 
     it('given a processor should change value', function () {
-        checkAdd = check(concat, {
+        checkAdd = validateFunction(concat, {
             a: 'string:toLowerCase',
             b: 'string:toUpperCase',
         });
         let [result] = checkAdd('Hi', 'Fi');
         expect(result).equal('hiFI');
 
-        checkAdd = check(concat, {
+        checkAdd = validateFunction(concat, {
             a: 'string:capitalFirst',
             b: 'string:capitalFirstLetter',
         });
         let [result2] = checkAdd('hi fi', ' hello world');
         expect(result2).equal('Hi fi Hello World');
 
-        let [result3, error3] = checkValue('string:wrongProcessor')('hello');
+        let [result3, error3] = validateValue('string:wrongProcessor')('hello');
         expect(result3).to.equal(null);
         expect(error3).not.equal(null);
     });
@@ -554,7 +554,7 @@ describe('check "boolean" pattern processor', function () {
     }
 
     it('given empty values should return error', function () {
-        checkAdd = check(invert, {
+        checkAdd = validateFunction(invert, {
             a: 'boolean',
         });
         let [, error1] = checkAdd('');
@@ -574,7 +574,7 @@ describe('check "boolean" pattern processor', function () {
     });
 
     it('given a non "boolean" value should return error', function () {
-        checkAdd = check(invert, 'boolean');
+        checkAdd = validateFunction(invert, 'boolean');
 
         let [, error1] = checkAdd(22);
         expect(error1).not.equal(null);
@@ -601,7 +601,7 @@ describe('check "boolean" pattern processor', function () {
     });
 
     it('given a processor should change value', function () {
-        checkAdd = check(invert, 'boolean:convert');
+        checkAdd = validateFunction(invert, 'boolean:convert');
 
         let [result] = checkAdd('Hi');
         expect(result).equal(false);
@@ -621,13 +621,13 @@ describe('check "boolean" pattern processor', function () {
         let [result6] = checkAdd([]);
         expect(result6).equal(false);
 
-        let [result7] = checkValue('boolean:convert')('true');
+        let [result7] = validateValue('boolean:convert')('true');
         expect(result7).equal(true);
 
-        let [result8] = checkValue('boolean:convert')('false');
+        let [result8] = validateValue('boolean:convert')('false');
         expect(result8).equal(false);
 
-        let [result9, error9] = checkValue('boolean:wrongProcessor')(true);
+        let [result9, error9] = validateValue('boolean:wrongProcessor')(true);
         expect(result9).to.equal(null);
         expect(error9).not.equal(null);
 
@@ -641,7 +641,7 @@ describe('check "array" pattern processor', function () {
     }
 
     it('given empty values should return error', function () {
-        checkAdd = check(invert, {
+        checkAdd = validateFunction(invert, {
             a: 'array',
         });
         let [, error1] = checkAdd('');
@@ -664,7 +664,7 @@ describe('check "array" pattern processor', function () {
     });
 
     it('given a non "array" value should return error', function () {
-        checkAdd = check(invert, 'array');
+        checkAdd = validateFunction(invert, 'array');
 
         let [, error1] = checkAdd(22);
         expect(error1).not.equal(null);
@@ -695,10 +695,10 @@ describe('check "array" pattern processor', function () {
     });
 
     it('given an Array value should return same value', function () {
-        let [result] = checkValue('array')([]);
+        let [result] = validateValue('array')([]);
         expect(result).to.deep.equal([]);
 
-        let [result2] = checkValue('array')([1,2,3]);
+        let [result2] = validateValue('array')([1,2,3]);
         expect(result2).to.deep.equal([1,2,3]);
 
     });
@@ -711,7 +711,7 @@ describe('check "object" pattern processor', function () {
     }
 
     it('given empty values should return error', function () {
-        checkAdd = check(invert, {
+        checkAdd = validateFunction(invert, {
             a: 'object',
         });
         let [, error1] = checkAdd('');
@@ -734,7 +734,7 @@ describe('check "object" pattern processor', function () {
     });
 
     it('given a non "object" value should return error', function () {
-        checkAdd = check(invert, 'object');
+        checkAdd = validateFunction(invert, 'object');
 
         let [, error1] = checkAdd(22);
         expect(error1).not.equal(null);
@@ -765,10 +765,10 @@ describe('check "object" pattern processor', function () {
     });
 
     it('given an Object value should return same value', function () {
-        let [result] = checkValue('object')({});
+        let [result] = validateValue('object')({});
         expect(result).to.deep.equal({});
 
-        let [result2] = checkValue('object')({a: 3, b: 33});
+        let [result2] = validateValue('object')({a: 3, b: 33});
         expect(result2).to.deep.equal({a: 3, b: 33});
 
     });
@@ -781,7 +781,7 @@ describe('check "pattern" pattern processor', function () {
     }
 
     it('given empty values should return error', function () {
-        checkHello = check(hello, 'pattern');
+        checkHello = validateFunction(hello, 'pattern');
         let [, error1] = checkHello('');
         expect(error1).not.equal(null);
 
@@ -802,51 +802,51 @@ describe('check "pattern" pattern processor', function () {
     });
 
     it('given empty pattern should return error', function () {
-        checkHello = check(hello, 'pattern');
+        checkHello = validateFunction(hello, 'pattern');
         let [, error] = checkHello('bos');
         expect(error).not.equal(null);
 
-        checkHello = check(hello, 'pattern:');
+        checkHello = validateFunction(hello, 'pattern:');
         let [, error2] = checkHello('bos');
         expect(error2).not.equal(null);
 
-        checkHello = check(hello, 'pattern: ');
+        checkHello = validateFunction(hello, 'pattern: ');
         let [, error3] = checkHello('bos');
         expect(error3).not.equal(null);
     });
 
     it('given wrong value should return error', function () {
-        checkHello = check(hello, 'pattern:bob');
+        checkHello = validateFunction(hello, 'pattern:bob');
         let [, error] = checkHello('bos');
         expect(error).not.equal(null);
 
-        checkHello = check(hello, 'pattern:[\\d]+');
+        checkHello = validateFunction(hello, 'pattern:[\\d]+');
         let [, error2] = checkHello('hi');
         expect(error2).not.equal(null);
 
-        checkHello = check(hello, 'pattern:[\\D]+');
+        checkHello = validateFunction(hello, 'pattern:[\\D]+');
         let [, error3] = checkHello(34);
         expect(error3).not.equal(null);
 
-        checkHello = check(hello, 'pattern:/[\\W]+/i');
+        checkHello = validateFunction(hello, 'pattern:/[\\W]+/i');
         let [, error4] = checkHello('tte3st');
         expect(error4).not.equal(null);
 
-        checkHello = check(hello, 'pattern:/bob/');
+        checkHello = validateFunction(hello, 'pattern:/bob/');
         let [, error5] = checkHello('Bob');
         expect(error5).not.equal(null);
     });
 
     it('given pattern should should return matched values', function () {
-        checkHello = check(hello, 'pattern:bob');
+        checkHello = validateFunction(hello, 'pattern:bob');
         let [result] = checkHello('bob');
         expect(result).equal('hello bob');
 
-        checkHello = check(hello, 'pattern:/bob/i');
+        checkHello = validateFunction(hello, 'pattern:/bob/i');
         let [result2] = checkHello('Bob');
         expect(result2).equal('hello Bob');
 
-        checkHello = check(hello, 'pattern:/^[\\w]*$/i');
+        checkHello = validateFunction(hello, 'pattern:/^[\\w]*$/i');
         let [result3] = checkHello('Obama');
         expect(result3).equal('hello Obama');
     });
@@ -855,51 +855,51 @@ describe('check "pattern" pattern processor', function () {
 describe('check "default" pattern processor', function () {
 
     it('given undefined value should return default value', function () {
-        let [result] = checkValue('default:true')();
+        let [result] = validateValue('default:true')();
         expect(result).equal(true);
 
-        let [result2] = checkValue('default:false')();
+        let [result2] = validateValue('default:false')();
         expect(result2).equal(false);
 
-        let [result3] = checkValue('default:null')();
+        let [result3] = validateValue('default:null')();
         expect(result3).equal(null);
 
-        let [result4] = checkValue('default:11')();
+        let [result4] = validateValue('default:11')();
         expect(result4).equal('11');
 
-        let [result5] = checkValue('default:11|number:convert')();
+        let [result5] = validateValue('default:11|number:convert')();
         expect(result5).equal(11);
 
-        let [result6] = checkValue('default:11')(undefined);
+        let [result6] = validateValue('default:11')(undefined);
         expect(result6).equal('11');
     });
 
     it('given non undefined value should return the value', function () {
-        let [result] = checkValue('default:true')(123);
+        let [result] = validateValue('default:true')(123);
         expect(result).equal(123);
 
-        let [result2] = checkValue('default:false')('123');
+        let [result2] = validateValue('default:false')('123');
         expect(result2).equal('123');
 
-        let [result3] = checkValue('default:null')(false);
+        let [result3] = validateValue('default:null')(false);
         expect(result3).equal(false);
 
-        let [result4] = checkValue('default:11')('true');
+        let [result4] = validateValue('default:11')('true');
         expect(result4).equal('true');
 
-        let [result5] = checkValue('default:11|number:convert')('34');
+        let [result5] = validateValue('default:11|number:convert')('34');
         expect(result5).equal(34);
 
-        let [result6] = checkValue('default:11')({a:1});
+        let [result6] = validateValue('default:11')({a:1});
         expect(result6).to.deep.equal({a:1});
 
-        let [result7] = checkValue('default:11')([2,3]);
+        let [result7] = validateValue('default:11')([2,3]);
         expect(result7).to.deep.equal([2,3]);
 
-        let [result8] = checkValue('default:11')({toString: () => undefined});
+        let [result8] = validateValue('default:11')({toString: () => undefined});
         expect(result8).to.be.an('object');
 
-        let [result9] = checkValue('default:11')({valueOf: () => undefined});
+        let [result9] = validateValue('default:11')({valueOf: () => undefined});
         expect(result9).to.be.an('object');
     });
 });
