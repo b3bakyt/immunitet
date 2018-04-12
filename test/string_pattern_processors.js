@@ -344,12 +344,12 @@ describe('check "integer" pattern processor', function () {
     });
 });
 
-describe('check "min" pattern processor', function () {
+describe('check "minimum" pattern processor', function () {
     let add = (a) => a + 5;
 
-    it('should properly run if "min" processor is given', function () {
+    it('should properly run if "minimum" processor is given', function () {
         let checkAdd = check(add, {
-            a: 'min:5',
+            a: 'minimum:5',
         });
 
         let [result] = checkAdd(55);
@@ -367,18 +367,18 @@ describe('check "min" pattern processor', function () {
         let [result3] = checkAdd('55');
         expect(result3).to.equal(60);
 
-        checkAdd = check(add, 'min:5s');
+        checkAdd = check(add, 'minimum:5s');
         let [, error5] = checkAdd(-2);
-        expect(error5.message).to.equal('min parameter is not type of number!');
+        expect(error5.message).to.equal('Minimum parameter is not type of number!');
 
-        checkAdd = check(add, 'min:5');
+        checkAdd = check(add, 'minimum:5');
         let [, error6] = checkAdd('as5');
         expect(error6.message).to.equal('Given argument is not type of number!');
     });
 
-    it('should properly run if "max" processor is given', function () {
+    it('should properly run if "maximum" processor is given', function () {
         let checkAdd = check(add, {
-            a: 'max:10',
+            a: 'maximum:10',
         });
 
         let [result] = checkAdd(5);
@@ -396,11 +396,11 @@ describe('check "min" pattern processor', function () {
         let [result3] = checkAdd('3');
         expect(result3).to.equal(8);
 
-        checkAdd = check(add, 'max:5s');
+        checkAdd = check(add, 'maximum:5s');
         let [, error5] = checkAdd(5);
-        expect(error5.message).to.equal('max parameter is not type of number!');
+        expect(error5.message).to.equal('Maximum parameter is not type of number!');
 
-        checkAdd = check(add, 'max:10');
+        checkAdd = check(add, 'maximum:10');
         let [, error6] = checkAdd('as5');
         expect(error6.message).to.equal('Given argument is not type of number!');
     });
