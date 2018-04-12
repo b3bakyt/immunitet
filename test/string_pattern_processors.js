@@ -802,15 +802,52 @@ describe('check "pattern" pattern processor', function () {
     });
 
     it('given empty pattern should return error', function () {
+        checkHello = check(hello, 'pattern');
+        let [, error] = checkHello('bos');
+        expect(error).not.equal(null);
+
         checkHello = check(hello, 'pattern:');
-        let [, error1] = checkHello('bob');
-        expect(error1).not.equal(null);
+        let [, error2] = checkHello('bos');
+        expect(error2).not.equal(null);
+
+        checkHello = check(hello, 'pattern: ');
+        let [, error3] = checkHello('bos');
+        expect(error3).not.equal(null);
     });
 
-    it('given wrong pattern should return error', function () {
-        checkHello = check(hello, 'pattern:/[\w]*/');
-        let [result, error] = checkHello('234');
+    it('given wrong value should return error', function () {
+        checkHello = check(hello, 'pattern:bob');
+        let [, error] = checkHello('bos');
         expect(error).not.equal(null);
-        expect(result).to.equal(null);
+
+        checkHello = check(hello, 'pattern:[\\d]+');
+        let [, error2] = checkHello('hi');
+        expect(error2).not.equal(null);
+
+        checkHello = check(hello, 'pattern:[\\D]+');
+        let [, error3] = checkHello(34);
+        expect(error3).not.equal(null);
+
+        checkHello = check(hello, 'pattern:/[\\W]+/i');
+        let [, error4] = checkHello('tte3st');
+        expect(error4).not.equal(null);
+
+        checkHello = check(hello, 'pattern:/bob/');
+        let [, error5] = checkHello('Bob');
+        expect(error5).not.equal(null);
+    });
+
+    it('given pattern should should return matched values', function () {
+        checkHello = check(hello, 'pattern:bob');
+        let [result] = checkHello('bob');
+        expect(result).equal('hello bob');
+
+        checkHello = check(hello, 'pattern:/bob/i');
+        let [result2] = checkHello('Bob');
+        expect(result2).equal('hello Bob');
+
+        checkHello = check(hello, 'pattern:/^[\\w]*$/i');
+        let [result3] = checkHello('Obama');
+        expect(result3).equal('hello Obama');
     });
 });
