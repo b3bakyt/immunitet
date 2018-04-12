@@ -747,4 +747,13 @@ describe('check "object" pattern processor', function () {
         expect(result8).to.equal(null);
         expect(error8).not.equal(null);
     });
+
+    it('given an Object value should return same value', function () {
+        let [result] = checkValue('object')({});
+        expect(result).to.deep.equal({});
+
+        let [result2] = checkValue('object')({a: 3, b: 33});
+        expect(result2).to.deep.equal({a: 3, b: 33});
+
+    });
 });
