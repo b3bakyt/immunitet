@@ -587,4 +587,33 @@ describe('check "boolean" pattern processor', function () {
         expect(result7).to.equal(null);
         expect(error7).not.equal(null);
     });
+
+    it('given a processor should change value', function () {
+        checkAdd = check(invert, 'boolean:convert');
+
+        let [result] = checkAdd('Hi');
+        expect(result).equal(false);
+
+        let [result2] = checkAdd(2);
+        expect(result2).equal(false);
+
+        let [result3] = checkAdd(true);
+        expect(result3).equal(false);
+
+        let [result4] = checkAdd(2.2);
+        expect(result4).equal(false);
+
+        let [result5] = checkAdd({});
+        expect(result5).equal(false);
+
+        let [result6] = checkAdd([]);
+        expect(result6).equal(false);
+
+        let [result7] = checkValue('boolean:convert')('true');
+        expect(result7).equal(true);
+
+        let [result8] = checkValue('boolean:convert')('false');
+        expect(result8).equal(false);
+
+    });
 });
