@@ -773,3 +773,31 @@ describe('check "object" pattern processor', function () {
 
     });
 });
+
+describe('check "pattern" pattern processor', function () {
+    let checkAdd = null;
+    function invert(b) {
+        return !b;
+    }
+
+    it('given empty values should return error', function () {
+        checkAdd = check(invert, 'pattern');
+        let [, error1] = checkAdd('');
+        expect(error1).not.equal(null);
+
+        let [, error2] = checkAdd(NaN);
+        expect(error2).not.equal(null);
+
+        let [, error3] = checkAdd(null);
+        expect(error3).not.equal(null);
+
+        let [, error4] = checkAdd(0);
+        expect(error4).not.equal(null);
+
+        let [, error5] = checkAdd(undefined);
+        expect(error5).not.equal(null);
+
+        let [, error6] = checkAdd(false);
+        expect(error6).not.equal(null);
+    });
+});
