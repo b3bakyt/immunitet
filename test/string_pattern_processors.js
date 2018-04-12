@@ -337,6 +337,10 @@ describe('check "integer" pattern processor', function () {
 
         let [result13] = checkAdd(3.6, 2.6);
         expect(result13).to.equal(6);
+
+        let [result14, error14] = checkValue('integer:wrongProcessor')(2);
+        expect(result14).to.equal(null);
+        expect(error14).not.equal(null);
     });
 });
 
