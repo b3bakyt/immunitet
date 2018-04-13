@@ -997,7 +997,7 @@ describe('check "date" RFC3339 pattern processor', function () {
 
 describe('check "email" pattern processor', function () {
     let checkDate = null;
-    let getEmail = date => date;
+    let getEmail = email => email;
 
     it('given empty values should return error', function () {
         checkDate = validateFunction(getEmail, 'email');
@@ -1018,5 +1018,52 @@ describe('check "email" pattern processor', function () {
 
         let [, error6] = checkDate(false);
         expect(error6).not.equal(null);
+    });
+
+    it('given wrong value should return error', function () {
+        let [,error] = validateValue('email')('44');
+        expect(error).not.equal(null);
+
+        let [,error2] = validateValue('email')(234);
+        expect(error2).not.equal(null);
+
+        let [,error3] = validateValue('email')({});
+        expect(error3).not.equal(null);
+
+        let [,error4] = validateValue('email')([]);
+        expect(error4).not.equal(null);
+
+        let [,error5] = validateValue('email')(true);
+        expect(error5).not.equal(null);
+
+        let [,error6] = validateValue('email')('@@');
+        expect(error6).not.equal(null);
+
+        let [,error8] = validateValue('email')('@');
+        expect(error8).not.equal(null);
+
+        let [,error9] = validateValue('email')('Abc.example.com');
+        expect(error9).not.equal(null);
+
+        let [,error10] = validateValue('email')('A@b@c@example.com');
+        expect(error10).not.equal(null);
+
+        let [,error11] = validateValue('email')('a"b(c)d,e:f;g<h>i[jk]l@example.com');
+        expect(error11).not.equal(null);
+
+        let [,error12] = validateValue('email')('just"not"right@example.com');
+        expect(error12).not.equal(null);
+
+        let [,error13] = validateValue('email')('this is"notallowed@example.com');
+        expect(error13).not.equal(null);
+
+        let [,error14] = validateValue('email')('this still"not\\allowed@example.com');
+        expect(error14).not.equal(null);
+
+        let [,error15] = validateValue('email')('john..doe@example.com');
+        expect(error15).not.equal(null);
+
+        let [,error16] = validateValue('email')('john.doe@example..com');
+        expect(error16).not.equal(null);
     });
 });
