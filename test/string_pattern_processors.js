@@ -903,3 +903,30 @@ describe('check "default" pattern processor', function () {
         expect(result9).to.be.an('object');
     });
 });
+
+describe('check "date" RFC3339 pattern processor', function () {
+    let checkDate = null;
+    let getDate = date => date;
+
+    it('given empty values should return error', function () {
+        checkDate = validateFunction(getDate, 'date');
+        let [, error1] = checkDate('');
+        expect(error1).not.equal(null);
+
+        let [, error2] = checkDate(NaN);
+        expect(error2).not.equal(null);
+
+        let [, error3] = checkDate(null);
+        expect(error3).not.equal(null);
+
+        let [, error4] = checkDate(0);
+        expect(error4).not.equal(null);
+
+        let [, error5] = checkDate(undefined);
+        expect(error5).not.equal(null);
+
+        let [, error6] = checkDate(false);
+        expect(error6).not.equal(null);
+    });
+
+});
