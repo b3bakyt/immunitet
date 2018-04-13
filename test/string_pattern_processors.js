@@ -968,6 +968,29 @@ describe('check "date" RFC3339 pattern processor', function () {
 
         let [,error14] = validateValue('date')('2015-01-17T20:33:02');
         expect(error14).not.equal(null);
+
+        let [,error15] = validateValue('date')('2015-01-17T20:33:02Y');
+        expect(error15).not.equal(null);
+    });
+
+    it('given right value should return same value', function () {
+        let [result] = validateValue('date')('2015-01-17T01:23:02Z');
+        expect(result).not.equal(null);
+
+        let [result1] = validateValue('date')('2015-01-17T18:23:02Z');
+        expect(result1).not.equal(null);
+
+        let [result2] = validateValue('date')('2015-01-17T18:23:02+06:45');
+        expect(result2).not.equal(null);
+
+        let [result3] = validateValue('date')('2015-01-17T18:23:02-00:00');
+        expect(result3).not.equal(null);
+
+        let [result4] = validateValue('date')('2015-03-29T18:23:02+00:00');
+        expect(result4).not.equal(null);
+
+        let [result5] = validateValue('date')('2015-01-17T23:23:02Z');
+        expect(result5).not.equal(null);
     });
 
 });
