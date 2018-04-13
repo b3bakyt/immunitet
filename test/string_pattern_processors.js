@@ -929,4 +929,45 @@ describe('check "date" RFC3339 pattern processor', function () {
         expect(error6).not.equal(null);
     });
 
+    it('given wrong value should return error', function () {
+        let [,error] = validateValue('date')('44');
+        expect(error).not.equal(null);
+
+        let [,error2] = validateValue('date')(234);
+        expect(error2).not.equal(null);
+
+        let [,error3] = validateValue('date')({});
+        expect(error3).not.equal(null);
+
+        let [,error4] = validateValue('date')([]);
+        expect(error4).not.equal(null);
+
+        let [,error5] = validateValue('date')(true);
+        expect(error5).not.equal(null);
+
+        let [,error6] = validateValue('date')('123-123-123');
+        expect(error6).not.equal(null);
+
+        let [,error8] = validateValue('date')('2015-01-17T28:23:02Z');
+        expect(error8).not.equal(null);
+
+        let [,error9] = validateValue('date')('2015-02-29T18:23:02Z');
+        expect(error9).not.equal(null);
+
+        let [,error10] = validateValue('date')('2015-01-17T18:23:02+20:00');
+        expect(error10).not.equal(null);
+
+        let [,error11] = validateValue('date')('2015-01-17T18:23:02Y');
+        expect(error11).not.equal(null);
+
+        let [,error12] = validateValue('date')('2015-01-17');
+        expect(error12).not.equal(null);
+
+        let [,error13] = validateValue('date')('2015-01-17 20:33:02');
+        expect(error13).not.equal(null);
+
+        let [,error14] = validateValue('date')('2015-01-17T20:33:02');
+        expect(error14).not.equal(null);
+    });
+
 });
