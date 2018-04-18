@@ -1,4 +1,4 @@
-import im, {validateFunction, validatePromise, ImmunitetException} from '../lib/immunitet';
+import im, {validateFunction, validatePromise, ImmunitetException} from '../src/immunitet';
 import Chai from 'chai';
 const {
     expect,
