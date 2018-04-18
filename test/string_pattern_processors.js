@@ -90,7 +90,7 @@ describe('"validateValue" function', function () {
     let checkAdd = null;
 
     it('should properly run if only one argument processor is given', function () {
-         let checkValue = validateValue({
+        let checkValue = validateValue({
             a: 'number:convert',
         });
 
