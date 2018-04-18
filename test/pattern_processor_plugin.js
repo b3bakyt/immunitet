@@ -1,6 +1,6 @@
-import im, {validateFunction, pluginPatternProcessors} from '../lib/immunitet';
+import im, {validateFunction, pluginPatternProcessors} from '../src/immunitet';
 import Chai from 'chai';
-import {ImmunitetException} from "../lib/exceptions";
+import {ImmunitetException} from "../src/exceptions";
 const {
     expect,
     assert,

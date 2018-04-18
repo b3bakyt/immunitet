@@ -1,6 +1,6 @@
 import {
     getPromiseValues,
-} from '../lib/immunitet';
+} from '../src/immunitet';
 import Chai from 'chai';
 const {
     expect,
