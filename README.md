@@ -5,7 +5,7 @@
 ## Установка
 
 ```
-npm install immunitet.js
+npm i immunitet.js
 ```
 
 ### Применение
@@ -28,13 +28,6 @@ let [result, error] = checkValue("33");
 ```
 import {validateValue} from 'immunitet.js';
 
-let checkValue = validateValue({
-    a: 'number:convert',
-});
-
-let [result, error] = checkValue("33");
-// result: [3.4, 4, 4, 6]
-```
 let checkValues = validateValue({
     a: 'number:convert',
     b: 'number:round',
@@ -43,6 +36,20 @@ let checkValues = validateValue({
 });
 
 let [result2, error2] = checkValues("3.4", 4.4, '3.2', 6.9);
+// result: [3.4, 4, 4, 6]
+```
+
+обработка значений
+
+```
+let splitString = validateValue('split:,|each:number:convert');
+
+const [result] = splitString('3,4');
+// result: [3, 4]
+```
+
+
+
 
 
 ### Installing
