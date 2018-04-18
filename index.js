@@ -1,9 +1,5 @@
-console.log('Hello');
+require('babel-core/register');
+require('babel-polyfill');
+const im = require('./lib/immunitet');
 
-
-class Cat {
-    meow() {
-        return `${name} says Meow!`;
-    }
-}
-
+module.exports = im;
