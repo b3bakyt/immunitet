@@ -20,7 +20,7 @@
     "mocha": "^4.0.1"
   },
   "scripts": {
-    "compile": "babel --presets es2015,stage-0 -d lib/ src/",
+    "compile": "babel lib --out-dir src",
     "start": "node --harmony index.js",
     "mocha": "mocha --require babel-core/register",
     "testd": "mocha -R spec --require babel-core/register --recursive ./test/",

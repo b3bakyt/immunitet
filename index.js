@@ -1,4 +1,4 @@
-const im = require('./lib/immunitet');
+const im = require('./compiled/immunitet');
 
 module.exports = {
     validateFunction: im.validateFunction,
