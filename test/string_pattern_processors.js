@@ -1,4 +1,4 @@
-import im, {validateFunction, validateValue} from '../lib/immunitet';
+import im, {validateFunction, validateValue} from '../index';
 import Chai from 'chai';
 const {
     expect,
