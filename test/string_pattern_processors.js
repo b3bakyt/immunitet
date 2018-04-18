@@ -90,12 +90,24 @@ describe('"validateValue" function', function () {
     let checkAdd = null;
 
     it('should properly run if only one argument processor is given', function () {
-        checkAdd = validateValue({
+         let checkValue = validateValue({
             a: 'number:convert',
         });
 
-        let [result, error] = checkAdd("33");
+        let [result, error] = checkValue("33");
         expect(result).to.equal(33);
+    });
+
+    it('should properly run if multiple argument processors are given', function () {
+        let checkValues = validateValue({
+            a: 'number:convert',
+            b: 'number:round',
+            c: 'number:ceil',
+            d: 'number:floor',
+        });
+
+        let [result2, error2] = checkValues("3.4", 4.4, '3.2', 6.9);
+        expect(result2).to.deep.equal([3.4, 4, 4, 6]);
     });
 
     it('should throw Exception if empty arguments given to validateValue', function () {
