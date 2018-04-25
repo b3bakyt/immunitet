@@ -59,7 +59,7 @@ function add(a, b) {
  
 let checkAdd = validateFunction(add, {
     a: 'minimum:5',
-    a: 'maximum:10'
+    b: 'maximum:10'
 });
  
 let [result] = checkAdd(5, 3);
