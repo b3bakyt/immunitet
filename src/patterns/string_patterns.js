@@ -121,7 +121,6 @@ export const PATTERN_PROCESSORS = {
     },
 
     'object': (value, processors) => {
-        // console.log('processors.object:1', processors);
         if (!value)
             throw new ImmunitetException('Argument can not be empty.');
 
@@ -132,21 +131,15 @@ export const PATTERN_PROCESSORS = {
             return {...value};
 
         const processorsList = getProcessorsObject(processors);
-        // console.log('processors.object:2', processorsList);
-        // console.log('processors.object:value', value);
 
-        // let newObj = Object.create(value);
         let result, error;
         for (let prop in value) {
-            // console.log('processors.object:prop', prop, value);
             if (!value.hasOwnProperty( prop ))
                 continue;
 
             let propProcessors = getPropertyProcessors(processorsList, prop);
-            // console.log('processors.object:3', value[prop], propProcessors);
 
             result = applyStringProcessors(value[prop], [propProcessors]);
-            // console.log('processors.object:4', result);
 
             value[prop] = result;
         }

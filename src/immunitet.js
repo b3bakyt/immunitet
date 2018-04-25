@@ -105,7 +105,6 @@ const im = {
                 if (exception instanceof ImmunitetException)
                     return Promise.reject(exception);
 
-                // console.log('validatePromise. Caught an error:', exception);
                 return Promise.reject(exception);
             }
         }
@@ -159,14 +158,12 @@ const processArguments = (args, argumentsProcessors) => {
 
     for (let i = 0; i < argumentsProcessors.length; i++) {
         const processors = argumentsProcessors[i];
-        // console.log('processors:', processors);
         if (!processors)
             continue;
 
         let argumentValue = args.shift();
 
         const processorsType = typeof processors;
-        // console.log('processorsType:', processorsType);
         if (!ProcessorHandlers[processorsType])
             throw new Error('Unknown argument processor "'+ processorsType +'"');
 

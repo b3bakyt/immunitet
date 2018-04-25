@@ -298,6 +298,18 @@ let [result, error] = getVar({toString: () => 31, valueOf: () => 32});
 * promise
 * array
 * object
+
+Пример:
+```
+let getVar = validateValue('object:(a)number:floor,(b)number:ceil');
+let [result] = getVar({a: '33', b: '-9'});
+// result: {a: 33, b: -9}
+ 
+let getVar = validateValue('object:number:floor,number:ceil,function');
+let [result] = getVar({a: '33', b: '-9', c: () => {}});
+// result: {a: 33, b: -9, c: () => {}}
+```
+
 * minimum
 * maximum
 * maximum
