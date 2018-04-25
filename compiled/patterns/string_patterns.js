@@ -5,6 +5,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.PATTERN_PROCESSOR_ALIASES = exports.PATTERN_PROCESSORS = undefined;
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _processor_flags = require('../constants/processor_flags');
 
 var _exceptions = require('../exceptions');
@@ -23,8 +25,56 @@ var _default_value_processors = require('./default_value_processors');
 
 var _utils = require('../utils');
 
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+var getProcessorsObject = function getProcessorsObject(processors) {
+    var processorsList = processors.split(',');
+    var newObjectList = {};
+    var newArrayList = [];
+    processorsList.forEach(function (processor) {
+        if (processor.indexOf(')') > 1) {
+            var propName = processor.slice(0, processor.indexOf(')')).slice(processor.indexOf('(') + 1);
+
+            var value = processor.slice(processor.indexOf(')') + 1);
+
+            if (newArrayList.length) {
+                newArrayList = [].concat(_toConsumableArray(newArrayList), [value]);
+                newObjectList = {};
+                return;
+            }
+
+            newObjectList[propName] = value;
+            return;
+        }
+
+        if (Object.values(newObjectList).length) {
+            newArrayList = [].concat(_toConsumableArray(Object.values(newObjectList)), [processor]);
+            newObjectList = {};
+            return;
+        }
+
+        newArrayList.push(processor);
+    });
+
+    return newArrayList.length ? newArrayList : newObjectList;
+};
+
+var getPropertyProcessors = function getPropertyProcessors(processorsList, prop) {
+    if (Object.prototype.toString.call(processorsList) !== '[object Object]') return processorsList.shift();
+
+    if (!processorsList[prop]) throw new _exceptions.ImmunitetException('No validation processor is specified for an Object property ' + prop + '!');
+
+    return processorsList[prop];
+};
+
 var PATTERN_PROCESSORS = {
-    'promise': _processor_flags.PATTERN_FLAGS.PASS,
+    'promise': function promise(value, processors) {
+        if (!value) throw new _exceptions.ImmunitetException('Given argument is not type of promise!');
+
+        if (!value.then || typeof value.then !== 'function') throw new _exceptions.ImmunitetException('Given argument is not type of promise!');
+
+        return value;
+    },
 
     'number': function number(value, processors) {
         if (value === '') throw new _exceptions.ImmunitetException('Given argument is not type of number!');
@@ -65,13 +115,37 @@ var PATTERN_PROCESSORS = {
 
         if (Object.prototype.toString.call(value) !== '[object Array]') throw new _exceptions.ImmunitetException('Given argument is not type of Array!');
 
-        return value;
+        return [].concat(_toConsumableArray(value));
     },
 
     'object': function object(value, processors) {
         if (!value) throw new _exceptions.ImmunitetException('Argument can not be empty.');
 
         if (Object.prototype.toString.call(value) !== '[object Object]') throw new _exceptions.ImmunitetException('Given argument is not type of Array!');
+
+        if (!processors) return _extends({}, value);
+
+        var processorsList = getProcessorsObject(processors);
+
+        var result = void 0,
+            error = void 0;
+        for (var prop in value) {
+            if (!value.hasOwnProperty(prop)) continue;
+
+            var propProcessors = getPropertyProcessors(processorsList, prop);
+
+            result = (0, _string_pattern_processor.applyStringProcessors)(value[prop], [propProcessors]);
+
+            value[prop] = result;
+        }
+
+        return value;
+    },
+
+    'function': function _function(value, processors) {
+        if (!value) throw new _exceptions.ImmunitetException('Given argument is not type of function!');
+
+        if (typeof value !== 'function') throw new _exceptions.ImmunitetException('Given argument is not type of function!');
 
         return value;
     },
@@ -156,13 +230,13 @@ var PATTERN_PROCESSORS = {
     },
 
     'pattern': function pattern(value, _pattern) {
+        if (typeof _pattern !== 'string') throw new _exceptions.ImmunitetException('Given pattern is not type of string.');
+
         _pattern = _pattern.trim();
 
         if (!value) throw new _exceptions.ImmunitetException('Argument can not be empty.');
 
         if (!_pattern) throw new _exceptions.ImmunitetException('Pattern can not be empty.');
-
-        if (typeof _pattern !== 'string') throw new _exceptions.ImmunitetException('Given pattern is not type of string.');
 
         if (!(0, _pattern_processors.processRegexp)(value, _pattern)) throw new _exceptions.ImmunitetException('Supplied value does not match given pattern.');
 

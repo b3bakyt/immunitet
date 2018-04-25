@@ -12,6 +12,48 @@ import {
     isNumeric,
 } from '../utils';
 
+let getProcessorsObject = function (processors) {
+    let processorsList = processors.split(',');
+    let newObjectList = {};
+    let newArrayList = [];
+    processorsList.forEach((processor) => {
+        if (processor.indexOf(')') > 1) {
+            let propName = processor.slice(0, processor.indexOf(')')).slice(processor.indexOf('(') + 1);
+
+            let value = processor.slice(processor.indexOf(')') + 1);
+
+            if (newArrayList.length) {
+                newArrayList = [...newArrayList, value];
+                newObjectList = {};
+                return;
+            }
+
+            newObjectList[propName] = value;
+            return;
+        }
+
+        if (Object.values(newObjectList).length) {
+            newArrayList = [...Object.values(newObjectList), processor];
+            newObjectList = {};
+            return;
+        }
+
+        newArrayList.push(processor);
+    });
+
+    return newArrayList.length ? newArrayList : newObjectList;
+};
+
+let getPropertyProcessors = function (processorsList, prop) {
+    if (Object.prototype.toString.call(processorsList) !== '[object Object]')
+        return processorsList.shift();
+
+    if (!processorsList[prop])
+        throw new ImmunitetException('No validation processor is specified for an Object property '+ prop +'!');
+
+    return processorsList[prop];
+};
+
 export const PATTERN_PROCESSORS = {
     'promise': (value, processors) => {
         if (!value)
@@ -75,7 +117,7 @@ export const PATTERN_PROCESSORS = {
         if (Object.prototype.toString.call(value) !== '[object Array]')
             throw new ImmunitetException('Given argument is not type of Array!');
 
-        return value;
+        return [...value];
     },
 
     'object': (value, processors) => {
@@ -84,6 +126,33 @@ export const PATTERN_PROCESSORS = {
 
         if (Object.prototype.toString.call(value) !== '[object Object]')
             throw new ImmunitetException('Given argument is not type of Array!');
+
+        if (!processors)
+            return {...value};
+
+        const processorsList = getProcessorsObject(processors);
+
+        let result, error;
+        for (let prop in value) {
+            if (!value.hasOwnProperty( prop ))
+                continue;
+
+            let propProcessors = getPropertyProcessors(processorsList, prop);
+
+            result = applyStringProcessors(value[prop], [propProcessors]);
+
+            value[prop] = result;
+        }
+
+        return value;
+    },
+
+    'function': (value, processors) => {
+        if (!value)
+            throw new ImmunitetException('Given argument is not type of function!');
+
+        if (typeof value !== 'function')
+            throw new ImmunitetException('Given argument is not type of function!');
 
         return value;
     },
