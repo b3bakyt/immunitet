@@ -8,19 +8,19 @@
 npm i immunitet.js
 ```
 
-### Применение
+### Использование библиотеки
 
-Валидация переменных и значений
+#### Валидация переменных и значений
 
 ```
 import {validateValue} from 'immunitet.js';
-
-let checkValue = validateValue({
+ 
+let getVar = validateValue({
     a: 'number:convert',
 });
-
-let [result, error] = checkValue("33");
-// result: 33
+ 
+let [result, error] = getVar("-33");
+// result: -33
 ```
 
 валидация нескольких значений
@@ -28,18 +28,18 @@ let [result, error] = checkValue("33");
 ```
 import {validateValue} from 'immunitet.js';
 
-let checkValues = validateValue({
+let getVars = validateValue({
     a: 'number:convert',
     b: 'number:round',
     c: 'number:ceil',
     d: 'number:floor',
 });
 
-let [result2, error2] = checkValues("3.4", 4.4, '3.2', 6.9);
+let [result2, error2] = getVars("3.4", 4.4, '3.2', 6.9);
 // result: [3.4, 4, 4, 6]
 ```
 
-обработка значений
+#### обработка значений
 
 ```
 let splitString = validateValue('split:,|each:number:convert');
@@ -48,78 +48,335 @@ const [result] = splitString('3,4');
 // result: [3, 4]
 ```
 
-
-
-
-
-### Installing
-
-A step by step series of examples that tell you have to get a development env running
-
-Say what the step will be
+Валидация аргументов функции
 
 ```
-Give the example
+import {validateFunction} from 'immunitet.js';
+ 
+function add(a, b) {
+    return a + b;
+}
+ 
+let checkAdd = validateFunction(add, {
+    a: 'minimum:5',
+    a: 'maximum:10'
+});
+ 
+let [result] = checkAdd(5, 3);
+// result: 8
+ 
+let [, error] = checkAdd(-2, 7);
+// error.message: 'The given value is less then 5'
+ 
+let [, error] = checkAdd(5, 12);
+// error.message: 'The given value is greater then 10'
 ```
 
-And repeat
+#### Передача пользовательской функции в качестве обработчика аргумента 
 
 ```
-until finished
+checkAdd = validateFunction(add, {
+    a: (argValue) => Math.ceil(argValue),
+    b: (argValue) => Math.floor(argValue),
+});
+ 
+let [result] = checkAdd('2.2', 3.9);
+// result: 6
 ```
 
-End with an example of getting some data out of the system or using it for a little demo
+#### Обработка исключений
 
-## Running the tests
-
-Explain how to run the automated tests for this system
-
-### Break down into end to end tests
-
-Explain what these tests test and why
+Генерация польвательских ошибок
 
 ```
-Give an example
+checkAdd = validateFunction(add, {
+    a: (argValue) => {
+        throw new ImmunitetException('My custom error!');
+    },
+    b: (argValue) => Math.floor(argValue),
+});
+ 
+let [, error] = checkAdd('2.2', 3.9);
+// error.message: 'My custom error!' 
 ```
 
-### And coding style tests
-
-Explain what these tests test and why
+Исключения типа ImmunitetException выбрасываемые внутри обрабатываемой функции или функции обработчика отлавливаются 
+immunitet.js и возвращяются в качестве результата ошибки.
 
 ```
-Give an example
+add = (a, b) => {
+    throw new ImmunitetException('ImmunitetException thrown from inside a user function')
+};
+ 
+checkAdd = validateFunction(add);
+ 
+let [, error] = checkAdd(2, 3);
+// error.message: 'ImmunitetException thrown from inside a user function'
 ```
 
-## Deployment
+Все остальные исключения должны отлавливаться внутри try ... catch блока
 
-Add additional notes about how to deploy this on a live system
+#### Обработка обещаний
 
-## Built With
+```
+import {validatePromise} from 'immunitet.js';
+ 
+function add(a, b) {
+    return new Promise((res, rej) => {
+        setTimeout(() => {
+            res(a + b);
+        })
+    });
+}
+ 
+checkAdd = validatePromise(add, {
+    a: 'number',
+    b: 'number',
+});
+ 
+checkAdd('2', 5)
+    .then((result) => {
+        // result: '7'
+    })
+    .catch((error) => console.error('error:', error));
+```
 
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
+Обработка исключений типа ImmunitetException в обещаниях
 
-## Contributing
+```
+checkAdd = validatePromise(add, {
+    a: (val) => {
+        throw new ImmunitetException('My promise ImmunitetException!');
+    }
+});
+ 
+checkAdd(2, 5).then(
+    (result) => {
+        ...
+    })
+    .catch((error) => {
+        // error.message: 'My promise ImmunitetException!'
+    });
+```
 
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
+Обработка других исключений и ошибок в обещаниях
 
-## Versioning
+```
+checkAdd = validatePromise(add, {
+    a: (val) => {
+        throw new Error('My promise Error!');
+    }
+});
+ 
+checkAdd(2, 5).then(
+    (result) => {
+        ...
+    })
+    .catch((error) => {
+        // error.message: 'My promise Error!'
+    });
+```
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags).
+Обработка Reject в обещаниях
 
-## Authors
+```
+function add(a, b) {
+    return new Promise((res, rej) => {
+        setTimeout(() => {
+            rej(new Error('Error rejected from inside a user function!'));
+        })
+    });
+}
+ 
+checkAdd = validatePromise(add);
+ 
+checkAdd(2, 5)
+    .then((result) => {
+        ...
+    })
+    .catch((error) => {
+        // error.message: 'Error rejected from inside a user function!'
+    });
+```
 
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
+Обещания в качестве аргументов функции
 
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
+```
+function add(a, b) {
+    return a + b;
+}
+ 
+let checkAdd = validatePromise(add);
+ 
+const a = new Promise((resolve, reject) => {
+    setTimeout(() => {
+        resolve(2)
+    })
+});
+ 
+const b = new Promise((resolve, reject) => {
+    setTimeout(() => {
+        resolve(3)
+    })
+});
+ 
+checkAdd(a, b)
+    .then(([result, error]) => {
+        // result: 5
+    })
+    .catch(([result, error]) => {
+        ...
+    });
+```
 
-## License
+Передача обещаний в качестве аргументов без обработки
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+```
+function addPromises(a, b) {
+    const handledResults = Promise.all([a, b].map(promise => promise
+        .then(result => result)));
 
-## Acknowledgments
+    return handledResults.then(([a, b]) => {
+            return a + b;
+        })
+}
+ 
+let checkAdd = validatePromise(addPromises, {a:'promise', b:'promise'});
+ 
+const a = new Promise((resolve, reject) => {
+    setTimeout(() => {
+        resolve(2)
+    })
+});
+ 
+const b = new Promise((resolve, reject) => {
+    setTimeout(() => {
+        resolve(3)
+    })
+});
+ 
+checkAdd(a, b)
+    .then((result) => {
+        // result: 5
+    })
+    .catch((error) => {
+        ....
+    });
+```
 
-* Hat tip to anyone who's code was used
-* Inspiration
-* etc
+### Список валидаторов, конвертаторов и обработчиков
+
+##### Валидаторы
+
+* number
+    * convert, floor, round, ceil
+
+Пример:
+```
+let getVar = validateValue('number:floor');
+let [result] = getVar('5.9');
+// result: 5
+ 
+let [result, error] = getVar("abc");
+// result: null
+// error.message: 'Given argument is not type of number!'
+ 
+let [result, error] = getVar({toString: () => 31});
+// result: 31
+ 
+let [result, error] = getVar({valueOf: () => 32});
+// result: 32
+ 
+let [result, error] = getVar({toString: () => 31, valueOf: () => 32});
+// result: 32
+```
+
+* integer
+    * convert, floor, round, ceil
+* string
+    * toUpperCase, toLowerCase, capitalFirst, capitalFirstLetter
+* promise
+* array
+* object
+* minimum
+* maximum
+* maximum
+* minLength
+* minLength
+* maxLength
+* boolean
+    * convert
+    
+Пример:
+```
+let getVar = validateValue('boolean:convert');
+let [result] = getVar('true');
+// result: true
+```
+* pattern
+    
+Пример:
+```
+let getVar = validateValue('pattern:[\\d]+');
+let [result] = getVar('123');
+// result: 123
+
+let getVar = validateValue('pattern:/[\w]+/i');
+let [result] = getVar('Test');
+// result: Test
+```
+
+* default
+    * true, false, null
+    
+Пример:
+```
+let getVar = validateValue('default:11');
+let [result] = getVar();
+// result: '11'
+ 
+let getVar = validateValue('default:11|number:convert');
+let [result] = getVar();
+// result: 11
+```
+
+* date (RFC3339)
+
+Пример:
+```
+let getVar = validateValue('date');
+let [result] = getVar('2015-01-17T01:23:02Z');
+// result: '2015-01-17T01:23:02Z'
+ 
+let getVar = validateValue('date');
+let [result] = getVar('2015-01-17T18:23:02+06:45');
+// result: '2015-01-17T18:23:02+06:45'
+```
+
+* email (RFC5322)
+
+Пример:
+```
+let getVar = validateValue('email');
+let [result] = getVar('john.doe@example.com');
+// result: 'john.doe@example.com'
+// result: [2,3,4]
+```
+
+#### Обработчики
+
+* split
+Пример:
+```
+let getVar = validateValue('split:,');
+let [result] = getVar('1,2,3');
+// result: [1,2,3]
+```
+
+* each
+Пример:
+```
+let getVar = validateValue('each:number:ceil');
+let [result] = getVar('1.4,2.1,3.9');
+// result: [2,3,4]
+```
