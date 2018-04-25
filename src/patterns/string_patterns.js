@@ -13,7 +13,15 @@ import {
 } from '../utils';
 
 export const PATTERN_PROCESSORS = {
-    'promise': PATTERN_FLAGS.PASS,
+    'promise': (value, processors) => {
+        if (!value)
+            throw new ImmunitetException('Given argument is not type of promise!');
+
+        if (!value.then || typeof value.then !== 'function')
+            throw new ImmunitetException('Given argument is not type of promise!');
+
+        return value;
+    },
 
     'number': (value, processors) => {
         if (value === '')
@@ -179,6 +187,9 @@ export const PATTERN_PROCESSORS = {
     },
 
     'pattern': (value, pattern) => {
+        if (typeof pattern !== 'string')
+            throw new ImmunitetException('Given pattern is not type of string.');
+
         pattern = pattern.trim();
 
         if (!value)
@@ -186,9 +197,6 @@ export const PATTERN_PROCESSORS = {
 
         if (!pattern)
             throw new ImmunitetException('Pattern can not be empty.');
-
-        if (typeof pattern !== 'string')
-            throw new ImmunitetException('Given pattern is not type of string.');
 
         if (!processRegexp(value, pattern))
             throw new ImmunitetException('Supplied value does not match given pattern.');

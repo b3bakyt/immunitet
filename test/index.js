@@ -120,7 +120,7 @@ describe('"check" function promise tests', function () {
 
     let checkAdd = validatePromise(add);
 
-    it('should return a Promise with array result', function () {
+    it('should return a Promise with normal result', function () {
         checkAdd('2', 5)
             .then((result) => {
                 expect(result).to.equal('25');
@@ -295,6 +295,14 @@ describe('"check" function promise arguments', function () {
                 expect(result).to.equal(5);
             })
             .catch((error) => console.error('error:', error));
+
+        checkAdd(5, 4)
+            .then((result) => {
+                expect(result).to.equal(null);
+            })
+            .catch((error) => {
+                expect(error.message).to.equal('Given argument is not type of promise!');
+            });
     });
 });
 
