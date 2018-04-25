@@ -77,12 +77,12 @@ describe('"check" function', function () {
     });
 
     it('should use a composite processor', function () {
-        im.setAlias('toNumericArray', 'split:,|each:number:convert');
+        im.setAlias('toNumericArray', 'each:number:ceil');
 
         let splitString = validateFunction(null, 'toNumericArray');
 
-        const [result] = splitString('3,4');
-        expect(result).to.deep.equal([3, 4]);
+        const [result] = splitString([3.2, 4.5, 7.9]);
+        expect(result).to.deep.equal([4, 5, 8]);
     });
 });
 
@@ -234,6 +234,9 @@ describe('check "number" pattern processor', function () {
         let [result9, error9] = validateValue('number:wrongProcessor')(2);
         expect(result9).to.equal(null);
         expect(error9).not.equal(null);
+
+        let [result10, error10] = checkAdd({toString: () => '4', valueOf: () => '5'}, 2);
+        expect(result10).to.equal(7);
     });
 });
 
@@ -367,6 +370,9 @@ describe('check "minimum" pattern processor', function () {
         let [result] = checkAdd(55);
         expect(result).to.equal(60);
 
+        let [result1] = checkAdd(5);
+        expect(result1).to.equal(10);
+
         let [, error2] = checkAdd(2);
         expect(error2.message).to.equal('The given value is less then 5');
 
@@ -396,17 +402,20 @@ describe('check "minimum" pattern processor', function () {
         let [result] = checkAdd(5);
         expect(result).to.equal(10);
 
+        let [result1] = checkAdd(10);
+        expect(result1).to.equal(15);
+
         let [, error2] = checkAdd(12);
         expect(error2.message).to.equal('The given value is greater then 10');
-
-        let [result1] = checkAdd(0);
-        expect(result1).to.equal(5);
 
         let [result2] = checkAdd(-2);
         expect(result2).to.equal(3);
 
         let [result3] = checkAdd('3');
         expect(result3).to.equal(8);
+
+        let [result4] = checkAdd(0);
+        expect(result4).to.equal(5);
 
         checkAdd = validateFunction(add, 'maximum:5s');
         let [, error5] = checkAdd(5);
@@ -844,9 +853,9 @@ describe('check "pattern" pattern processor', function () {
         let [, error4] = checkHello('tte3st');
         expect(error4).not.equal(null);
 
-        checkHello = validateFunction(hello, 'pattern:/bob/');
-        let [, error5] = checkHello('Bob');
-        expect(error5).not.equal(null);
+        checkHello = validateFunction(hello, 'pattern:/bob/i|string:toLowerCase');
+        let [result5, error5] = checkHello('Bob');
+        expect(result5).to.equal('hello bob');
     });
 
     it('given pattern should should return matched values', function () {
@@ -1077,5 +1086,10 @@ describe('check "email" pattern processor', function () {
 
         let [,error16] = validateValue('email')('john.doe@example..com');
         expect(error16).not.equal(null);
+    });
+
+    it('given right value should return value', function () {
+        let [result, error] = validateValue('email')('john.doe@example.com');
+        expect(result).to.equal('john.doe@example.com');
     });
 });
