@@ -119,7 +119,6 @@ var PATTERN_PROCESSORS = {
     },
 
     'object': function object(value, processors) {
-        // console.log('processors.object:1', processors);
         if (!value) throw new _exceptions.ImmunitetException('Argument can not be empty.');
 
         if (Object.prototype.toString.call(value) !== '[object Object]') throw new _exceptions.ImmunitetException('Given argument is not type of Array!');
@@ -127,21 +126,15 @@ var PATTERN_PROCESSORS = {
         if (!processors) return _extends({}, value);
 
         var processorsList = getProcessorsObject(processors);
-        // console.log('processors.object:2', processorsList);
-        // console.log('processors.object:value', value);
 
-        // let newObj = Object.create(value);
         var result = void 0,
             error = void 0;
         for (var prop in value) {
-            // console.log('processors.object:prop', prop, value);
             if (!value.hasOwnProperty(prop)) continue;
 
             var propProcessors = getPropertyProcessors(processorsList, prop);
-            // console.log('processors.object:3', value[prop], propProcessors);
 
             result = (0, _string_pattern_processor.applyStringProcessors)(value[prop], [propProcessors]);
-            // console.log('processors.object:4', result);
 
             value[prop] = result;
         }

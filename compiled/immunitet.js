@@ -105,7 +105,6 @@ var im = {
             } catch (exception) {
                 if (exception instanceof _exceptions.ImmunitetException) return Promise.reject(exception);
 
-                // console.log('validatePromise. Caught an error:', exception);
                 return Promise.reject(exception);
             }
         };
@@ -152,13 +151,11 @@ var processArguments = function processArguments(args, argumentsProcessors) {
 
     for (var i = 0; i < argumentsProcessors.length; i++) {
         var processors = argumentsProcessors[i];
-        // console.log('processors:', processors);
         if (!processors) continue;
 
         var argumentValue = args.shift();
 
         var processorsType = typeof processors === 'undefined' ? 'undefined' : _typeof(processors);
-        // console.log('processorsType:', processorsType);
         if (!ProcessorHandlers[processorsType]) throw new Error('Unknown argument processor "' + processorsType + '"');
 
         var processedArgument = ProcessorHandlers[processorsType].call(null, argumentValue, processors);
