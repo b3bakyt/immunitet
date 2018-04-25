@@ -5,8 +5,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.PATTERN_PROCESSOR_ALIASES = exports.PATTERN_PROCESSORS = undefined;
 
-var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
-
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _processor_flags = require('../constants/processor_flags');
@@ -64,7 +62,7 @@ var getProcessorsObject = function getProcessorsObject(processors) {
 var getPropertyProcessors = function getPropertyProcessors(processorsList, prop) {
     if (Object.prototype.toString.call(processorsList) !== '[object Object]') return processorsList.shift();
 
-    if (!processorsList[prop]) throw new _exceptions.ImmunitetException('No processor is specified for an Object property validation!');
+    if (!processorsList[prop]) throw new _exceptions.ImmunitetException('No validation processor is specified for an Object property ' + prop + '!');
 
     return processorsList[prop];
 };
@@ -121,7 +119,7 @@ var PATTERN_PROCESSORS = {
     },
 
     'object': function object(value, processors) {
-        console.log('processors.object:1', processors);
+        // console.log('processors.object:1', processors);
         if (!value) throw new _exceptions.ImmunitetException('Argument can not be empty.');
 
         if (Object.prototype.toString.call(value) !== '[object Object]') throw new _exceptions.ImmunitetException('Given argument is not type of Array!');
@@ -129,27 +127,34 @@ var PATTERN_PROCESSORS = {
         if (!processors) return _extends({}, value);
 
         var processorsList = getProcessorsObject(processors);
-        console.log('processors.object:2', processorsList);
+        // console.log('processors.object:2', processorsList);
+        // console.log('processors.object:value', value);
 
-        var newObj = Object.create(value.prototype);
+        // let newObj = Object.create(value);
         var result = void 0,
             error = void 0;
         for (var prop in value) {
+            // console.log('processors.object:prop', prop, value);
+            if (!value.hasOwnProperty(prop)) continue;
+
             var propProcessors = getPropertyProcessors(processorsList, prop);
+            // console.log('processors.object:3', value[prop], propProcessors);
 
-            var _applyStringProcessor = (0, _string_pattern_processor.applyStringProcessors)(value[prop], propProcessors);
+            result = (0, _string_pattern_processor.applyStringProcessors)(value[prop], [propProcessors]);
+            // console.log('processors.object:4', result);
 
-            var _applyStringProcessor2 = _slicedToArray(_applyStringProcessor, 2);
-
-            result = _applyStringProcessor2[0];
-            error = _applyStringProcessor2[1];
-
-            if (error) return [null, error];
-
-            newObj[prop] = result;
+            value[prop] = result;
         }
 
-        return newObj;
+        return value;
+    },
+
+    'function': function _function(value, processors) {
+        if (!value) throw new _exceptions.ImmunitetException('Given argument is not type of function!');
+
+        if (typeof value !== 'function') throw new _exceptions.ImmunitetException('Given argument is not type of function!');
+
+        return value;
     },
 
     'boolean': function boolean(value, processors) {

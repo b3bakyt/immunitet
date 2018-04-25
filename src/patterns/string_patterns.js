@@ -154,6 +154,16 @@ export const PATTERN_PROCESSORS = {
         return value;
     },
 
+    'function': (value, processors) => {
+        if (!value)
+            throw new ImmunitetException('Given argument is not type of function!');
+
+        if (typeof value !== 'function')
+            throw new ImmunitetException('Given argument is not type of function!');
+
+        return value;
+    },
+
     'boolean': (value, processors) => {
         if (!value && typeof value !== 'boolean')
             throw new ImmunitetException('Required argument not found.');

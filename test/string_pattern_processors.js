@@ -810,8 +810,11 @@ describe('check "object" pattern processor', function () {
         let [result4, error4] = validateValue('object:(a)number:floor,(c)number:ceil')({a: '33', b: '-9'});
         expect(error4.message).to.equal('No validation processor is specified for an Object property b!');
 
-        let [, error5] = validateValue('object:(a)number:floor,(b)number:ceil,(c)function')({a: '33', b: '-9', c: () => {}});
-        expect(error5.message).to.equal('No validation processor is specified for an Object property b!');
+        let [result5] = validateValue('object:(a)number:floor,(b)number:ceil,(c)function')({a: '33', b: '-9', c: () => {}});
+        expect(typeof result5.c).to.equal('function');
+
+        let [,error6] = validateValue('object:(a)number:floor,(b)number:ceil,(c)function')({a: '33', b: '-9', c: []});
+        expect(error6.message).to.equal('Given argument is not type of function!');
     });
 });
 
