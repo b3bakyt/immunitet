@@ -156,9 +156,13 @@ var processArguments = function processArguments(args, argumentsProcessors) {
         var argumentValue = args.shift();
 
         var processorsType = typeof processors === 'undefined' ? 'undefined' : _typeof(processors);
-        if (!ProcessorHandlers[processorsType]) throw new Error('Unknown argument processor "' + processorsType + '"');
+        if (!ProcessorHandlers[processorsType]) {
+            var error = new Error('Unknown argument processor "' + processorsType + '"');
+            error.argNumber = i;
+            throw error;
+        }
 
-        var processedArgument = ProcessorHandlers[processorsType].call(null, argumentValue, processors);
+        var processedArgument = ProcessorHandlers[processorsType].call(null, argumentValue, processors, i);
         processedArguments.push(processedArgument);
     }
 

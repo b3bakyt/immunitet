@@ -34,15 +34,15 @@ var createStringPatternProcessor = exports.createStringPatternProcessor = functi
     return processStringPatterns;
 };
 
-var processStringPatterns = exports.processStringPatterns = function processStringPatterns(argumentValue, processors) {
+var processStringPatterns = exports.processStringPatterns = function processStringPatterns(argumentValue, processors, argNumber) {
     var processorsList = processors.split('|');
-    return applyStringProcessors(argumentValue, processorsList);
+    return applyStringProcessors(argumentValue, processorsList, argNumber);
 };
 
-var applyStringProcessors = exports.applyStringProcessors = function applyStringProcessors(argumentValue, processorsList) {
+var applyStringProcessors = exports.applyStringProcessors = function applyStringProcessors(argumentValue, processorsList, argNumber) {
     return processorsList.reduce(function (result, processor) {
         if (PATTERN_PROCESSOR_ALIASES[processor]) {
-            return applyStringProcessors(result, PATTERN_PROCESSOR_ALIASES[processor].split('|'));
+            return applyStringProcessors(result, PATTERN_PROCESSOR_ALIASES[processor].split('|'), argNumber);
         }
 
         var _processor$split = processor.split(':'),
@@ -60,6 +60,6 @@ var applyStringProcessors = exports.applyStringProcessors = function applyString
             return result;
         }
 
-        return PATTERN_PROCESSORS[processorType].call(null, result, params.join(':'));
+        return PATTERN_PROCESSORS[processorType].call(null, result, params.join(':'), argNumber);
     }, argumentValue);
 };

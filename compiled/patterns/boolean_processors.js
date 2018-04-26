@@ -17,13 +17,13 @@ var BOOLEAN_PROCESSORS = {
     }
 };
 
-var processBoolean = exports.processBoolean = function processBoolean(value, processors) {
+var processBoolean = exports.processBoolean = function processBoolean(value, processors, argNumber) {
     var processorsList = processors.split(',');
 
     if (processorsList.length === 0) return value;
 
     processorsList.map(function (processor) {
-        if (!BOOLEAN_PROCESSORS[processor]) throw new _exceptions.ImmunitetException('Wrong keyword given as an argument for Boolean type processor.');
+        if (!BOOLEAN_PROCESSORS[processor]) throw new _exceptions.ImmunitetException('Wrong keyword given as an argument for Boolean type processor.', argNumber);
 
         value = BOOLEAN_PROCESSORS[processor].call(null, value);
     });
