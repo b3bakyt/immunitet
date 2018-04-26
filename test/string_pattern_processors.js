@@ -816,6 +816,12 @@ describe('check "object" pattern processor', function () {
         let [,error6] = validateValue('object:(a)number:floor,(b)number:ceil,(c)function')({a: '33', b: '-9', c: []});
         expect(error6.message).to.equal('Given argument is not type of function!');
     });
+
+    it('given an Object field default value should pass them to object properties', function () {
+        let [result] = validateValue('object:(a)default:5|number:floor,(b)default:3|number:ceil')({a: null, b: null});
+        expect(result).to.deep.equal({a: 5, b: 3});
+
+    });
 });
 
 describe('check "pattern" pattern processor', function () {
