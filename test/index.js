@@ -1,4 +1,9 @@
-import im, {validateFunction, validatePromise, ImmunitetException} from '../src/immunitet';
+import im, {
+    validateValue,
+    validatePromise,
+    validateFunction,
+    ImmunitetException
+} from '../src/immunitet';
 import Chai from 'chai';
 const {
     expect,
@@ -26,7 +31,7 @@ describe('"check" function tests', function () {
         return a + b;
     }
 
-    let checkAdd = validateFunction(add);
+    let checkAdd = validateFunction(add, 'default:0');
 
     it('should return a decorated function', function () {
         assert.typeOf(checkAdd, 'function')
@@ -48,7 +53,7 @@ describe('"check" function tests', function () {
     });
 
     it('should properly run if only one argument processor is given', function () {
-        checkAdd = validateFunction(add);
+        checkAdd = validateFunction(add, 'default:0');
 
         let [result, error] = checkAdd("33", 2);
         expect(result).to.equal('332');
@@ -82,7 +87,7 @@ describe('"check" function tests', function () {
             throw new ImmunitetException('ImmunitetException thrown from inside a user function')
         };
 
-        checkAdd = validateFunction(add);
+        checkAdd = validateFunction(add, 'default:0');
 
         let [result, error] = checkAdd(2, 3);
         expect(error).to.not.equal(null);
@@ -93,7 +98,7 @@ describe('"check" function tests', function () {
             throw new Error('ImmunitetException thrown from inside a user function')
         };
 
-        checkAdd = validateFunction(add);
+        checkAdd = validateFunction(add, 'default:0');
 
         expect(() => checkAdd(2, 3)).to.throw(Error);
     });
@@ -119,7 +124,7 @@ describe('"check" function promise tests', function () {
         });
     }
 
-    let checkAdd = validatePromise(add);
+    let checkAdd = validatePromise(add, 'default:0');
 
     it('should return a Promise with normal result', function () {
         checkAdd('2', 5)
@@ -213,7 +218,7 @@ describe('"check" function promise tests', function () {
             });
         }
 
-        checkAdd = validatePromise(add);
+        checkAdd = validatePromise(add, 'default:0');
 
         checkAdd(2, 5)
             .then((result) => {
@@ -232,7 +237,7 @@ describe('"check" function promise tests', function () {
             });
         }
 
-        checkAdd = validatePromise(add);
+        checkAdd = validatePromise(add, 'default:0');
 
         checkAdd(2, 5)
             .then((result) => {
@@ -251,7 +256,7 @@ describe('"check" function promise arguments', function () {
         return a + b;
     }
 
-    let checkAdd = validatePromise(add);
+    let checkAdd = validatePromise(add, 'default:0');
 
     it('should accept Promise as an argument', function () {
         const a = new Promise((resolve, reject) => {
@@ -316,7 +321,7 @@ describe('"check" function "function" arguments', function () {
         return a() + b();
     }
 
-    let checkAdd = validateFunction(add);
+    let checkAdd = validateFunction(add, 'default:0');
 
     it('should accept function as an argument', function () {
         const a = () => 2;
@@ -324,5 +329,16 @@ describe('"check" function "function" arguments', function () {
 
         let [result, error] = checkAdd(a, b);
         expect(result).to.equal(5);
+    });
+});
+
+describe('"check"  validate functions must accept multiple arguments', function () {
+
+    it('validateValue should accept multiple arguments as validators', function () {
+        const a = () => 2;
+        let getArgs = validateValue('number', 'string', 'array', 'object', 'function');
+
+        let [result, error] = getArgs(3, 'tst', [1,2], {a:1, b:2}, a);
+        expect(result[0]).to.equal(3);
     });
 });

@@ -391,7 +391,7 @@ let [result] = getVar('1,2,3');
 Пример:
 ```
 let getVar = validateValue('each:number:ceil');
-let [result] = getVar('1.4,2.1,3.9');
+let [result] = getVar([1.4, 2.1, 3.9]);
 // result: [2,3,4]
 ```
 
@@ -416,4 +416,44 @@ let checkAdd = validateFunction(add, {
 let [, error] = checkAdd(5, 12);
 // error.message: 'The given value is greater then 10'
 // error.argNumber: 1
+```
+
+#### Псевнодимы обработчиков
+
+```
+import {setAlias} from 'immunitet.js';
+ 
+setAlias('roundArrayVals', 'each:number:ceil');
+ 
+let getVar = validateValue('roundArrayVals');
+const [result] = getVar([3.2, 4.5, 7.9]);
+// result: [4, 5, 8]
+```
+
+#### Создание пользовательских обработчиков
+
+Если вам нужно создать свои обработчики используйте функцию pluginPatternProcessors
+
+```
+let patterns = {
+    'minLen': (value, length) => {
+        if ((value+'').length < length)
+            throw new ImmunitetException('String min length is '+ length + ' symbols!');
+    
+        return value;
+    },
+    'maxLen': (value, length) => {
+        if ((value+'').length > length)
+            throw new ImmunitetException('String max length is '+ length + ' symbols!');
+    
+        return value;
+    },
+};
+
+pluginPatternProcessors(patterns);
+const concatString = (a, b) => a + b;
+
+const concatWords = validateFunction(concatString, ['minLen:3', 'maxLen:10']);
+const [result, error] = concatWords('be', 'my too long sweet best pest sentence');
+// error.message: String min length is 3 symbols!
 ```
