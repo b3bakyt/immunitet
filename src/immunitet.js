@@ -31,13 +31,19 @@ const ProcessorHandlers = {
 };
 
 const im = {
-    validateFunction(checkFn, processors) {
+    validateFunction(checkFn, ...processors) {
         let fn = checkFn;
         if (!fn)
             fn = val => val;
 
+        if (processors.length === 1)
+            processors = processors.shift();
+
         if (typeof fn !== 'function')
             throw new Error('First argument must be a type of function or null!');
+
+        if (isEmpty(processors))
+            throw new Error('Processor must be specified!');
 
         const arrayProcessors = convertToArray(processors);
 
@@ -55,7 +61,10 @@ const im = {
         }
     },
 
-    validateValue(processors) {
+    validateValue(...processors) {
+        if (processors.length === 1)
+            processors = processors.shift();
+
         if (isEmpty(processors))
             throw new Error('Processor must be specified!');
 
@@ -84,13 +93,19 @@ const im = {
         }
     },
 
-    validatePromise(checkFn, processors) {
+    validatePromise(checkFn, ...processors) {
         let fn = checkFn;
         if (!fn)
             fn = val => val;
 
         if (typeof fn !== 'function')
             throw new Error('First argument must be a type of function or null!');
+
+        if (processors.length === 1)
+            processors = processors.shift();
+
+        if (isEmpty(processors))
+            throw new Error('Processor must be specified!');
 
         const arrayProcessors = convertToArray(processors);
 

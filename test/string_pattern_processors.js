@@ -11,7 +11,7 @@ describe('"check" function', function () {
         return a + b;
     }
 
-    let checkAdd = validateFunction(add);
+    let checkAdd = validateFunction(add, 'default:0');
 
     it('should properly run if only one argument processor is given', function () {
         checkAdd = validateFunction(add, {
@@ -23,26 +23,20 @@ describe('"check" function', function () {
     });
 
     it('should properly run if empty argument processor is given', function () {
-        checkAdd = validateFunction(add, {});
+        checkAdd = validateFunction(add, {a: 'default:0'});
 
         let [result1] = checkAdd(5, 2);
         expect(result1).to.equal(7);
 
-        checkAdd = validateFunction(add);
+        checkAdd = validateFunction(add, 'default:0');
         let [result2] = checkAdd(5, 2);
         expect(result2).to.equal(7);
 
-        checkAdd = validateFunction(add, null);
-        let [result3] = checkAdd(5, 2);
-        expect(result3).to.equal(7);
+        expect(() => validateFunction(add, null)).to.throw(Error);
 
-        checkAdd = validateFunction(add, undefined);
-        let [result4] = checkAdd(5, 2);
-        expect(result4).to.equal(7);
+        expect(() => validateFunction(add, undefined)).to.throw(Error);
 
-        checkAdd = validateFunction(add, []);
-        let [result5] = checkAdd(5, 2);
-        expect(result5).to.equal(7);
+        expect(() => validateFunction(add, [])).to.throw(Error);
     });
 
     it('should accept argument processor parameter', function () {
