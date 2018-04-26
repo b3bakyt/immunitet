@@ -164,10 +164,13 @@ const processArguments = (args, argumentsProcessors) => {
         let argumentValue = args.shift();
 
         const processorsType = typeof processors;
-        if (!ProcessorHandlers[processorsType])
-            throw new Error('Unknown argument processor "'+ processorsType +'"');
+        if (!ProcessorHandlers[processorsType]) {
+            const error = new Error('Unknown argument processor "' + processorsType + '"');
+            error.argNumber = i;
+            throw error;
+        }
 
-        let processedArgument = ProcessorHandlers[processorsType].call(null, argumentValue, processors);
+        let processedArgument = ProcessorHandlers[processorsType].call(null, argumentValue, processors, i);
         processedArguments.push(processedArgument);
     }
 

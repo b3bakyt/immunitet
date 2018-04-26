@@ -22,7 +22,6 @@ describe('"check" getPromiseValues function', function () {
                 expect(result.join(',')).to.equal('2,5');
             })
             .catch(error => {
-                console.error('error:', error);
                 expect(error).to.equal(null);
             })
     });
@@ -45,7 +44,6 @@ describe('"check" getPromiseValues function', function () {
                 expect(result.join(',')).to.equal('2,6,5,test');
             })
             .catch(error => {
-                console.error('error:', error);
                 expect(error).to.equal(null);
             })
     });

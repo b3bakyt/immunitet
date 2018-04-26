@@ -1,4 +1,4 @@
 
-export const processObjectPatterns = (argumentValue, processors) => {
+export const processObjectPatterns = (argumentValue, processors, argNumber) => {
     return argumentValue;
 };

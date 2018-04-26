@@ -7,7 +7,7 @@ const REGEXP_FLAGS = {
     // 'y': 'Match after',// :todo
 };
 
-const getProcessorNFlag = (pattern) => {
+const getProcessorNFlag = (pattern, argNumber) => {
     let flag = undefined;
 
     if (pattern[0] !== '/' || (pattern[pattern.length - 1] !== '/' && pattern[pattern.length - 2] !== '/'))
@@ -20,7 +20,7 @@ const getProcessorNFlag = (pattern) => {
         flag = REGEXP_FLAGS[flag] ? flag : undefined;
         pattern = pattern.substring(0, pattern.length - 2);
         if (!flag)
-            throw new ImmunitetException('Supplied regexp pattern flag is not supported.');
+            throw new ImmunitetException('Supplied regexp pattern flag is not supported.', argNumber);
 
         return [pattern, flag];
     }
@@ -30,8 +30,8 @@ const getProcessorNFlag = (pattern) => {
     return [pattern, flag];
 };
 
-export const processRegexp = (value, pattern) => {
-    let [cleanPattern, flag] = getProcessorNFlag(pattern);
+export const processRegexp = (value, pattern, argNumber) => {
+    let [cleanPattern, flag] = getProcessorNFlag(pattern, argNumber);
 
     const regexp = new RegExp(cleanPattern, flag);
     if (!regexp.test(value))

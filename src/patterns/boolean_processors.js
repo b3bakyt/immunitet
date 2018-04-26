@@ -12,7 +12,7 @@ const BOOLEAN_PROCESSORS = {
     },
 };
 
-export const processBoolean = (value, processors) => {
+export const processBoolean = (value, processors, argNumber) => {
     const processorsList = processors.split(',');
 
     if (processorsList.length === 0)
@@ -20,7 +20,7 @@ export const processBoolean = (value, processors) => {
 
     processorsList.map((processor) => {
         if (!BOOLEAN_PROCESSORS[processor])
-            throw new ImmunitetException('Wrong keyword given as an argument for Boolean type processor.');
+            throw new ImmunitetException('Wrong keyword given as an argument for Boolean type processor.', argNumber);
 
         value = BOOLEAN_PROCESSORS[processor].call(null, value);
     });

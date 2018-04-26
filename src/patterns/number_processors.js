@@ -18,7 +18,7 @@ const NUMBER_PROCESSORS = {
     },
 };
 
-export const processNumber = (value, processors) => {
+export const processNumber = (value, processors, argNumber) => {
     const processorsList = processors.split(',');
 
     if (processorsList.length === 0)
@@ -26,7 +26,7 @@ export const processNumber = (value, processors) => {
 
     processorsList.map((processor) => {
         if (!NUMBER_PROCESSORS[processor])
-            throw new ImmunitetException('Wrong keyword given as an argument for Number type processor.');
+            throw new ImmunitetException('Wrong keyword given as an argument for Number type processor.', argNumber);
 
         value = NUMBER_PROCESSORS[processor].call(null, value);
     });

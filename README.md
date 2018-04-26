@@ -392,3 +392,26 @@ let getVar = validateValue('each:number:ceil');
 let [result] = getVar('1.4,2.1,3.9');
 // result: [2,3,4]
 ```
+
+#### Ошибки
+
+Содержание ошибок
+
+Пример:
+
+```
+import {validateFunction} from 'immunitet.js';
+ 
+function add(a, b) {
+    return a + b;
+}
+ 
+let checkAdd = validateFunction(add, {
+    a: 'minimum:5',
+    b: 'maximum:10'
+});
+ 
+let [, error] = checkAdd(5, 12);
+// error.message: 'The given value is greater then 10'
+// error.argNumber: 1
+```

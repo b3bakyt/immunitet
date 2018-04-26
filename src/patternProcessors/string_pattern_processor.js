@@ -23,15 +23,15 @@ export const createStringPatternProcessor = (patternProcessors, patternProcessor
     return processStringPatterns;
 };
 
-export const processStringPatterns = (argumentValue, processors) => {
+export const processStringPatterns = (argumentValue, processors, argNumber) => {
     const processorsList = processors.split('|');
-    return applyStringProcessors(argumentValue, processorsList);
+    return applyStringProcessors(argumentValue, processorsList, argNumber);
 };
 
-export const applyStringProcessors = (argumentValue, processorsList) => {
+export const applyStringProcessors = (argumentValue, processorsList, argNumber) => {
     return processorsList.reduce((result, processor) => {
         if (PATTERN_PROCESSOR_ALIASES[processor]) {
-            return applyStringProcessors(result, PATTERN_PROCESSOR_ALIASES[processor].split('|'));
+            return applyStringProcessors(result, PATTERN_PROCESSOR_ALIASES[processor].split('|'), argNumber);
         }
 
         const [processorType, ...params] = processor.split(':');
@@ -48,6 +48,6 @@ export const applyStringProcessors = (argumentValue, processorsList) => {
             return result;
         }
 
-        return PATTERN_PROCESSORS[processorType].call(null, result, params.join(':'));
+        return PATTERN_PROCESSORS[processorType].call(null, result, params.join(':'), argNumber);
     }, argumentValue);
 };
