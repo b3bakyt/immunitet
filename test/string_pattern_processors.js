@@ -822,6 +822,12 @@ describe('check "object" pattern processor', function () {
         expect(result).to.deep.equal({a: 5, b: 4});
 
     });
+
+    it('given an Object wrong field should return an error object with proper argNumber', function () {
+        let [, error] = validateValue('object:(a)minimum:10||(b)default:3.3|number:ceil')({a: undefined, b: undefined});
+        expect(error.argNumber).to.equal('0:a');
+
+    });
 });
 
 describe('check "pattern" pattern processor', function () {
