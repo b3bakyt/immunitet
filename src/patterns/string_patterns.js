@@ -50,7 +50,9 @@ let getPropertyProcessors = function (processorsList, prop, argNumber) {
     if (!processorsList[prop])
         throw new ImmunitetException('No validation processor is specified for an Object property '+ prop +'!', argNumber);
 
-    return processorsList[prop];
+    const result = processorsList[prop];
+    delete processorsList[prop];
+    return result;
 };
 
 export const PATTERN_PROCESSORS = {
@@ -131,8 +133,9 @@ export const PATTERN_PROCESSORS = {
 
         const processorsList = getProcessorsObject(processors);
 
-        let result, error;
+        let result, i = 0;
         for (let prop in userObject) {
+            i++;
             if (!userObject.hasOwnProperty( prop ))
                 continue;
 
@@ -140,6 +143,13 @@ export const PATTERN_PROCESSORS = {
             result = processStringPatterns(userObject[prop], propProcessors, argNumber +':'+ prop);
 
             userObject[prop] = result;
+        }
+
+        let processorKeys = Object.keys(processorsList);
+        if (processorKeys.length) {
+            let firstKey = processorKeys.shift();
+            firstKey = isNumeric(firstKey) ? i : firstKey;
+            throw new ImmunitetException('Given argument is not type of function!', argNumber +':'+ firstKey);
         }
 
         return userObject;
