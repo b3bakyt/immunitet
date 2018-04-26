@@ -341,4 +341,11 @@ describe('"check"  validate functions must accept multiple arguments', function 
         let [result, error] = getArgs(3, 'tst', [1,2], {a:1, b:2}, a);
         expect(result[0]).to.equal(3);
     });
+
+    it('validateValue should return error if no required argument was passed', function () {
+        let getArgs = validateValue('number', 'string');
+
+        let [result, error] = getArgs(3);
+        expect(error).to.not.equal(null);
+    });
 });
