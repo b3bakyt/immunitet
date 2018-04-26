@@ -449,10 +449,10 @@ let patterns = {
         return value;
     },
 };
-
+ 
 pluginPatternProcessors(patterns);
 const concatString = (a, b) => a + b;
-
+ 
 const concatWords = validateFunction(concatString, ['minLen:3', 'maxLen:10']);
 const [result, error] = concatWords('be', 'my too long sweet best pest sentence');
 // error.message: String min length is 3 symbols!
