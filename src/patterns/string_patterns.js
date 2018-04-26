@@ -44,88 +44,88 @@ let getProcessorsObject = function (processors) {
     return newArrayList.length ? newArrayList : newObjectList;
 };
 
-let getPropertyProcessors = function (processorsList, prop) {
+let getPropertyProcessors = function (processorsList, prop, argNumber) {
     if (Object.prototype.toString.call(processorsList) !== '[object Object]')
         return processorsList.shift();
 
     if (!processorsList[prop])
-        throw new ImmunitetException('No validation processor is specified for an Object property '+ prop +'!');
+        throw new ImmunitetException('No validation processor is specified for an Object property '+ prop +'!', argNumber);
 
     return processorsList[prop];
 };
 
 export const PATTERN_PROCESSORS = {
-    'promise': (value, processors) => {
+    'promise': (value, processors, argNumber) => {
         if (!value)
-            throw new ImmunitetException('Given argument is not type of promise!');
+            throw new ImmunitetException('Given argument is not type of promise!', argNumber);
 
         if (!value.then || typeof value.then !== 'function')
-            throw new ImmunitetException('Given argument is not type of promise!');
+            throw new ImmunitetException('Given argument is not type of promise!', argNumber);
 
         return value;
     },
 
-    'number': (value, processors) => {
+    'number': (value, processors, argNumber) => {
         if (value === '')
-            throw new ImmunitetException('Given argument is not type of number!');
+            throw new ImmunitetException('Given argument is not type of number!', argNumber);
 
         if (processors)
-            value = processNumber(value, processors);
+            value = processNumber(value, processors, argNumber);
 
         if (typeof value === 'string')
-            throw new ImmunitetException('Given argument is not type of number!');
+            throw new ImmunitetException('Given argument is not type of number!', argNumber);
 
         if (!isNumeric(value))
-            throw new ImmunitetException('Given argument is not type of number!');
+            throw new ImmunitetException('Given argument is not type of number!', argNumber);
 
         return value;
     },
 
-    'integer': (value, processors) => {
+    'integer': (value, processors, argNumber) => {
         if (value === '')
-            throw new ImmunitetException('Given argument is not type of integer!');
+            throw new ImmunitetException('Given argument is not type of integer!', argNumber);
 
         if (processors)
             value = processNumber(value, processors);
 
         if (typeof value === 'string')
-            throw new ImmunitetException('Given argument is not type of integer!');
+            throw new ImmunitetException('Given argument is not type of integer!', argNumber);
 
         if (!Number.isInteger(value))
-            throw new ImmunitetException('Given argument is not type of integer!');
+            throw new ImmunitetException('Given argument is not type of integer!', argNumber);
 
         return value;
     },
 
-    'string': (value, processors) => {
+    'string': (value, processors, argNumber) => {
         if (!value)
-            throw new ImmunitetException('Argument can not be empty.');
+            throw new ImmunitetException('Argument can not be empty.', argNumber);
 
         if (typeof value !== 'string')
-            throw new ImmunitetException('Given argument is not type of string!');
+            throw new ImmunitetException('Given argument is not type of string!', argNumber);
 
         if (processors)
-            value = processString(value, processors);
+            value = processString(value, processors, argNumber);
 
         return value;
     },
 
-    'array': (value, processors) => {
+    'array': (value, processors, argNumber) => {
         if (!value)
-            throw new ImmunitetException('Argument can not be empty.');
+            throw new ImmunitetException('Argument can not be empty.', argNumber);
 
         if (Object.prototype.toString.call(value) !== '[object Array]')
-            throw new ImmunitetException('Given argument is not type of Array!');
+            throw new ImmunitetException('Given argument is not type of Array!', argNumber);
 
         return [...value];
     },
 
-    'object': (value, processors) => {
+    'object': (value, processors, argNumber) => {
         if (!value)
-            throw new ImmunitetException('Argument can not be empty.');
+            throw new ImmunitetException('Argument can not be empty.', argNumber);
 
         if (Object.prototype.toString.call(value) !== '[object Object]')
-            throw new ImmunitetException('Given argument is not type of Array!');
+            throw new ImmunitetException('Given argument is not type of Array!', argNumber);
 
         if (!processors)
             return {...value};
@@ -147,25 +147,25 @@ export const PATTERN_PROCESSORS = {
         return value;
     },
 
-    'function': (value, processors) => {
+    'function': (value, processors, argNumber) => {
         if (!value)
-            throw new ImmunitetException('Given argument is not type of function!');
+            throw new ImmunitetException('Given argument is not type of function!', argNumber);
 
         if (typeof value !== 'function')
-            throw new ImmunitetException('Given argument is not type of function!');
+            throw new ImmunitetException('Given argument is not type of function!', argNumber);
 
         return value;
     },
 
-    'boolean': (value, processors) => {
+    'boolean': (value, processors, argNumber) => {
         if (!value && typeof value !== 'boolean')
-            throw new ImmunitetException('Required argument not found.');
+            throw new ImmunitetException('Required argument not found.', argNumber);
 
         if (processors)
-            value = processBoolean(value, processors);
+            value = processBoolean(value, processors, argNumber);
 
         if (typeof value !== 'boolean')
-            throw new ImmunitetException('Given argument is not type of boolean!');
+            throw new ImmunitetException('Given argument is not type of boolean!', argNumber);
 
         return value;
     },
@@ -195,12 +195,12 @@ export const PATTERN_PROCESSORS = {
         });
     },
 
-    'minimum': (value, minValue) => {
+    'minimum': (value, minValue, argNumber) => {
         if (!isNumeric(minValue))
-            throw new ImmunitetException('Minimum parameter is not type of number!');
+            throw new ImmunitetException('Minimum parameter is not type of number!', argNumber);
 
         if (!isNumeric(value))
-            throw new ImmunitetException('Given argument is not type of number!');
+            throw new ImmunitetException('Given argument is not type of number!', argNumber);
 
         if (typeof value === 'string')
             value = +value;
@@ -208,17 +208,17 @@ export const PATTERN_PROCESSORS = {
         minValue = +minValue;
 
         if (value < minValue)
-            throw new ImmunitetException('The given value is less then '+ minValue);
+            throw new ImmunitetException('The given value is less then '+ minValue, argNumber);
 
         return value;
     },
 
-    'maximum': (value, maxValue) => {
+    'maximum': (value, maxValue, argNumber) => {
         if (!isNumeric(maxValue))
-            throw new ImmunitetException('Maximum parameter is not type of number!');
+            throw new ImmunitetException('Maximum parameter is not type of number!', argNumber);
 
         if (!isNumeric(value))
-            throw new ImmunitetException('Given argument is not type of number!');
+            throw new ImmunitetException('Given argument is not type of number!', argNumber);
 
         if (typeof value === 'string')
             value = +value;
@@ -226,56 +226,56 @@ export const PATTERN_PROCESSORS = {
         maxValue = +maxValue;
 
         if (value > maxValue)
-            throw new ImmunitetException('The given value is greater then '+ maxValue);
+            throw new ImmunitetException('The given value is greater then '+ maxValue, argNumber);
 
         return value;
     },
 
-    'minLength': (value, length) => {
+    'minLength': (value, length, argNumber) => {
         if (!isNumeric(length))
-            throw new ImmunitetException('minLength parameter is not type of number!');
+            throw new ImmunitetException('minLength parameter is not type of number!', argNumber);
 
         length = +length;
 
         if ((value+'').length < length)
-            throw new ImmunitetException('String minimum length must be '+ length + ' symbols!');
+            throw new ImmunitetException('String minimum length must be '+ length + ' symbols!', argNumber);
 
         return value;
     },
 
-    'maxLength': (value, length) => {
+    'maxLength': (value, length, argNumber) => {
         if (!isNumeric(length))
-            throw new ImmunitetException('maxLength parameter is not type of number!');
+            throw new ImmunitetException('maxLength parameter is not type of number!', argNumber);
 
         length = +length;
 
         if ((value+'').length > length)
-            throw new ImmunitetException('String maximum length must be '+ length + ' symbols!');
+            throw new ImmunitetException('String maximum length must be '+ length + ' symbols!', argNumber);
 
         return value;
     },
 
-    'pattern': (value, pattern) => {
+    'pattern': (value, pattern, argNumber) => {
         if (typeof pattern !== 'string')
-            throw new ImmunitetException('Given pattern is not type of string.');
+            throw new ImmunitetException('Given pattern is not type of string.', argNumber);
 
         pattern = pattern.trim();
 
         if (!value)
-            throw new ImmunitetException('Argument can not be empty.');
+            throw new ImmunitetException('Argument can not be empty.', argNumber);
 
         if (!pattern)
-            throw new ImmunitetException('Pattern can not be empty.');
+            throw new ImmunitetException('Pattern can not be empty.', argNumber);
 
-        if (!processRegexp(value, pattern))
-            throw new ImmunitetException('Supplied value does not match given pattern.');
+        if (!processRegexp(value, pattern, argNumber))
+            throw new ImmunitetException('Supplied value does not match given pattern.', argNumber);
 
         return value;
     },
 
-    'default': (value, defaultValue) => {
+    'default': (value, defaultValue, argNumber) => {
         if (typeof defaultValue === 'undefined')
-            throw new ImmunitetException('Default value was not specified.');
+            throw new ImmunitetException('Default value was not specified.', argNumber);
 
         if (defaultValue && typeof value === 'undefined')
             value = processDefaultValue(value, defaultValue);
@@ -283,9 +283,9 @@ export const PATTERN_PROCESSORS = {
         return value;
     },
 
-    'date': (value, format) => { // RFC 3339
+    'date': (value, format, argNumber) => { // RFC 3339
         if (!value)
-            throw new ImmunitetException('Date argument can not be empty.');
+            throw new ImmunitetException('Date argument can not be empty.', argNumber);
 
         /*
         // example "2005-08-15T15:52:01+00:00"
@@ -312,64 +312,64 @@ export const PATTERN_PROCESSORS = {
         let pattern = '^(?:[1-9]\\d{3}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1\\d|2[0-8])|(?:0[13-9]|1[0-2])-(?:29|30)|(?:0[13578]|1[02])-31)|(?:[1-9]\\d(?:0[48]|[2468][048]|[13579][26])|(?:[2468][048]|[13579][26])00)-02-29)T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:Z|[+-][01]\\d:[0-5]\\d)$';
         let regexp = new RegExp(pattern, 'i');
         if (!regexp.test(value))
-            throw new ImmunitetException('Given value is not type of RFC3339 date.');
+            throw new ImmunitetException('Given value is not type of RFC3339 date.', argNumber);
 
         return value;
     },
 
-    'email': (value, argument) => {// RFC5322
+    'email': (value, argument, argNumber) => {// RFC5322
         if (!value)
-            throw new ImmunitetException('Email argument can not be empty.');
+            throw new ImmunitetException('Email argument can not be empty.', argNumber);
 
         let pattern = '^(([^<>()\\[\\]\\\\.,;:\\s@"]+(\\.[^<>()\\[\\]\\\\.,;:\\s@"]+)*)|(".+"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$';
         let regexp = new RegExp(pattern);
         if (!regexp.test(value))
-            throw new ImmunitetException('Given value is not type of RFC5322 email.');
+            throw new ImmunitetException('Given value is not type of RFC5322 email.', argNumber);
 
         return value;
     },
 
-    'time': (value, argument) => {
+    'time': (value, argument, argNumber) => {
 
         return null;
     },
 
-    'date-time': (value, argument) => {
+    'date-time': (value, argument, argNumber) => {
 
         return null;
     },
 
-    'uri': (value, argument) => {
+    'uri': (value, argument, argNumber) => {
 
         return null;
     },
 
-    'hostname': (value, argument) => {
+    'hostname': (value, argument, argNumber) => {
 
         return null;
     },
 
-    'ipv4': (value, argument) => {
+    'ipv4': (value, argument, argNumber) => {
 
         return null;
     },
 
-    'ipv6': (value, argument) => {
+    'ipv6': (value, argument, argNumber) => {
 
         return null;
     },
 
-    'uuid': (value, argument) => {
+    'uuid': (value, argument, argNumber) => {
 
         return null;
     },
 
-    'json-pointer': (value, argument) => {
+    'json-pointer': (value, argument, argNumber) => {
 
         return null;
     },
 
-    'relative-json-pointer': (value, argument) => {
+    'relative-json-pointer': (value, argument, argNumber) => {
 
         return null;
     },

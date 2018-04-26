@@ -66,14 +66,15 @@ describe('"check" function tests', function () {
 
     it('may throw an exception from inside a custom function', function () {
         checkAdd = validateFunction(add, {
-            a: (argValue) => {
-                throw new ImmunitetException('Test exception');
+            a: (argValue, argNumber) => {
+                throw new ImmunitetException('Test exception', argNumber);
             },
             b: (argValue) => Math.floor(argValue),
         });
 
         let [result1, error1] = checkAdd('2.2', 3.9);
         expect(error1).not.equal(null);
+        expect(error1.argNumber).to.equal(0);
     });
 
     it('should catch ImmunitetException thrown from inside a user function', function () {
@@ -136,9 +137,11 @@ describe('"check" function promise tests', function () {
 
         checkAdd('2', '5').then(
             (result) => {
-                expect(result).to.equal(7);
+                expect(result).to.equal(null);
             })
-            .catch((error) => console.error('error:', error));
+            .catch((error) => {
+                expect(error.argNumber).to.equal(0);
+            });
     });
 
     it('should process a single argument', function () {
@@ -148,9 +151,11 @@ describe('"check" function promise tests', function () {
 
         checkAdd('2', 5).then(
             (result) => {
-                expect(result).to.equal(7);
+                expect(result).to.equal(null);
             })
-            .catch((error) => console.error('error:', error));
+            .catch((error) => {
+                expect(error.argNumber).to.equal(0);
+            });
     });
 
     it('should process a wrong promise argument', function () {
