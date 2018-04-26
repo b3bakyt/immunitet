@@ -355,4 +355,16 @@ describe('"check"  validate functions must accept multiple arguments', function 
         let [result, error] = getArgs(3);
         expect(error).to.not.equal(null);
     });
+
+    it('validatePromise should return error if no required argument was passed', function () {
+        let getArgs = validatePromise((a, b) => a + b, 'number', 'number');
+
+        getArgs(3)
+            .then(result => {
+                expect(result).to.equal(null);
+            })
+            .catch(error => {
+                expect(error.argNumber).to.equal(1);
+            })
+    });
 });
