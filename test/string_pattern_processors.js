@@ -795,31 +795,31 @@ describe('check "object" pattern processor', function () {
     });
 
     it('given an Object field validators should validate them', function () {
-        let [result] = validateValue('object:(a)number:floor,(b)number:ceil')({a: '33', b: '-9'});
+        let [result] = validateValue('object:(a)number:floor||(b)number:ceil')({a: '33', b: '-9'});
         expect(result).to.deep.equal({a: 33, b: -9});
 
-        let [result1] = validateValue('object:number:floor,number:ceil')({a: '33', b: '-9'});
+        let [result1] = validateValue('object:number:floor||number:ceil')({a: '33', b: '-9'});
         expect(result1).to.deep.equal({a: 33, b: -9});
 
-        let [result2] = validateValue('object:(a)number:floor,number:ceil')({a: '33', b: '-9'});
+        let [result2] = validateValue('object:(a)number:floor||number:ceil')({a: '33', b: '-9'});
         expect(result2).to.deep.equal({a: 33, b: -9});
 
-        let [result3] = validateValue('object:number:floor,(b)number:ceil')({a: '33', b: '-9'});
+        let [result3] = validateValue('object:number:floor||(b)number:ceil')({a: '33', b: '-9'});
         expect(result3).to.deep.equal({a: 33, b: -9});
 
-        let [result4, error4] = validateValue('object:(a)number:floor,(c)number:ceil')({a: '33', b: '-9'});
+        let [result4, error4] = validateValue('object:(a)number:floor||(c)number:ceil')({a: '33', b: '-9'});
         expect(error4.message).to.equal('No validation processor is specified for an Object property b!');
 
-        let [result5] = validateValue('object:(a)number:floor,(b)number:ceil,(c)function')({a: '33', b: '-9', c: () => {}});
+        let [result5] = validateValue('object:(a)number:floor||(b)number:ceil||(c)function')({a: '33', b: '-9', c: () => {}});
         expect(typeof result5.c).to.equal('function');
 
-        let [,error6] = validateValue('object:(a)number:floor,(b)number:ceil,(c)function')({a: '33', b: '-9', c: []});
+        let [,error6] = validateValue('object:(a)number:floor||(b)number:ceil||(c)function')({a: '33', b: '-9', c: []});
         expect(error6.message).to.equal('Given argument is not type of function!');
     });
 
     it('given an Object field default value should pass them to object properties', function () {
-        let [result] = validateValue('object:(a)default:5|number:floor,(b)default:3|number:ceil')({a: null, b: null});
-        expect(result).to.deep.equal({a: 5, b: 3});
+        let [result, error] = validateValue('object:(a)default:5.9|number:floor||(b)default:3.3|number:ceil')({a: undefined, b: undefined});
+        expect(result).to.deep.equal({a: 5, b: 4});
 
     });
 });

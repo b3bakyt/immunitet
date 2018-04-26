@@ -28,13 +28,12 @@ var _utils = require('../utils');
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 var getProcessorsObject = function getProcessorsObject(processors) {
-    var processorsList = processors.split(',');
+    var processorsList = processors.split('||');
     var newObjectList = {};
     var newArrayList = [];
     processorsList.forEach(function (processor) {
         if (processor.indexOf(')') > 1) {
             var propName = processor.slice(0, processor.indexOf(')')).slice(processor.indexOf('(') + 1);
-
             var value = processor.slice(processor.indexOf(')') + 1);
 
             if (newArrayList.length) {
@@ -118,28 +117,27 @@ var PATTERN_PROCESSORS = {
         return [].concat(_toConsumableArray(value));
     },
 
-    'object': function object(value, processors, argNumber) {
-        if (!value) throw new _exceptions.ImmunitetException('Argument can not be empty.', argNumber);
+    'object': function object(userObject, processors, argNumber) {
+        if (!userObject) throw new _exceptions.ImmunitetException('Argument can not be empty.', argNumber);
 
-        if (Object.prototype.toString.call(value) !== '[object Object]') throw new _exceptions.ImmunitetException('Given argument is not type of Array!', argNumber);
+        if (Object.prototype.toString.call(userObject) !== '[object Object]') throw new _exceptions.ImmunitetException('Given argument is not type of Array!', argNumber);
 
-        if (!processors) return _extends({}, value);
+        if (!processors) return _extends({}, userObject);
 
         var processorsList = getProcessorsObject(processors);
 
         var result = void 0,
             error = void 0;
-        for (var prop in value) {
-            if (!value.hasOwnProperty(prop)) continue;
+        for (var prop in userObject) {
+            if (!userObject.hasOwnProperty(prop)) continue;
 
-            var propProcessors = getPropertyProcessors(processorsList, prop);
+            var propProcessors = getPropertyProcessors(processorsList, prop, argNumber + ':' + prop);
+            result = (0, _string_pattern_processor.processStringPatterns)(userObject[prop], propProcessors, argNumber + ':' + prop);
 
-            result = (0, _string_pattern_processor.applyStringProcessors)(value[prop], [propProcessors]);
-
-            value[prop] = result;
+            userObject[prop] = result;
         }
 
-        return value;
+        return userObject;
     },
 
     'function': function _function(value, processors, argNumber) {
@@ -169,7 +167,7 @@ var PATTERN_PROCESSORS = {
         return (value + '').split(cleanedSplitter);
     },
 
-    'each': function each(values, processors) {
+    'each': function each(values, processors, argNumber) {
         if ((0, _utils.isEmpty)(values)) return values;
 
         if (!processors) return values;
@@ -177,7 +175,7 @@ var PATTERN_PROCESSORS = {
         var processorsList = processors.split(',');
 
         return values.map(function (value) {
-            return (0, _string_pattern_processor.applyStringProcessors)(value, processorsList);
+            return (0, _string_pattern_processor.applyStringProcessors)(value, processorsList, argNumber);
         });
     },
 

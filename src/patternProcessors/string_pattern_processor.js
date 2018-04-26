@@ -24,7 +24,12 @@ export const createStringPatternProcessor = (patternProcessors, patternProcessor
 };
 
 export const processStringPatterns = (argumentValue, processors, argNumber) => {
-    const processorsList = processors.split('|');
+    let processorsList;
+    if (processors.indexOf("||") === -1)
+        processorsList = processors.split('|');
+    else
+        processorsList = [processors];
+
     return applyStringProcessors(argumentValue, processorsList, argNumber);
 };
 
