@@ -1,6 +1,6 @@
 import {PATTERN_FLAGS} from '../constants/processor_flags';
 import {ImmunitetException} from '../exceptions';
-import {applyStringProcessors} from '../patternProcessors/string_pattern_processor';
+import {applyStringProcessors, processStringPatterns} from '../patternProcessors/string_pattern_processor';
 import {processNumber} from './number_processors';
 import {processString} from './string_processors';
 import {processBoolean} from './boolean_processors';
@@ -13,13 +13,12 @@ import {
 } from '../utils';
 
 let getProcessorsObject = function (processors) {
-    let processorsList = processors.split(',');
+    let processorsList = processors.split('||');
     let newObjectList = {};
     let newArrayList = [];
     processorsList.forEach((processor) => {
         if (processor.indexOf(')') > 1) {
             let propName = processor.slice(0, processor.indexOf(')')).slice(processor.indexOf('(') + 1);
-
             let value = processor.slice(processor.indexOf(')') + 1);
 
             if (newArrayList.length) {
@@ -120,31 +119,30 @@ export const PATTERN_PROCESSORS = {
         return [...value];
     },
 
-    'object': (value, processors, argNumber) => {
-        if (!value)
+    'object': (userObject, processors, argNumber) => {
+        if (!userObject)
             throw new ImmunitetException('Argument can not be empty.', argNumber);
 
-        if (Object.prototype.toString.call(value) !== '[object Object]')
+        if (Object.prototype.toString.call(userObject) !== '[object Object]')
             throw new ImmunitetException('Given argument is not type of Array!', argNumber);
 
         if (!processors)
-            return {...value};
+            return {...userObject};
 
         const processorsList = getProcessorsObject(processors);
 
         let result, error;
-        for (let prop in value) {
-            if (!value.hasOwnProperty( prop ))
+        for (let prop in userObject) {
+            if (!userObject.hasOwnProperty( prop ))
                 continue;
 
-            let propProcessors = getPropertyProcessors(processorsList, prop);
+            let propProcessors = getPropertyProcessors(processorsList, prop, argNumber +':'+ prop);
+            result = processStringPatterns(userObject[prop], propProcessors, argNumber +':'+ prop);
 
-            result = applyStringProcessors(value[prop], [propProcessors]);
-
-            value[prop] = result;
+            userObject[prop] = result;
         }
 
-        return value;
+        return userObject;
     },
 
     'function': (value, processors, argNumber) => {
@@ -181,7 +179,7 @@ export const PATTERN_PROCESSORS = {
         return (value+'').split(cleanedSplitter);
     },
 
-    'each': (values, processors) => {
+    'each': (values, processors, argNumber) => {
         if (isEmpty(values))
             return values;
 
@@ -191,7 +189,7 @@ export const PATTERN_PROCESSORS = {
         const processorsList = processors.split(',');
 
         return values.map(value => {
-            return applyStringProcessors(value, processorsList);
+            return applyStringProcessors(value, processorsList, argNumber);
         });
     },
 

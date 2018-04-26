@@ -35,7 +35,9 @@ var createStringPatternProcessor = exports.createStringPatternProcessor = functi
 };
 
 var processStringPatterns = exports.processStringPatterns = function processStringPatterns(argumentValue, processors, argNumber) {
-    var processorsList = processors.split('|');
+    var processorsList = void 0;
+    if (processors.indexOf("||") === -1) processorsList = processors.split('|');else processorsList = [processors];
+
     return applyStringProcessors(argumentValue, processorsList, argNumber);
 };
 
