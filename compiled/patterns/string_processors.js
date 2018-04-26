@@ -29,13 +29,13 @@ var STRING_PROCESSORS = {
     }
 };
 
-var processString = exports.processString = function processString(value, processors) {
+var processString = exports.processString = function processString(value, processors, argNumber) {
     var processorsList = processors.split(',');
 
     if (processorsList.length === 0) return value;
 
     processorsList.map(function (processor) {
-        if (!STRING_PROCESSORS[processor]) throw new _exceptions.ImmunitetException('Wrong keyword given as an argument for String type processor.');
+        if (!STRING_PROCESSORS[processor]) throw new _exceptions.ImmunitetException('Wrong keyword given as an argument for String type processor.', argNumber);
 
         value = STRING_PROCESSORS[processor].call(null, value);
     });

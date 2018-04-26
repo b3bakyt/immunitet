@@ -25,13 +25,13 @@ var NUMBER_PROCESSORS = {
     }
 };
 
-var processNumber = exports.processNumber = function processNumber(value, processors) {
+var processNumber = exports.processNumber = function processNumber(value, processors, argNumber) {
     var processorsList = processors.split(',');
 
     if (processorsList.length === 0) return value;
 
     processorsList.map(function (processor) {
-        if (!NUMBER_PROCESSORS[processor]) throw new _exceptions.ImmunitetException('Wrong keyword given as an argument for Number type processor.');
+        if (!NUMBER_PROCESSORS[processor]) throw new _exceptions.ImmunitetException('Wrong keyword given as an argument for Number type processor.', argNumber);
 
         value = NUMBER_PROCESSORS[processor].call(null, value);
     });

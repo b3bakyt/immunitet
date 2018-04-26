@@ -59,69 +59,69 @@ var getProcessorsObject = function getProcessorsObject(processors) {
     return newArrayList.length ? newArrayList : newObjectList;
 };
 
-var getPropertyProcessors = function getPropertyProcessors(processorsList, prop) {
+var getPropertyProcessors = function getPropertyProcessors(processorsList, prop, argNumber) {
     if (Object.prototype.toString.call(processorsList) !== '[object Object]') return processorsList.shift();
 
-    if (!processorsList[prop]) throw new _exceptions.ImmunitetException('No validation processor is specified for an Object property ' + prop + '!');
+    if (!processorsList[prop]) throw new _exceptions.ImmunitetException('No validation processor is specified for an Object property ' + prop + '!', argNumber);
 
     return processorsList[prop];
 };
 
 var PATTERN_PROCESSORS = {
-    'promise': function promise(value, processors) {
-        if (!value) throw new _exceptions.ImmunitetException('Given argument is not type of promise!');
+    'promise': function promise(value, processors, argNumber) {
+        if (!value) throw new _exceptions.ImmunitetException('Given argument is not type of promise!', argNumber);
 
-        if (!value.then || typeof value.then !== 'function') throw new _exceptions.ImmunitetException('Given argument is not type of promise!');
+        if (!value.then || typeof value.then !== 'function') throw new _exceptions.ImmunitetException('Given argument is not type of promise!', argNumber);
 
         return value;
     },
 
-    'number': function number(value, processors) {
-        if (value === '') throw new _exceptions.ImmunitetException('Given argument is not type of number!');
+    'number': function number(value, processors, argNumber) {
+        if (value === '') throw new _exceptions.ImmunitetException('Given argument is not type of number!', argNumber);
+
+        if (processors) value = (0, _number_processors.processNumber)(value, processors, argNumber);
+
+        if (typeof value === 'string') throw new _exceptions.ImmunitetException('Given argument is not type of number!', argNumber);
+
+        if (!(0, _utils.isNumeric)(value)) throw new _exceptions.ImmunitetException('Given argument is not type of number!', argNumber);
+
+        return value;
+    },
+
+    'integer': function integer(value, processors, argNumber) {
+        if (value === '') throw new _exceptions.ImmunitetException('Given argument is not type of integer!', argNumber);
 
         if (processors) value = (0, _number_processors.processNumber)(value, processors);
 
-        if (typeof value === 'string') throw new _exceptions.ImmunitetException('Given argument is not type of number!');
+        if (typeof value === 'string') throw new _exceptions.ImmunitetException('Given argument is not type of integer!', argNumber);
 
-        if (!(0, _utils.isNumeric)(value)) throw new _exceptions.ImmunitetException('Given argument is not type of number!');
-
-        return value;
-    },
-
-    'integer': function integer(value, processors) {
-        if (value === '') throw new _exceptions.ImmunitetException('Given argument is not type of integer!');
-
-        if (processors) value = (0, _number_processors.processNumber)(value, processors);
-
-        if (typeof value === 'string') throw new _exceptions.ImmunitetException('Given argument is not type of integer!');
-
-        if (!Number.isInteger(value)) throw new _exceptions.ImmunitetException('Given argument is not type of integer!');
+        if (!Number.isInteger(value)) throw new _exceptions.ImmunitetException('Given argument is not type of integer!', argNumber);
 
         return value;
     },
 
-    'string': function string(value, processors) {
-        if (!value) throw new _exceptions.ImmunitetException('Argument can not be empty.');
+    'string': function string(value, processors, argNumber) {
+        if (!value) throw new _exceptions.ImmunitetException('Argument can not be empty.', argNumber);
 
-        if (typeof value !== 'string') throw new _exceptions.ImmunitetException('Given argument is not type of string!');
+        if (typeof value !== 'string') throw new _exceptions.ImmunitetException('Given argument is not type of string!', argNumber);
 
-        if (processors) value = (0, _string_processors.processString)(value, processors);
+        if (processors) value = (0, _string_processors.processString)(value, processors, argNumber);
 
         return value;
     },
 
-    'array': function array(value, processors) {
-        if (!value) throw new _exceptions.ImmunitetException('Argument can not be empty.');
+    'array': function array(value, processors, argNumber) {
+        if (!value) throw new _exceptions.ImmunitetException('Argument can not be empty.', argNumber);
 
-        if (Object.prototype.toString.call(value) !== '[object Array]') throw new _exceptions.ImmunitetException('Given argument is not type of Array!');
+        if (Object.prototype.toString.call(value) !== '[object Array]') throw new _exceptions.ImmunitetException('Given argument is not type of Array!', argNumber);
 
         return [].concat(_toConsumableArray(value));
     },
 
-    'object': function object(value, processors) {
-        if (!value) throw new _exceptions.ImmunitetException('Argument can not be empty.');
+    'object': function object(value, processors, argNumber) {
+        if (!value) throw new _exceptions.ImmunitetException('Argument can not be empty.', argNumber);
 
-        if (Object.prototype.toString.call(value) !== '[object Object]') throw new _exceptions.ImmunitetException('Given argument is not type of Array!');
+        if (Object.prototype.toString.call(value) !== '[object Object]') throw new _exceptions.ImmunitetException('Given argument is not type of Array!', argNumber);
 
         if (!processors) return _extends({}, value);
 
@@ -142,20 +142,20 @@ var PATTERN_PROCESSORS = {
         return value;
     },
 
-    'function': function _function(value, processors) {
-        if (!value) throw new _exceptions.ImmunitetException('Given argument is not type of function!');
+    'function': function _function(value, processors, argNumber) {
+        if (!value) throw new _exceptions.ImmunitetException('Given argument is not type of function!', argNumber);
 
-        if (typeof value !== 'function') throw new _exceptions.ImmunitetException('Given argument is not type of function!');
+        if (typeof value !== 'function') throw new _exceptions.ImmunitetException('Given argument is not type of function!', argNumber);
 
         return value;
     },
 
-    'boolean': function boolean(value, processors) {
-        if (!value && typeof value !== 'boolean') throw new _exceptions.ImmunitetException('Required argument not found.');
+    'boolean': function boolean(value, processors, argNumber) {
+        if (!value && typeof value !== 'boolean') throw new _exceptions.ImmunitetException('Required argument not found.', argNumber);
 
-        if (processors) value = (0, _boolean_processors.processBoolean)(value, processors);
+        if (processors) value = (0, _boolean_processors.processBoolean)(value, processors, argNumber);
 
-        if (typeof value !== 'boolean') throw new _exceptions.ImmunitetException('Given argument is not type of boolean!');
+        if (typeof value !== 'boolean') throw new _exceptions.ImmunitetException('Given argument is not type of boolean!', argNumber);
 
         return value;
     },
@@ -181,79 +181,79 @@ var PATTERN_PROCESSORS = {
         });
     },
 
-    'minimum': function minimum(value, minValue) {
-        if (!(0, _utils.isNumeric)(minValue)) throw new _exceptions.ImmunitetException('Minimum parameter is not type of number!');
+    'minimum': function minimum(value, minValue, argNumber) {
+        if (!(0, _utils.isNumeric)(minValue)) throw new _exceptions.ImmunitetException('Minimum parameter is not type of number!', argNumber);
 
-        if (!(0, _utils.isNumeric)(value)) throw new _exceptions.ImmunitetException('Given argument is not type of number!');
+        if (!(0, _utils.isNumeric)(value)) throw new _exceptions.ImmunitetException('Given argument is not type of number!', argNumber);
 
         if (typeof value === 'string') value = +value;
 
         minValue = +minValue;
 
-        if (value < minValue) throw new _exceptions.ImmunitetException('The given value is less then ' + minValue);
+        if (value < minValue) throw new _exceptions.ImmunitetException('The given value is less then ' + minValue, argNumber);
 
         return value;
     },
 
-    'maximum': function maximum(value, maxValue) {
-        if (!(0, _utils.isNumeric)(maxValue)) throw new _exceptions.ImmunitetException('Maximum parameter is not type of number!');
+    'maximum': function maximum(value, maxValue, argNumber) {
+        if (!(0, _utils.isNumeric)(maxValue)) throw new _exceptions.ImmunitetException('Maximum parameter is not type of number!', argNumber);
 
-        if (!(0, _utils.isNumeric)(value)) throw new _exceptions.ImmunitetException('Given argument is not type of number!');
+        if (!(0, _utils.isNumeric)(value)) throw new _exceptions.ImmunitetException('Given argument is not type of number!', argNumber);
 
         if (typeof value === 'string') value = +value;
 
         maxValue = +maxValue;
 
-        if (value > maxValue) throw new _exceptions.ImmunitetException('The given value is greater then ' + maxValue);
+        if (value > maxValue) throw new _exceptions.ImmunitetException('The given value is greater then ' + maxValue, argNumber);
 
         return value;
     },
 
-    'minLength': function minLength(value, length) {
-        if (!(0, _utils.isNumeric)(length)) throw new _exceptions.ImmunitetException('minLength parameter is not type of number!');
+    'minLength': function minLength(value, length, argNumber) {
+        if (!(0, _utils.isNumeric)(length)) throw new _exceptions.ImmunitetException('minLength parameter is not type of number!', argNumber);
 
         length = +length;
 
-        if ((value + '').length < length) throw new _exceptions.ImmunitetException('String minimum length must be ' + length + ' symbols!');
+        if ((value + '').length < length) throw new _exceptions.ImmunitetException('String minimum length must be ' + length + ' symbols!', argNumber);
 
         return value;
     },
 
-    'maxLength': function maxLength(value, length) {
-        if (!(0, _utils.isNumeric)(length)) throw new _exceptions.ImmunitetException('maxLength parameter is not type of number!');
+    'maxLength': function maxLength(value, length, argNumber) {
+        if (!(0, _utils.isNumeric)(length)) throw new _exceptions.ImmunitetException('maxLength parameter is not type of number!', argNumber);
 
         length = +length;
 
-        if ((value + '').length > length) throw new _exceptions.ImmunitetException('String maximum length must be ' + length + ' symbols!');
+        if ((value + '').length > length) throw new _exceptions.ImmunitetException('String maximum length must be ' + length + ' symbols!', argNumber);
 
         return value;
     },
 
-    'pattern': function pattern(value, _pattern) {
-        if (typeof _pattern !== 'string') throw new _exceptions.ImmunitetException('Given pattern is not type of string.');
+    'pattern': function pattern(value, _pattern, argNumber) {
+        if (typeof _pattern !== 'string') throw new _exceptions.ImmunitetException('Given pattern is not type of string.', argNumber);
 
         _pattern = _pattern.trim();
 
-        if (!value) throw new _exceptions.ImmunitetException('Argument can not be empty.');
+        if (!value) throw new _exceptions.ImmunitetException('Argument can not be empty.', argNumber);
 
-        if (!_pattern) throw new _exceptions.ImmunitetException('Pattern can not be empty.');
+        if (!_pattern) throw new _exceptions.ImmunitetException('Pattern can not be empty.', argNumber);
 
-        if (!(0, _pattern_processors.processRegexp)(value, _pattern)) throw new _exceptions.ImmunitetException('Supplied value does not match given pattern.');
+        if (!(0, _pattern_processors.processRegexp)(value, _pattern, argNumber)) throw new _exceptions.ImmunitetException('Supplied value does not match given pattern.', argNumber);
 
         return value;
     },
 
-    'default': function _default(value, defaultValue) {
-        if (typeof defaultValue === 'undefined') throw new _exceptions.ImmunitetException('Default value was not specified.');
+    'default': function _default(value, defaultValue, argNumber) {
+        if (typeof defaultValue === 'undefined') throw new _exceptions.ImmunitetException('Default value was not specified.', argNumber);
 
         if (defaultValue && typeof value === 'undefined') value = (0, _default_value_processors.processDefaultValue)(value, defaultValue);
 
         return value;
     },
 
-    'date': function date(value, format) {
+    'date': function date(value, format, argNumber) {
         // RFC 3339
-        if (!value) throw new _exceptions.ImmunitetException('Date argument can not be empty.');
+        if (!value) throw new _exceptions.ImmunitetException('Date argument can not be empty.', argNumber);
 
         /*
         // example "2005-08-15T15:52:01+00:00"
@@ -273,63 +273,63 @@ var PATTERN_PROCESSORS = {
          */
         var pattern = '^(?:[1-9]\\d{3}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1\\d|2[0-8])|(?:0[13-9]|1[0-2])-(?:29|30)|(?:0[13578]|1[02])-31)|(?:[1-9]\\d(?:0[48]|[2468][048]|[13579][26])|(?:[2468][048]|[13579][26])00)-02-29)T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:Z|[+-][01]\\d:[0-5]\\d)$';
         var regexp = new RegExp(pattern, 'i');
-        if (!regexp.test(value)) throw new _exceptions.ImmunitetException('Given value is not type of RFC3339 date.');
+        if (!regexp.test(value)) throw new _exceptions.ImmunitetException('Given value is not type of RFC3339 date.', argNumber);
 
         return value;
     },
 
-    'email': function email(value, argument) {
+    'email': function email(value, argument, argNumber) {
         // RFC5322
-        if (!value) throw new _exceptions.ImmunitetException('Email argument can not be empty.');
+        if (!value) throw new _exceptions.ImmunitetException('Email argument can not be empty.', argNumber);
 
         var pattern = '^(([^<>()\\[\\]\\\\.,;:\\s@"]+(\\.[^<>()\\[\\]\\\\.,;:\\s@"]+)*)|(".+"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$';
         var regexp = new RegExp(pattern);
-        if (!regexp.test(value)) throw new _exceptions.ImmunitetException('Given value is not type of RFC5322 email.');
+        if (!regexp.test(value)) throw new _exceptions.ImmunitetException('Given value is not type of RFC5322 email.', argNumber);
 
         return value;
     },
 
-    'time': function time(value, argument) {
+    'time': function time(value, argument, argNumber) {
 
         return null;
     },
 
-    'date-time': function dateTime(value, argument) {
+    'date-time': function dateTime(value, argument, argNumber) {
 
         return null;
     },
 
-    'uri': function uri(value, argument) {
+    'uri': function uri(value, argument, argNumber) {
 
         return null;
     },
 
-    'hostname': function hostname(value, argument) {
+    'hostname': function hostname(value, argument, argNumber) {
 
         return null;
     },
 
-    'ipv4': function ipv4(value, argument) {
+    'ipv4': function ipv4(value, argument, argNumber) {
 
         return null;
     },
 
-    'ipv6': function ipv6(value, argument) {
+    'ipv6': function ipv6(value, argument, argNumber) {
 
         return null;
     },
 
-    'uuid': function uuid(value, argument) {
+    'uuid': function uuid(value, argument, argNumber) {
 
         return null;
     },
 
-    'json-pointer': function jsonPointer(value, argument) {
+    'json-pointer': function jsonPointer(value, argument, argNumber) {
 
         return null;
     },
 
-    'relative-json-pointer': function relativeJsonPointer(value, argument) {
+    'relative-json-pointer': function relativeJsonPointer(value, argument, argNumber) {
 
         return null;
     }
