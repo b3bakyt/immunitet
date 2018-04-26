@@ -63,7 +63,9 @@ var getPropertyProcessors = function getPropertyProcessors(processorsList, prop,
 
     if (!processorsList[prop]) throw new _exceptions.ImmunitetException('No validation processor is specified for an Object property ' + prop + '!', argNumber);
 
-    return processorsList[prop];
+    var result = processorsList[prop];
+    delete processorsList[prop];
+    return result;
 };
 
 var PATTERN_PROCESSORS = {
@@ -127,14 +129,22 @@ var PATTERN_PROCESSORS = {
         var processorsList = getProcessorsObject(processors);
 
         var result = void 0,
-            error = void 0;
+            i = 0;
         for (var prop in userObject) {
+            i++;
             if (!userObject.hasOwnProperty(prop)) continue;
 
             var propProcessors = getPropertyProcessors(processorsList, prop, argNumber + ':' + prop);
             result = (0, _string_pattern_processor.processStringPatterns)(userObject[prop], propProcessors, argNumber + ':' + prop);
 
             userObject[prop] = result;
+        }
+
+        var processorKeys = Object.keys(processorsList);
+        if (processorKeys.length) {
+            var firstKey = processorKeys.shift();
+            firstKey = (0, _utils.isNumeric)(firstKey) ? i : firstKey;
+            throw new _exceptions.ImmunitetException('Given argument is not type of function!', argNumber + ':' + firstKey);
         }
 
         return userObject;

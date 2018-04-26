@@ -826,7 +826,16 @@ describe('check "object" pattern processor', function () {
     it('given an Object wrong field should return an error object with proper argNumber', function () {
         let [, error] = validateValue('object:(a)minimum:10||(b)default:3.3|number:ceil')({a: undefined, b: undefined});
         expect(error.argNumber).to.equal('0:a');
+    });
 
+    it('given an Object with no field validated field should return an error object with proper argNumber', function () {
+        let getVar = validateValue('object:(modelId)string||(passportId)number||(msisdn)array');
+        const [, error1] = getVar({modelId: 'abc'});
+        expect(error1).to.not.equal(null);
+
+        getVar = validateValue('object:string||number||array');
+        const [, error2] = getVar({modelId: 'abc'});
+        expect(error2).to.not.equal(null);
     });
 });
 
