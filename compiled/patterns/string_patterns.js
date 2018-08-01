@@ -189,6 +189,19 @@ var PATTERN_PROCESSORS = {
         });
     },
 
+    'enum': function _enum(value, processors, argNumber) {
+        var strValue = '' + value;
+
+        if (!strValue || value !== strValue && strValue === 'NaN' || value !== strValue && strValue === 'null' || value !== strValue && strValue === 'undefined' || value !== strValue && strValue === 'false') throw new _exceptions.ImmunitetException('Argument can not be empty.', argNumber);
+
+        var processorsList = '' + processors.split(',');
+        if (processorsList.length === 0) throw new Error('No enum values was specified!');
+
+        if (!(0, _utils.isInArray)(value, processorsList)) throw new _exceptions.ImmunitetException('Supplied value does not match given enum values!', argNumber);
+
+        return value;
+    },
+
     'minimum': function minimum(value, minValue, argNumber) {
         if (!(0, _utils.isNumeric)(minValue)) throw new _exceptions.ImmunitetException('Minimum parameter is not type of number!', argNumber);
 
