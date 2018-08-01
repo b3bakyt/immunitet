@@ -220,6 +220,7 @@ export const PATTERN_PROCESSORS = {
 
         let processorsList = ''+ processors.split(',');
         console.log('processorsList:', processorsList);
+        console.log('processorsList.length:', processorsList.length);
 
         if (processorsList.length === 0)
             throw new Error('No enum values was specified!');

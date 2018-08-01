@@ -4,6 +4,7 @@ import im, {
     validateFunction,
     ImmunitetException
 } from '../src/immunitet';
+
 import Chai from 'chai';
 const {
     expect,
@@ -33,6 +34,17 @@ describe('check "enum" pattern processor', function () {
 
         let [, error6] = checkHello(false);
         expect(error6).not.equal(null);
+    });
+
+    it('given no enum value should return error', function () {
+        checkHello = validateValue('enum:');
+        expect(() => checkHello('one')).to.throw(Error);
+    });
+
+    it('given wrong value should return error', function () {
+        checkHello = validateValue('enum:one,two');
+        let [, error] = checkHello('three');
+        expect(error.message).to.equal("Supplied value does not match given enum values!");
     });
 
     it('given right String value should return value', function () {
