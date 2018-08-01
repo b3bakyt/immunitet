@@ -10,6 +10,7 @@ import {processDefaultValue} from "./default_value_processors";
 import {
     isEmpty,
     isNumeric,
+    isInArray,
 } from '../utils';
 
 let getProcessorsObject = function (processors) {
@@ -215,7 +216,18 @@ export const PATTERN_PROCESSORS = {
             || (value !== strValue && strValue === 'null')
             || (value !== strValue && strValue === 'undefined')
             || (value !== strValue && strValue === 'false'))
-            throw new ImmunitetException('Given argument is not type of function!', argNumber);
+            throw new ImmunitetException('Argument can not be empty.', argNumber);
+
+        let processorsList = ''+ processors.split(',');
+        console.log('processorsList:', processorsList);
+
+        if (processorsList.length === 0)
+            throw new Error('No enum values was specified!');
+
+        if (!isInArray(value, processorsList))
+            throw new ImmunitetException('Supplied value does not match given enum values!', argNumber);
+
+        return value;
     },
 
     'minimum': (value, minValue, argNumber) => {

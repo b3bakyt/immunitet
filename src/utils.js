@@ -53,3 +53,7 @@ export const isNumeric = (value) => {
     return (type === 'number' || type === 'string') &&
         !isNaN(value - parseFloat(value));
 };
+
+export const isInArray = (value, array) => {
+    return array.indexOf(value) > -1;
+};
