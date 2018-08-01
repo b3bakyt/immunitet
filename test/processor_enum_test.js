@@ -34,4 +34,10 @@ describe('check "enum" pattern processor', function () {
         let [, error6] = checkHello(false);
         expect(error6).not.equal(null);
     });
+
+    it('given right String value should return value', function () {
+        checkHello = validateFunction(hello, 'enum:one,two');
+        let [result] = checkHello('one');
+        expect(result).to.equal('one');
+    });
 });
