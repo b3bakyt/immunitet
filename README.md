@@ -1,16 +1,21 @@
 # Immunitet.js
 
-Валидатор, конвертатор аргументов функций, промисов и простых переменных.
+### Write pure business logic inside your functions
+and let immunitet.js to handle the dirty job.
 
-Библиотека [immunitet.js в гитхабе](https://github.com/b3bakyt/immunitet)
+Find it in [github](https://github.com/b3bakyt/immunitet)
 
-## Установка
+This library is meant to validate, convert: variables, function arguments, promise values
+
+## Installation
 
 ```
-npm i immunitet.js
+npm i -S immunitet.js
 ```
 
-### Использование библиотеки
+### Usage
+
+
 
 #### Валидация переменных и значений
 
