@@ -203,6 +203,21 @@ export const PATTERN_PROCESSORS = {
         });
     },
 
+    'enum': (value, processors, argNumber) => {
+        let strValue = ''+ value;
+
+        console.log('enum.value:', value);
+        console.log('enum.strValue:', strValue);
+        console.log('enum.processors:', processors);
+
+        if (!strValue
+            || (value !== strValue && strValue === 'NaN')
+            || (value !== strValue && strValue === 'null')
+            || (value !== strValue && strValue === 'undefined')
+            || (value !== strValue && strValue === 'false'))
+            throw new ImmunitetException('Given argument is not type of function!', argNumber);
+    },
+
     'minimum': (value, minValue, argNumber) => {
         if (!isNumeric(minValue))
             throw new ImmunitetException('Minimum parameter is not type of number!', argNumber);
