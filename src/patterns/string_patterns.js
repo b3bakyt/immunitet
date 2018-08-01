@@ -10,6 +10,7 @@ import {processDefaultValue} from "./default_value_processors";
 import {
     isEmpty,
     isNumeric,
+    isInArray,
 } from '../utils';
 
 let getProcessorsObject = function (processors) {
@@ -201,6 +202,33 @@ export const PATTERN_PROCESSORS = {
         return values.map(value => {
             return applyStringProcessors(value, processorsList, argNumber);
         });
+    },
+
+    'enum': (value, processors, argNumber) => {
+        let strValue = ''+ value;
+
+        console.log('enum.value:', value);
+        console.log('enum.strValue:', strValue);
+        console.log('enum.processors:', processors);
+
+        if (!strValue
+            || (value !== strValue && strValue === 'NaN')
+            || (value !== strValue && strValue === 'null')
+            || (value !== strValue && strValue === 'undefined')
+            || (value !== strValue && strValue === 'false'))
+            throw new ImmunitetException('Argument can not be empty.', argNumber);
+
+        let processorsList = ''+ processors.split(',');
+        console.log('processorsList:', processorsList);
+        console.log('processorsList.length:', processorsList.length);
+
+        if (processorsList.length === 0)
+            throw new Error('No enum values was specified!');
+
+        if (!isInArray(value, processorsList))
+            throw new ImmunitetException('Supplied value does not match given enum values!', argNumber);
+
+        return value;
     },
 
     'minimum': (value, minValue, argNumber) => {

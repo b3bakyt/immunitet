@@ -50,3 +50,7 @@ var isNumeric = exports.isNumeric = function isNumeric(value) {
     var type = typeof value === 'undefined' ? 'undefined' : _typeof(value);
     return (type === 'number' || type === 'string') && !isNaN(value - parseFloat(value));
 };
+
+var isInArray = exports.isInArray = function isInArray(value, array) {
+    return array.indexOf(value) > -1;
+};

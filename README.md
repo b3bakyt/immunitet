@@ -1,18 +1,23 @@
-# Immunitet.js
+# immunitet.js
 
-Валидатор, конвертатор аргументов функций, промисов и простых переменных.
+### Write pure business logic inside your functions
+and let immunitet.js to handle the dirty job.
 
-Библиотека [immunitet.js в гитхабе](https://github.com/b3bakyt/immunitet)
+Find it in [github](https://github.com/b3bakyt/immunitet)
 
-## Установка
+This library is meant to validate, convert: variables, function arguments, promise values
+
+## Installation
 
 ```
-npm i immunitet.js
+npm i -S immunitet.js
 ```
 
-### Использование библиотеки
+### Usage
 
-#### Валидация переменных и значений
+
+
+#### Variable validation
 
 ```
 import {validateValue} from 'immunitet.js';
@@ -25,7 +30,7 @@ let [result, error] = getVar("-33");
 // result: -33
 ```
 
-валидация нескольких значений
+Multiple variables validation
 
 ```
 import {validateValue} from 'immunitet.js';
@@ -41,7 +46,7 @@ let [result2, error2] = getVars("3.4", 4.4, '3.2', 6.9);
 // result: [3.4, 4, 4, 6]
 ```
 
-#### обработка значений
+#### Value processing
 
 ```
 let splitString = validateValue('split:,|each:number:convert');
@@ -50,7 +55,7 @@ const [result] = splitString('3,4');
 // result: [3, 4]
 ```
 
-Валидация аргументов функции
+Function argument validation
 
 ```
 import {validateFunction} from 'immunitet.js';
@@ -74,7 +79,7 @@ let [, error] = checkAdd(5, 12);
 // error.message: 'The given value is greater then 10'
 ```
 
-#### Передача пользовательской функции в качестве обработчика аргумента 
+#### Custom validators\processors
 
 ```
 checkAdd = validateFunction(add, {
@@ -86,9 +91,9 @@ let [result] = checkAdd('2.2', 3.9);
 // result: 6
 ```
 
-#### Обработка исключений
+#### Exception handling
 
-Генерация пользовательских ошибок
+Custom exceptions
 
 ```
 checkAdd = validateFunction(add, {
@@ -102,8 +107,8 @@ let [, error] = checkAdd('2.2', 3.9);
 // error.message: 'My custom error!' 
 ```
 
-Исключения типа ImmunitetException выбрасываемые внутри обрабатываемой функции или функции обработчика отлавливаются 
-immunitet.js и возвращаются в качестве результата ошибки.
+Exceptions of type ImmunitetException which is was thrown inside a user's functions will be caught by 
+immunitet.js and returned as an Error object.
 
 ```
 add = (a, b) => {
@@ -116,9 +121,9 @@ let [, error] = checkAdd(2, 3);
 // error.message: 'ImmunitetException thrown from inside a user function'
 ```
 
-Все остальные исключения должны отлавливаться внутри try ... catch блока
+All the other exceptions must be handled by a programmer!
 
-#### Обработка обещаний
+#### Promise argument validation
 
 ```
 import {validatePromise} from 'immunitet.js';
@@ -143,7 +148,7 @@ checkAdd('2', 5)
     .catch((error) => console.error('error:', error));
 ```
 
-Обработка исключений типа ImmunitetException в обещаниях
+Handling ImmunitetException inside promises
 
 ```
 checkAdd = validatePromise(add, {
@@ -161,7 +166,7 @@ checkAdd(2, 5).then(
     });
 ```
 
-Обработка других исключений и ошибок в обещаниях
+Handling Exceptions other than ImmunitetException inside promises
 
 ```
 checkAdd = validatePromise(add, {
@@ -179,7 +184,7 @@ checkAdd(2, 5).then(
     });
 ```
 
-Обработка Reject в обещаниях
+Rejects inside promises are handled the same way
 
 ```
 function add(a, b) {
@@ -201,7 +206,9 @@ checkAdd(2, 5)
     });
 ```
 
-Обещания в качестве аргументов функции
+Using Promises as function arguments.
+
+By default immunitet.js runs promises and passes resolved values as function arguments.
 
 ```
 function add(a, b) {
@@ -231,7 +238,7 @@ checkAdd(a, b)
     });
 ```
 
-Передача обещаний в качестве аргументов без обработки
+Passing promises as function arguments as is
 
 ```
 function addPromises(a, b) {
@@ -266,14 +273,14 @@ checkAdd(a, b)
     });
 ```
 
-### Список валидаторов, конвертаторов и обработчиков
+### List of validators, converters and processors
 
-##### Валидаторы
+##### Validators
 
 * number
     * convert, floor, round, ceil
 
-Пример:
+Example:
 ```
 let getVar = validateValue('number:floor');
 let [result] = getVar('5.9');
@@ -301,7 +308,7 @@ let [result, error] = getVar({toString: () => 31, valueOf: () => 32});
 * array
 * object
 
-Пример:
+Example:
 ``` 
 let getVar = validateValue('object:number:floor||default:1|number:ceil||function');
 let [result] = getVar({a: '33', b: '-9', c: () => {}});
@@ -321,7 +328,7 @@ let [result, error] = getVar({a: 1, b: '-9'});
 * boolean
     * convert
     
-Пример:
+Example:
 ```
 let getVar = validateValue('boolean:convert');
 let [result] = getVar('true');
@@ -329,7 +336,7 @@ let [result] = getVar('true');
 ```
 * pattern
     
-Пример:
+Example:
 ```
 let getVar = validateValue('pattern:[\\d]+');
 let [result] = getVar('123');
@@ -343,7 +350,7 @@ let [result] = getVar('Test');
 * default
     * true, false, null
     
-Пример:
+Example:
 ```
 let getVar = validateValue('default:11');
 let [result] = getVar();
@@ -356,7 +363,7 @@ let [result] = getVar();
 
 * date (RFC3339)
 
-Пример:
+Example:
 ```
 let getVar = validateValue('date');
 let [result] = getVar('2015-01-17T01:23:02Z');
@@ -369,7 +376,7 @@ let [result] = getVar('2015-01-17T18:23:02+06:45');
 
 * email (RFC5322)
 
-Пример:
+Example:
 ```
 let getVar = validateValue('email');
 let [result] = getVar('john.doe@example.com');
@@ -377,10 +384,10 @@ let [result] = getVar('john.doe@example.com');
 // result: [2,3,4]
 ```
 
-#### Обработчики
+#### Processors
 
 * split
-Пример:
+Example:
 ```
 let getVar = validateValue('split:,');
 let [result] = getVar('1,2,3');
@@ -388,18 +395,18 @@ let [result] = getVar('1,2,3');
 ```
 
 * each
-Пример:
+Example:
 ```
 let getVar = validateValue('each:number:ceil');
 let [result] = getVar([1.4, 2.1, 3.9]);
 // result: [2,3,4]
 ```
 
-#### Ошибки
+#### Errors
 
-Содержание ошибок
+Example object content
 
-Пример:
+Example:
 
 ```
 import {validateFunction} from 'immunitet.js';
@@ -418,7 +425,8 @@ let [, error] = checkAdd(5, 12);
 // error.argNumber: 1
 ```
 
-#### Псевнодимы обработчиков
+#### Custom aliases
+You can create a custom alias for a list of processors
 
 ```
 import {setAlias} from 'immunitet.js';
@@ -430,9 +438,9 @@ const [result] = getVar([3.2, 4.5, 7.9]);
 // result: [4, 5, 8]
 ```
 
-#### Создание пользовательских обработчиков
+#### Custom processor creation
 
-Если вам нужно создать свои обработчики используйте функцию pluginPatternProcessors
+You can create a custom processor using pluginPatternProcessors function
 
 ```
 let patterns = {
