@@ -374,12 +374,12 @@ export const PATTERN_PROCESSORS = {
         return value;
     },
 
-    'alpha lat':(value,argument,argNumber)=>{
+    'cyrillic':(value,argument,argNumber)=>{
         console.log('value:', value);
-        let pattern = '^[a-zA-Z]\s$';
+        let pattern = '^[а-яА-ЯёЁ\\s?]+$';
         let regexp=new RegExp(pattern);
         if (!regexp.test(value))
-            throw new ImmunitetException('Given value is not type of string.', argNumber);
+            throw new ImmunitetException('Given value is not cyrillic letters.', argNumber);
         return value;
     },
 
