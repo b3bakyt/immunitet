@@ -27,7 +27,6 @@ let getProcessorsObject = function (processors) {
                 newObjectList = {};
                 return;
             }
-
             newObjectList[propName] = value;
             return;
         }
@@ -49,7 +48,7 @@ let getPropertyProcessors = function (processorsList, prop, argNumber) {
         return processorsList.shift();
 
     if (!processorsList[prop])
-        throw new ImmunitetException('No validation processor is specified for an Object property '+ prop +'!', argNumber);
+        throw new ImmunitetException('No validation processor is specified for an Object property ' + prop + '!', argNumber);
 
     const result = processorsList[prop];
     delete processorsList[prop];
@@ -99,18 +98,6 @@ export const PATTERN_PROCESSORS = {
         return value;
     },
 
-    'string': (value, processors, argNumber) => {
-        if (!value)
-            throw new ImmunitetException('Argument can not be empty.', argNumber);
-
-        if (typeof value !== 'string')
-            throw new ImmunitetException('Given argument is not type of string!', argNumber);
-
-        if (processors)
-            value = processString(value, processors, argNumber);
-
-        return value;
-    },
 
     'array': (value, processors, argNumber) => {
         if (!value)
@@ -137,11 +124,11 @@ export const PATTERN_PROCESSORS = {
         let result, i = 0;
         for (let prop in userObject) {
             i++;
-            if (!userObject.hasOwnProperty( prop ))
+            if (!userObject.hasOwnProperty(prop))
                 continue;
 
-            let propProcessors = getPropertyProcessors(processorsList, prop, argNumber +':'+ prop);
-            result = processStringPatterns(userObject[prop], propProcessors, argNumber +':'+ prop);
+            let propProcessors = getPropertyProcessors(processorsList, prop, argNumber + ':' + prop);
+            result = processStringPatterns(userObject[prop], propProcessors, argNumber + ':' + prop);
 
             userObject[prop] = result;
         }
@@ -150,7 +137,7 @@ export const PATTERN_PROCESSORS = {
         if (processorKeys.length) {
             let firstKey = processorKeys.shift();
             firstKey = isNumeric(firstKey) ? i : firstKey;
-            throw new ImmunitetException('Given argument is not type of function!', argNumber +':'+ firstKey);
+            throw new ImmunitetException('Given argument is not type of function!', argNumber + ':' + firstKey);
         }
 
         return userObject;
@@ -187,7 +174,7 @@ export const PATTERN_PROCESSORS = {
         if (!value)
             return value;
 
-        return (value+'').split(cleanedSplitter);
+        return (value + '').split(cleanedSplitter);
     },
 
     'each': (values, processors, argNumber) => {
@@ -205,7 +192,7 @@ export const PATTERN_PROCESSORS = {
     },
 
     'enum': (value, processors, argNumber) => {
-        let strValue = ''+ value;
+        let strValue = '' + value;
 
         console.log('enum.value:', value);
         console.log('enum.strValue:', strValue);
@@ -218,7 +205,7 @@ export const PATTERN_PROCESSORS = {
             || (value !== strValue && strValue === 'false'))
             throw new ImmunitetException('Argument can not be empty.', argNumber);
 
-        let processorsList = ''+ processors.split(',');
+        let processorsList = '' + processors.split(',');
         console.log('processorsList:', processorsList);
         console.log('processorsList.length:', processorsList.length);
 
@@ -244,7 +231,7 @@ export const PATTERN_PROCESSORS = {
         minValue = +minValue;
 
         if (value < minValue)
-            throw new ImmunitetException('The given value is less then '+ minValue, argNumber);
+            throw new ImmunitetException('The given value is less then ' + minValue, argNumber);
 
         return value;
     },
@@ -262,7 +249,7 @@ export const PATTERN_PROCESSORS = {
         maxValue = +maxValue;
 
         if (value > maxValue)
-            throw new ImmunitetException('The given value is greater then '+ maxValue, argNumber);
+            throw new ImmunitetException('The given value is greater then ' + maxValue, argNumber);
 
         return value;
     },
@@ -273,8 +260,8 @@ export const PATTERN_PROCESSORS = {
 
         length = +length;
 
-        if ((value+'').length < length)
-            throw new ImmunitetException('String minimum length must be '+ length + ' symbols!', argNumber);
+        if ((value + '').length < length)
+            throw new ImmunitetException('String minimum length must be ' + length + ' symbols!', argNumber);
 
         return value;
     },
@@ -285,8 +272,8 @@ export const PATTERN_PROCESSORS = {
 
         length = +length;
 
-        if ((value+'').length > length)
-            throw new ImmunitetException('String maximum length must be '+ length + ' symbols!', argNumber);
+        if ((value + '').length > length)
+            throw new ImmunitetException('String maximum length must be ' + length + ' symbols!', argNumber);
 
         return value;
     },
@@ -345,7 +332,7 @@ export const PATTERN_PROCESSORS = {
         // 1937-01-01T12:00:27.87+00:20
         pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
          */
-        let pattern = '^(?:[1-9]\\d{3}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1\\d|2[0-8])|(?:0[13-9]|1[0-2])-(?:29|30)|(?:0[13578]|1[02])-31)|(?:[1-9]\\d(?:0[48]|[2468][048]|[13579][26])|(?:[2468][048]|[13579][26])00)-02-29)T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:Z|[+-][01]\\d:[0-5]\\d)$';
+        let pattern = '';
         let regexp = new RegExp(pattern, 'i');
         if (!regexp.test(value))
             throw new ImmunitetException('Given value is not type of RFC3339 date.', argNumber);
@@ -362,6 +349,48 @@ export const PATTERN_PROCESSORS = {
         if (!regexp.test(value))
             throw new ImmunitetException('Given value is not type of RFC5322 email.', argNumber);
 
+        return value;
+    },
+
+    'string': (value, processors, argNumber) => {
+        if (!value)
+            throw new ImmunitetException('Argument can not be empty.', argNumber);
+
+        if (typeof value !== 'string')
+            throw new ImmunitetException(' Given argument is not type of string!', argNumber);
+
+        if (processors)
+            value = processString(value, processors, argNumber);
+
+        return value;
+    },
+
+    'alpha-numeric':(value,argument,argNumber)=>{
+        console.log('value:', value);
+        let pattern = '^(\\d|[a-zA-Z]|[\\s])+([\\da-zA-Z\\s?]+)$';
+        let regexp=new RegExp(pattern);
+        if (!regexp.test(value))
+            throw new ImmunitetException('Given value is not type of string or number.', argNumber);
+        return value;
+    },
+
+    'alpha lat':(value,argument,argNumber)=>{
+        console.log('value:', value);
+        let pattern = '^[a-zA-Z]\s$';
+        let regexp=new RegExp(pattern);
+        if (!regexp.test(value))
+            throw new ImmunitetException('Given value is not type of string.', argNumber);
+        return value;
+    },
+
+    'phone': (value, argument, argNumber) => {
+        console.log('value:', value);
+        // if (!value)
+        //     throw new ImmunitetException('Phone argument can not be empty.', argNumber);
+        let pattern = '^([\\(+.-\\s])?\\(?([\\(+.-\\s])?(\\d{1,4})\\)?([.-\\s])?\\(?(\\d{1,4})([-.\\s])?(\\d{2,4})\\)?([-.\\s])?(\\d{2,4})?([-.\\s])?(\\d{2,4})?([-.\\s])?(\\d{2,7})?$';
+        let regexp = new RegExp(pattern);
+        if (!regexp.test(value))
+            throw new ImmunitetException('Given value is not type of Phone number.', argNumber);
         return value;
     },
 
@@ -411,6 +440,4 @@ export const PATTERN_PROCESSORS = {
     },
 };
 
-export const PATTERN_PROCESSOR_ALIASES = {
-
-};
+export const PATTERN_PROCESSOR_ALIASES = {};
