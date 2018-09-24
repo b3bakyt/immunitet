@@ -194,10 +194,6 @@ export const PATTERN_PROCESSORS = {
     'enum': (value, processors, argNumber) => {
         let strValue = '' + value;
 
-        console.log('enum.value:', value);
-        console.log('enum.strValue:', strValue);
-        console.log('enum.processors:', processors);
-
         if (!strValue
             || (value !== strValue && strValue === 'NaN')
             || (value !== strValue && strValue === 'null')
@@ -206,8 +202,6 @@ export const PATTERN_PROCESSORS = {
             throw new ImmunitetException('Argument can not be empty.', argNumber);
 
         let processorsList = '' + processors.split(',');
-        console.log('processorsList:', processorsList);
-        console.log('processorsList.length:', processorsList.length);
 
         if (processorsList.length === 0)
             throw new Error('No enum values was specified!');
@@ -366,17 +360,31 @@ export const PATTERN_PROCESSORS = {
     },
 
     'alpha-numeric':(value,argument,argNumber)=>{
-        console.log('value:', value);
+       // console.log('value:', value);
+        if (!value)
+            throw new ImmunitetException('Email argument can not be empty.', argNumber);
         let pattern = '^(\\d|[a-zA-Z]|[\\s])+([\\da-zA-Z\\s?]+)$';
         let regexp=new RegExp(pattern);
         if (!regexp.test(value))
             throw new ImmunitetException('Given value is not type of string or number.', argNumber);
         return value;
     },
+    'numeric':(value,argument,argNumber)=>{
+       // console.log('value:', value);
+        if (!value)
+            throw new ImmunitetException('Email argument can not be empty.', argNumber);
+        let pattern = '([\\d]\\s?)+$';
+        let regexp=new RegExp(pattern);
+        if (!regexp.test(value))
+            throw new ImmunitetException('Given value is not type of number.', argNumber);
+        return value;
+    },
 
     'cyrillic':(value,argument,argNumber)=>{
-        console.log('value:', value);
-        let pattern = '^[а-яА-ЯёЁ\\s?]+$';
+      //  console.log('value:', value);
+        if (!value)
+            throw new ImmunitetException('Email argument can not be empty.', argNumber);
+        let pattern = '([а-яА-ЯёЁ]\\s?)+$';
         let regexp=new RegExp(pattern);
         if (!regexp.test(value))
             throw new ImmunitetException('Given value is not cyrillic letters.', argNumber);
@@ -385,8 +393,8 @@ export const PATTERN_PROCESSORS = {
 
     'phone': (value, argument, argNumber) => {
         console.log('value:', value);
-        // if (!value)
-        //     throw new ImmunitetException('Phone argument can not be empty.', argNumber);
+        if (!value)
+             throw new ImmunitetException('Phone argument can not be empty.', argNumber);
         let pattern = '^([\\(+.-\\s])?\\(?([\\(+.-\\s])?(\\d{1,4})\\)?([.-\\s])?\\(?(\\d{1,4})([-.\\s])?(\\d{2,4})\\)?([-.\\s])?(\\d{2,4})?([-.\\s])?(\\d{2,4})?([-.\\s])?(\\d{2,7})?$';
         let regexp = new RegExp(pattern);
         if (!regexp.test(value))
