@@ -326,7 +326,7 @@ export const PATTERN_PROCESSORS = {
         // 1937-01-01T12:00:27.87+00:20
         pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
          */
-        let pattern = '';
+        let pattern = '^(?:[1-9]\\\\d{3}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1\\\\d|2[0-8])|(?:0[13-9]|1[0-2])-(?:29|30)|(?:0[13578]|1[02])-31)|(?:[1-9]\\\\d(?:0[48]|[2468][048]|[13579][26])|(?:[2468][048]|[13579][26])00)-02-29)T(?:[01]\\\\d|2[0-3]):[0-5]\\\\d:[0-5]\\\\d(?:Z|[+-][01]\\\\d:[0-5]\\\\d)$';
         let regexp = new RegExp(pattern, 'i');
         if (!regexp.test(value))
             throw new ImmunitetException('Given value is not type of RFC3339 date.', argNumber);
@@ -360,7 +360,6 @@ export const PATTERN_PROCESSORS = {
     },
 
     'alpha-numeric':(value,argument,argNumber)=>{
-       // console.log('value:', value);
         if (!value)
             throw new ImmunitetException('Email argument can not be empty.', argNumber);
         let pattern = '^(\\d|[a-zA-Z]|[\\s])+([\\da-zA-Z\\s?]+)$';
@@ -370,7 +369,6 @@ export const PATTERN_PROCESSORS = {
         return value;
     },
     'numeric':(value,argument,argNumber)=>{
-       // console.log('value:', value);
         if (!value)
             throw new ImmunitetException('Email argument can not be empty.', argNumber);
         let pattern = '([\\d]\\s?)+$';
@@ -379,9 +377,28 @@ export const PATTERN_PROCESSORS = {
             throw new ImmunitetException('Given value is not type of number.', argNumber);
         return value;
     },
+//latin and cyrillic
+    'alpha':(value,argument,argNumber)=>{
+        if (!value)
+            throw new ImmunitetException('Email argument can not be empty.', argNumber);
+        let pattern = '^([а-яА-ЯёЁa-zA-Z]\\s?)+$';
+        let regexp=new RegExp(pattern);
+        if (!regexp.test(value))
+            throw new ImmunitetException('Given value is not type of string.', argNumber);
+        return value;
+    },
+
+    'latin':(value,argument,argNumber)=>{
+        if (!value)
+            throw new ImmunitetException('Email argument can not be empty.', argNumber);
+        let pattern = '^([a-zA-Z]\\s?)+$';
+        let regexp=new RegExp(pattern);
+        if (!regexp.test(value))
+            throw new ImmunitetException('Given value is not latin letters.', argNumber);
+        return value;
+    },
 
     'cyrillic':(value,argument,argNumber)=>{
-      //  console.log('value:', value);
         if (!value)
             throw new ImmunitetException('Email argument can not be empty.', argNumber);
         let pattern = '([а-яА-ЯёЁ]\\s?)+$';
@@ -392,7 +409,6 @@ export const PATTERN_PROCESSORS = {
     },
 
     'phone': (value, argument, argNumber) => {
-        console.log('value:', value);
         if (!value)
              throw new ImmunitetException('Phone argument can not be empty.', argNumber);
         let pattern = '^([\\(+.-\\s])?\\(?([\\(+.-\\s])?(\\d{1,4})\\)?([.-\\s])?\\(?(\\d{1,4})([-.\\s])?(\\d{2,4})\\)?([-.\\s])?(\\d{2,4})?([-.\\s])?(\\d{2,4})?([-.\\s])?(\\d{2,7})?$';
