@@ -450,7 +450,24 @@ export const PATTERN_PROCESSORS = {
 
     'uuid': (value, argument, argNumber) => {
 
-        return null;
+        if (!value)
+            throw new ImmunitetException('UUID argument can not be empty.', argNumber);
+        let pattern = '^([a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}){1}$';
+        let regexp = new RegExp(pattern);
+        if (!regexp.test(value))
+            throw new ImmunitetException('Given value is not type of UUID.', argNumber);
+        return value;
+    },
+
+    'not-empty': (value, argument, argNumber) => {
+
+        if (!value)
+            throw new ImmunitetException('argument can not be empty.', argNumber);
+        let pattern = '^.*[^\\s].*$';
+        let regexp = new RegExp(pattern);
+        if (!regexp.test(value))
+            throw new ImmunitetException('Given value is not be empty.', argNumber);
+        return value;
     },
 
     'json-pointer': (value, argument, argNumber) => {
