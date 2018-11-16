@@ -1034,7 +1034,7 @@ describe('check "date" RFC3339 pattern processor', function () {
     });
 
     it('given right value should return same value', function () {
-        let [result] = validateValue('date')('2015-01-17T01:23:02Z');
+        let [result] = validateValue('date')('2015-01-17T1:23:02Z');
         expect(result).not.equal(null);
 
         let [result1] = validateValue('date')('2015-01-17T18:23:02Z');
