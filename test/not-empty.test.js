@@ -16,9 +16,6 @@ const {
 describe('check "not-empty" pattern processor on incorrect work', function () {
     let checkNotEmpty = null;
 
-    function hello(value) {
-        return value;
-    }
 
     it('given  value should return error', function () {
         checkNotEmpty = validateValue('not-empty');
@@ -30,6 +27,7 @@ describe('check "not-empty" pattern processor on incorrect work', function () {
     it('given  value should return error', function () {
         checkNotEmpty = validateValue('not-empty');
         let [result, error] = checkNotEmpty('     ');
+
         expect(error.message).to.equal('Given value is not be empty.');
         expect(result).to.equal(null);
     });
@@ -38,9 +36,7 @@ describe('check "not-empty" pattern processor on incorrect work', function () {
 describe('check "not-empty"  pattern processor on correct work ', function () {
     let checkNotEmpty = null;
 
-    function hello(value) {
-        return value;
-    }
+
     it('given  value should return successful ', function () {
         checkNotEmpty = validateValue('not-empty');
         let [result, error] = checkNotEmpty('Альфа');

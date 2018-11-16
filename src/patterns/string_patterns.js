@@ -460,13 +460,38 @@ export const PATTERN_PROCESSORS = {
     },
 
     'not-empty': (value, argument, argNumber) => {
-
-        if (!value)
-            throw new ImmunitetException('argument can not be empty.', argNumber);
-        let pattern = '^.*[^\\s].*$';
-        let regexp = new RegExp(pattern);
-        if (!regexp.test(value))
+        if (value.trim() === "") {
             throw new ImmunitetException('Given value is not be empty.', argNumber);
+        }
+
+        return value;
+        // if (!value)
+        //     throw new ImmunitetException('argument can not be empty.', argNumber);
+        // let pattern = '^.*[^\\s].*$';
+        // let regexp = new RegExp(pattern);
+        // if (!regexp.test(value))
+        //     throw new ImmunitetException('Given value is not be empty.', argNumber);
+    },
+
+
+    'undefined': (value, argument, argNumber) => {
+        if (value === undefined) {
+            throw new ImmunitetException('Given value is not be undefined.', argNumber);
+        }
+        return value;
+    },
+
+    'NULL': (value, argument, argNumber) => {
+        if (value === null) {
+            throw new ImmunitetException('Given value is not be NULL.', argNumber);
+        }
+        return value;
+    },
+
+    'NaN': (value, argument, argNumber) => {
+        if (value!==value) {
+            throw new ImmunitetException('Given value is not be NaN.', argNumber);
+        }
         return value;
     },
 
