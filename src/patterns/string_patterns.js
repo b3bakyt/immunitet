@@ -133,11 +133,13 @@ export const PATTERN_PROCESSORS = {
             userObject[prop] = result;
         }
 
-        let processorKeys = Object.keys(processorsList);
-        if (processorKeys.length) {
-            let firstKey = processorKeys.shift();
-            firstKey = isNumeric(firstKey) ? i : firstKey;
-            throw new ImmunitetException('Given argument is not type of function!', argNumber + ':' + firstKey);
+        for (let prop in Object.assign({}, processorsList)) {
+            i++;
+
+            let propProcessors = getPropertyProcessors(processorsList, prop, argNumber + ':' + prop);
+            result = processStringPatterns(undefined, propProcessors, argNumber + ':' + prop);
+
+            userObject[prop] = result;
         }
 
         return userObject;
