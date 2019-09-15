@@ -461,19 +461,19 @@ export const PATTERN_PROCESSORS = {
 
     'not-empty': (value, argument, argNumber) => {
         if (value === undefined) {
-            throw new ImmunitetException('given value must not be a undefined', argNumber);
+            throw new ImmunitetException('given value must not be undefined', argNumber);
         }
 
         if (value === null) {
-            throw new ImmunitetException('given value must not be a null', argNumber);
+            throw new ImmunitetException('given value must not be null', argNumber);
         }
 
         if (value!==value) {
-            throw new ImmunitetException('given value must not be a NaN', argNumber);
+            throw new ImmunitetException('given value must not be NaN', argNumber);
         }
 
         if (typeof value == 'string' && value === "") {
-            throw new ImmunitetException('given value must not be a empty', argNumber);
+            throw new ImmunitetException('given value must not be empty', argNumber);
         }
 
         return value;
@@ -488,6 +488,13 @@ export const PATTERN_PROCESSORS = {
     'relative-json-pointer': (value, argument, argNumber) => {
 
         return null;
+    },
+
+    'trim': (value, splitter, argNumber) => {
+        if (typeof value !== 'string')
+            throw new ImmunitetException('Given value must be a string.', argNumber);
+
+        return value.trim();
     },
 };
 
