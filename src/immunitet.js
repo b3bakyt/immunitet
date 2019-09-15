@@ -52,7 +52,6 @@ const im = {
                 return processArgumentsNRun(fn, args, arrayProcessors);
             }
             catch (exception) {
-                // console.error('processedArgument.exception:', exception);
                 if (exception instanceof ImmunitetException)
                     return [null, exception];
 

@@ -20,8 +20,8 @@ describe('check "not-empty" pattern processor on incorrect work.', function () {
             it('given  value should return error', function () {
                 checkNotEmpty = validateValue('not-empty');
                 let [result, error] = checkNotEmpty(' ');
-                expect(error.message).to.equal('given value must not be a whitespace');
-                expect(result).to.equal(null);
+                expect(error).to.equal(null);
+                expect(result).to.equal(' ');
             });
         });
 

@@ -472,8 +472,8 @@ export const PATTERN_PROCESSORS = {
             throw new ImmunitetException('given value must not be a NaN', argNumber);
         }
 
-        if (typeof value == 'string' && value.trim() === "") {
-            throw new ImmunitetException('given value must not be a whitespace', argNumber);
+        if (typeof value == 'string' && value === "") {
+            throw new ImmunitetException('given value must not be a empty', argNumber);
         }
 
         return value;
