@@ -1,11 +1,13 @@
-import {PATTERN_FLAGS} from '../constants/processor_flags';
-import {ImmunitetException} from '../exceptions';
 import {applyStringProcessors, processStringPatterns} from '../patternProcessors/string_pattern_processor';
 import {processNumber} from './number_processors';
 import {processString} from './string_processors';
 import {processBoolean} from './boolean_processors';
 import {processRegexp} from "./pattern_processors";
 import {processDefaultValue} from "./default_value_processors";
+import {
+    ImmunitetException,
+    ImmunitetEmptyValueException,
+} from '../exceptions';
 
 import {
     isEmpty,
@@ -56,6 +58,14 @@ let getPropertyProcessors = function (processorsList, prop, argNumber) {
 };
 
 export const PATTERN_PROCESSORS = {
+
+    'empty': (value, splitter, argNumber) => {
+        if (value === '' || value === null || value === undefined)
+            throw new ImmunitetEmptyValueException(value, argNumber);
+
+        return value;
+    },
+
     'promise': (value, processors, argNumber) => {
         if (!value)
             throw new ImmunitetException('Given argument is not type of promise!', argNumber);
@@ -369,8 +379,8 @@ export const PATTERN_PROCESSORS = {
         return value;
     },
     'numeric':(value,argument,argNumber)=>{
-        if (!value)
-            throw new ImmunitetException('Email argument can not be empty.', argNumber);
+        if (!value && value !== 0)
+            throw new ImmunitetException('Numeric argument can not be empty.', argNumber);
         let pattern = '([\\d]\\s?)+$';
         let regexp=new RegExp(pattern);
         if (!regexp.test(value))

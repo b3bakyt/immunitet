@@ -1,5 +1,6 @@
 import {PATTERN_FLAGS} from '../constants/processor_flags';
 import {isEmpty} from '../utils';
+import {ImmunitetEmptyValueException} from "../exceptions";
 
 let PATTERN_PROCESSOR_ALIASES = {};
 let PATTERN_PROCESSORS = {};
@@ -34,25 +35,34 @@ export const processStringPatterns = (argumentValue, processors, argNumber) => {
 };
 
 export const applyStringProcessors = (argumentValue, processorsList, argNumber) => {
-    return processorsList.reduce((result, processor) => {
-        if (PATTERN_PROCESSOR_ALIASES[processor]) {
-            return applyStringProcessors(result, PATTERN_PROCESSOR_ALIASES[processor].split('|'), argNumber);
-        }
+    try {
+        return processorsList.reduce((result, processor) => {
+            if (PATTERN_PROCESSOR_ALIASES[processor]) {
+                return applyStringProcessors(result, PATTERN_PROCESSOR_ALIASES[processor].split('|'), argNumber);
+            }
 
-        const [processorType, ...params] = processor.split(':');
-        if (!processorType)
-            return result;
+            const [processorType, ...params] = processor.split(':');
+            if (!processorType)
+                return result;
 
-        if (!PATTERN_PROCESSORS[processorType])
-            throw new Error('Unknown argument processor "'+ processorType +'"!');
+            if (!PATTERN_PROCESSORS[processorType])
+                throw new Error('Unknown argument processor "'+ processorType +'"!');
 
-        if (PATTERN_PROCESSORS[processorType] === PATTERN_FLAGS.PASS)
-            return result;
+            if (PATTERN_PROCESSORS[processorType] === PATTERN_FLAGS.PASS)
+                return result;
 
-        if (typeof PATTERN_PROCESSORS[processorType] !== 'function') {
-            return result;
-        }
+            if (typeof PATTERN_PROCESSORS[processorType] !== 'function') {
+                return result;
+            }
 
-        return PATTERN_PROCESSORS[processorType].call(null, result, params.join(':'), argNumber);
-    }, argumentValue);
+            console.log('applyStringProcessors:', processorType, result, params, argNumber);
+            return PATTERN_PROCESSORS[processorType].call(null, result, params.join(':'), argNumber);
+
+        }, argumentValue);
+    } catch (e) {
+        console.log('applyStringProcessors exception:', e.className, e instanceof ImmunitetEmptyValueException);
+        if (e instanceof ImmunitetEmptyValueException)
+            return e.arg;
+        throw e;
+    }
 };
