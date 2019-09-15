@@ -11,6 +11,8 @@ var _processor_flags = require('../constants/processor_flags');
 
 var _utils = require('../utils');
 
+var _exceptions = require('../exceptions');
+
 function _toArray(arr) { return Array.isArray(arr) ? arr : Array.from(arr); }
 
 var PATTERN_PROCESSOR_ALIASES = {};
@@ -42,26 +44,33 @@ var processStringPatterns = exports.processStringPatterns = function processStri
 };
 
 var applyStringProcessors = exports.applyStringProcessors = function applyStringProcessors(argumentValue, processorsList, argNumber) {
-    return processorsList.reduce(function (result, processor) {
-        if (PATTERN_PROCESSOR_ALIASES[processor]) {
-            return applyStringProcessors(result, PATTERN_PROCESSOR_ALIASES[processor].split('|'), argNumber);
-        }
+    try {
+        return processorsList.reduce(function (result, processor) {
+            if (PATTERN_PROCESSOR_ALIASES[processor]) {
+                return applyStringProcessors(result, PATTERN_PROCESSOR_ALIASES[processor].split('|'), argNumber);
+            }
 
-        var _processor$split = processor.split(':'),
-            _processor$split2 = _toArray(_processor$split),
-            processorType = _processor$split2[0],
-            params = _processor$split2.slice(1);
+            var _processor$split = processor.split(':'),
+                _processor$split2 = _toArray(_processor$split),
+                processorType = _processor$split2[0],
+                params = _processor$split2.slice(1);
 
-        if (!processorType) return result;
+            if (!processorType) return result;
 
-        if (!PATTERN_PROCESSORS[processorType]) throw new Error('Unknown argument processor "' + processorType + '"!');
+            if (!PATTERN_PROCESSORS[processorType]) throw new Error('Unknown argument processor "' + processorType + '"!');
 
-        if (PATTERN_PROCESSORS[processorType] === _processor_flags.PATTERN_FLAGS.PASS) return result;
+            if (PATTERN_PROCESSORS[processorType] === _processor_flags.PATTERN_FLAGS.PASS) return result;
 
-        if (typeof PATTERN_PROCESSORS[processorType] !== 'function') {
-            return result;
-        }
+            if (typeof PATTERN_PROCESSORS[processorType] !== 'function') {
+                return result;
+            }
 
-        return PATTERN_PROCESSORS[processorType].call(null, result, params.join(':'), argNumber);
-    }, argumentValue);
+            console.log('applyStringProcessors:', processorType, result, params, argNumber);
+            return PATTERN_PROCESSORS[processorType].call(null, result, params.join(':'), argNumber);
+        }, argumentValue);
+    } catch (e) {
+        console.log('applyStringProcessors exception:', e.className, e instanceof _exceptions.ImmunitetEmptyValueException);
+        if (e instanceof _exceptions.ImmunitetEmptyValueException) return e.arg;
+        throw e;
+    }
 };

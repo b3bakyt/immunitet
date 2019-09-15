@@ -7,10 +7,6 @@ exports.PATTERN_PROCESSOR_ALIASES = exports.PATTERN_PROCESSORS = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _processor_flags = require('../constants/processor_flags');
-
-var _exceptions = require('../exceptions');
-
 var _string_pattern_processor = require('../patternProcessors/string_pattern_processor');
 
 var _number_processors = require('./number_processors');
@@ -22,6 +18,8 @@ var _boolean_processors = require('./boolean_processors');
 var _pattern_processors = require('./pattern_processors');
 
 var _default_value_processors = require('./default_value_processors');
+
+var _exceptions = require('../exceptions');
 
 var _utils = require('../utils');
 
@@ -41,7 +39,6 @@ var getProcessorsObject = function getProcessorsObject(processors) {
                 newObjectList = {};
                 return;
             }
-
             newObjectList[propName] = value;
             return;
         }
@@ -69,6 +66,13 @@ var getPropertyProcessors = function getPropertyProcessors(processorsList, prop,
 };
 
 var PATTERN_PROCESSORS = {
+
+    'empty': function empty(value, splitter, argNumber) {
+        if (value === '' || value === null || value === undefined) throw new _exceptions.ImmunitetEmptyValueException(value, argNumber);
+
+        return value;
+    },
+
     'promise': function promise(value, processors, argNumber) {
         if (!value) throw new _exceptions.ImmunitetException('Given argument is not type of promise!', argNumber);
 
@@ -97,16 +101,6 @@ var PATTERN_PROCESSORS = {
         if (typeof value === 'string') throw new _exceptions.ImmunitetException('Given argument is not type of integer!', argNumber);
 
         if (!Number.isInteger(value)) throw new _exceptions.ImmunitetException('Given argument is not type of integer!', argNumber);
-
-        return value;
-    },
-
-    'string': function string(value, processors, argNumber) {
-        if (!value) throw new _exceptions.ImmunitetException('Argument can not be empty.', argNumber);
-
-        if (typeof value !== 'string') throw new _exceptions.ImmunitetException('Given argument is not type of string!', argNumber);
-
-        if (processors) value = (0, _string_processors.processString)(value, processors, argNumber);
 
         return value;
     },
@@ -195,6 +189,7 @@ var PATTERN_PROCESSORS = {
         if (!strValue || value !== strValue && strValue === 'NaN' || value !== strValue && strValue === 'null' || value !== strValue && strValue === 'undefined' || value !== strValue && strValue === 'false') throw new _exceptions.ImmunitetException('Argument can not be empty.', argNumber);
 
         var processorsList = '' + processors.split(',');
+
         if (processorsList.length === 0) throw new Error('No enum values was specified!');
 
         if (!(0, _utils.isInArray)(value, processorsList)) throw new _exceptions.ImmunitetException('Supplied value does not match given enum values!', argNumber);
@@ -310,6 +305,63 @@ var PATTERN_PROCESSORS = {
         return value;
     },
 
+    'string': function string(value, processors, argNumber) {
+        if (!value) throw new _exceptions.ImmunitetException('Argument can not be empty.', argNumber);
+
+        if (typeof value !== 'string') throw new _exceptions.ImmunitetException(' Given argument is not type of string!', argNumber);
+
+        if (processors) value = (0, _string_processors.processString)(value, processors, argNumber);
+
+        return value;
+    },
+
+    'alpha-numeric': function alphaNumeric(value, argument, argNumber) {
+        if (!value) throw new _exceptions.ImmunitetException('Email argument can not be empty.', argNumber);
+        var pattern = '^(\\d|[a-zA-Z]|[\\s])+([\\da-zA-Z\\s?]+)$';
+        var regexp = new RegExp(pattern);
+        if (!regexp.test(value)) throw new _exceptions.ImmunitetException('Given value is not type of string or number.', argNumber);
+        return value;
+    },
+    'numeric': function numeric(value, argument, argNumber) {
+        if (!value && value !== 0) throw new _exceptions.ImmunitetException('Numeric argument can not be empty.', argNumber);
+        var pattern = '([\\d]\\s?)+$';
+        var regexp = new RegExp(pattern);
+        if (!regexp.test(value)) throw new _exceptions.ImmunitetException('Given value is not type of number.', argNumber);
+        return value;
+    },
+    //latin and cyrillic
+    'alpha': function alpha(value, argument, argNumber) {
+        if (!value) throw new _exceptions.ImmunitetException('Email argument can not be empty.', argNumber);
+        var pattern = '^([а-яА-ЯёЁa-zA-Z]\\s?)+$';
+        var regexp = new RegExp(pattern);
+        if (!regexp.test(value)) throw new _exceptions.ImmunitetException('Given value is not type of string.', argNumber);
+        return value;
+    },
+
+    'latin': function latin(value, argument, argNumber) {
+        if (!value) throw new _exceptions.ImmunitetException('Email argument can not be empty.', argNumber);
+        var pattern = '^([a-zA-Z]\\s?)+$';
+        var regexp = new RegExp(pattern);
+        if (!regexp.test(value)) throw new _exceptions.ImmunitetException('Given value is not latin letters.', argNumber);
+        return value;
+    },
+
+    'cyrillic': function cyrillic(value, argument, argNumber) {
+        if (!value) throw new _exceptions.ImmunitetException('Email argument can not be empty.', argNumber);
+        var pattern = '([а-яА-ЯёЁ]\\s?)+$';
+        var regexp = new RegExp(pattern);
+        if (!regexp.test(value)) throw new _exceptions.ImmunitetException('Given value is not cyrillic letters.', argNumber);
+        return value;
+    },
+
+    'phone': function phone(value, argument, argNumber) {
+        if (!value) throw new _exceptions.ImmunitetException('Phone argument can not be empty.', argNumber);
+        var pattern = '^([\\(+.-\\s])?\\(?([\\(+.-\\s])?(\\d{1,4})\\)?([.-\\s])?\\(?(\\d{1,4})([-.\\s])?(\\d{2,4})\\)?([-.\\s])?(\\d{2,4})?([-.\\s])?(\\d{2,4})?([-.\\s])?(\\d{2,7})?$';
+        var regexp = new RegExp(pattern);
+        if (!regexp.test(value)) throw new _exceptions.ImmunitetException('Given value is not type of Phone number.', argNumber);
+        return value;
+    },
+
     'time': function time(value, argument, argNumber) {
 
         return null;
@@ -342,7 +394,31 @@ var PATTERN_PROCESSORS = {
 
     'uuid': function uuid(value, argument, argNumber) {
 
-        return null;
+        if (!value) throw new _exceptions.ImmunitetException('UUID argument can not be empty.', argNumber);
+        var pattern = '^([a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}){1}$';
+        var regexp = new RegExp(pattern);
+        if (!regexp.test(value)) throw new _exceptions.ImmunitetException('Given value is not type of UUID.', argNumber);
+        return value;
+    },
+
+    'not-empty': function notEmpty(value, argument, argNumber) {
+        if (value === undefined) {
+            throw new _exceptions.ImmunitetException('given value must not be undefined', argNumber);
+        }
+
+        if (value === null) {
+            throw new _exceptions.ImmunitetException('given value must not be null', argNumber);
+        }
+
+        if (value !== value) {
+            throw new _exceptions.ImmunitetException('given value must not be NaN', argNumber);
+        }
+
+        if (typeof value == 'string' && value === "") {
+            throw new _exceptions.ImmunitetException('given value must not be empty', argNumber);
+        }
+
+        return value;
     },
 
     'json-pointer': function jsonPointer(value, argument, argNumber) {
@@ -353,6 +429,12 @@ var PATTERN_PROCESSORS = {
     'relative-json-pointer': function relativeJsonPointer(value, argument, argNumber) {
 
         return null;
+    },
+
+    'trim': function trim(value, splitter, argNumber) {
+        if (typeof value !== 'string') throw new _exceptions.ImmunitetException('Given value must be a string.', argNumber);
+
+        return value.trim();
     }
 };
 

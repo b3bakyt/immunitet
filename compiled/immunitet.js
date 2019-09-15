@@ -53,7 +53,6 @@ var im = {
             try {
                 return processArgumentsNRun(fn, args, arrayProcessors);
             } catch (exception) {
-                // console.error('processedArgument.exception:', exception);
                 if (exception instanceof _exceptions.ImmunitetException) return [null, exception];
 
                 throw exception;
