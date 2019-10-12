@@ -1,6 +1,6 @@
 {
   "name": "immunitet.js",
-  "version": "1.7.1",
+  "version": "2.0.0",
   "description": "",
   "main": "index.js",
   "author": "",
@@ -11,10 +11,7 @@
     "mocha": "^4.0.1"
   },
   "scripts": {
-    "compile": "babel src --out-dir compiled",
     "start": "node --harmony index.js",
-    "mocha": "mocha",
-    "testr": "mocha -R spec --recursive ./test/",
     "test":  "mocha ./test/"
   }
 }
