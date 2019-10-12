@@ -571,77 +571,77 @@ describe('check "string" pattern processor', function () {
 });
 
 describe('check "boolean" pattern processor', function () {
-    let checkAdd = null;
+    let checkInvert = null;
     function invert(b) {
         return !b;
     }
 
     it('given empty values should return error', function () {
-        checkAdd = validateFunction(invert, {
+        checkInvert = validateFunction(invert, {
             a: 'boolean',
         });
-        let [, error1] = checkAdd('');
+        let [, error1] = checkInvert('');
         expect(error1).not.equal(null);
 
-        let [, error2] = checkAdd(NaN);
+        let [, error2] = checkInvert(NaN);
         expect(error2).not.equal(null);
 
-        let [, error3] = checkAdd(null);
+        let [, error3] = checkInvert(null);
         expect(error3).not.equal(null);
 
-        let [, error4] = checkAdd(0);
+        let [, error4] = checkInvert(0);
         expect(error4).not.equal(null);
 
-        let [, error5] = checkAdd(undefined);
+        let [, error5] = checkInvert(undefined);
         expect(error5).not.equal(null);
     });
 
     it('given a non "boolean" value should return error', function () {
-        checkAdd = validateFunction(invert, 'boolean');
+        checkInvert = validateFunction(invert, 'boolean');
 
-        let [, error1] = checkAdd(22);
+        let [, error1] = checkInvert(22);
         expect(error1).not.equal(null);
 
-        let [result2, error2] = checkAdd(Infinity);
+        let [result2, error2] = checkInvert(Infinity);
         expect(result2).to.equal(null);
         expect(error2).not.equal(null);
 
-        let [result3, error3] = checkAdd('hi');
+        let [result3, error3] = checkInvert('hi');
         expect(result3).to.equal(null);
         expect(error3).not.equal(null);
 
-        let [result5, error5] = checkAdd(2.2);
+        let [result5, error5] = checkInvert(2.2);
         expect(result5).to.equal(null);
         expect(error5).not.equal(null);
 
-        let [result6, error6] = checkAdd([]);
+        let [result6, error6] = checkInvert([]);
         expect(result6).to.equal(null);
         expect(error6).not.equal(null);
 
-        let [result7, error7] = checkAdd({});
+        let [result7, error7] = checkInvert({});
         expect(result7).to.equal(null);
         expect(error7).not.equal(null);
     });
 
     it('given a processor should change value', function () {
-        checkAdd = validateFunction(invert, 'boolean:convert');
+        checkInvert = validateFunction(invert, 'boolean:convert');
 
-        let [result] = checkAdd('Hi');
+        let [result] = checkInvert('Hi');
         expect(result).equal(false);
 
-        let [result2] = checkAdd(2);
+        let [result2] = checkInvert(2);
         expect(result2).equal(false);
 
-        let [result3] = checkAdd(true);
+        let [result3] = checkInvert(true);
         expect(result3).equal(false);
 
-        let [result4] = checkAdd(2.2);
+        let [result4] = checkInvert(2.2);
         expect(result4).equal(false);
 
-        let [result5] = checkAdd({});
+        let [result5] = checkInvert({});
         expect(result5).equal(false);
 
-        let [result6] = checkAdd([]);
+        let [result6] = checkInvert([]);
         expect(result6).equal(false);
 
         let [result7] = validateValue('boolean:convert')('true');

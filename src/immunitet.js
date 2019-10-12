@@ -1,9 +1,11 @@
 const { ImmunitetException } = require('./exceptions');
 const {
-    isPromise,
-    hasPromiseValues,
-    convertToObject,
     isEmpty,
+    isPromise,
+    isBaseType,
+    isPlainObject,
+    convertToObject,
+    hasPromiseValues,
 } = require('./utils');
 
 const {
@@ -170,11 +172,14 @@ const runFunction = (fn, argArray) => {
 const processArguments = (args, argumentsProcessors) => {
     const processedArguments = [];
 
-    for (let i in argumentsProcessors) {
-        if (!argumentsProcessors.hasOwnProperty(i))
+    if (args.length === 1 && !isBaseType(args[0]) && isPlainObject(argumentsProcessors))
+        argumentsProcessors = [argumentsProcessors];
+
+    for (let varName in argumentsProcessors) {
+        if (!argumentsProcessors.hasOwnProperty(varName))
             continue;
 
-        const processors = argumentsProcessors[i];
+        const processors = argumentsProcessors[varName];
         if (!processors)
             continue;
 
@@ -183,11 +188,11 @@ const processArguments = (args, argumentsProcessors) => {
         const processorsType = typeof processors;
         if (!ProcessorHandlers[processorsType]) {
             const error = new Error('Unknown argument processor "' + processorsType + '"');
-            error.argName = i;
+            error.argName = varName;
             throw error;
         }
 
-        let processedArgument = ProcessorHandlers[processorsType].call(null, argumentValue, processors, i);
+        let processedArgument = ProcessorHandlers[processorsType].call(null, argumentValue, processors, varName);
         processedArguments.push(processedArgument);
     }
 

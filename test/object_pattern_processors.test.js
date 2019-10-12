@@ -8,7 +8,7 @@ const {
 } = Chai;
 
 describe('check object type pattern processors', function () {
-    function add(a, b) {
+    function add({a, b}) {
         return a + b;
     }
 
@@ -18,10 +18,12 @@ describe('check object type pattern processors', function () {
 
     it('should properly run if object type argument processor is given', function () {
         let checkAdd = validateFunction(add, {
-            "properties": "number",
+            "a": "number",
+            "b": "number",
         });
 
-        let [result, error] = checkAdd("33", 2);
-        expect(result).to.equal(35);
+        let [result, error] = checkAdd({a: 3, b: 2});
+        expect(error).to.equal(null);
+        expect(result).to.equal(5);
     });
 });

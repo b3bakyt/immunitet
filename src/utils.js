@@ -1,6 +1,9 @@
-const { BASE_NON_EMPTY_TYPES } = require('./constants/general');
+const {
+    BASE_TYPES,
+    BASE_NON_EMPTY_TYPES,
+} = require('./constants/general');
 
-const isEmpty = (obj) => {
+function isEmpty(obj) {
     if (isBaseTypeEmpty(obj))
         return true;
 
@@ -13,9 +16,13 @@ const isEmpty = (obj) => {
     }
 
     return JSON.stringify(obj) === JSON.stringify({});
-};
+}
 
-const isBaseTypeEmpty = (value) => {
+function isBaseType(value) {
+    return value === null || BASE_TYPES.includes(typeof value);
+}
+
+function isBaseTypeEmpty(value) {
     if (value === '')
         return true;
 
@@ -26,14 +33,14 @@ const isBaseTypeEmpty = (value) => {
         return true;
 
     return false;
-};
+}
 
-const isPromise = function (obj) {
+function isPromise(obj) {
     return !!obj
         && Object.prototype.toString.call(obj) === '[object Promise]';
-};
+}
 
-const hasPromiseValues = (objects, processors) => {
+function hasPromiseValues(objects, processors) {
     if (isEmpty(objects))
         return false;
 
@@ -43,35 +50,41 @@ const hasPromiseValues = (objects, processors) => {
     });
 
     return promiseFound !== undefined;
-};
+}
 
-const convertToObject = (value) => {
+function convertToObject(value) {
     if (isBaseTypeEmpty(value))
-        return {};
+        return [];
 
     if (BASE_NON_EMPTY_TYPES.includes(typeof value))
-        return {0: value};
+        return [value];
 
     if (Array.isArray(value)) {
         return value;
     }
 
     return value;
-};
+}
 
-const isNumeric = (value) => {
+function isNumeric(value) {
     const type = typeof value;
     return (type === 'number' || type === 'string') &&
         !isNaN(value - parseFloat(value));
-};
+}
 
-const isInArray = (value, array) => {
+function isInArray(value, array) {
     return array.indexOf(value) > -1;
-};
+}
+
+function isPlainObject(input){
+    return input && !Array.isArray(input) && typeof input === 'object';
+}
 
 module.exports = {
     isEmpty,
+    isBaseType,
     isBaseTypeEmpty,
+    isPlainObject,
     isPromise,
     hasPromiseValues,
     convertToObject,
