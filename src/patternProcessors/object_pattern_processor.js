@@ -7,8 +7,12 @@ const processObjectPatterns = (argumentValue, processors, argNumber) => {
     if (isBaseType(argumentValue))
         return applyStringProcessors(argumentValue, processors, argNumber);
 
+    let i = 0;
     for (let argName in argumentValue) {
-        result[argName] = applyStringProcessors(argumentValue, processors, argName);
+        let val = argumentValue[argName] || argumentValue[i];
+        let processor = [processors[argName] || processors[i]];
+        result[argName] = applyStringProcessors(val, processor, argName);
+        i++
     }
 
     return result;

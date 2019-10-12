@@ -23,7 +23,13 @@ describe('check object type pattern processors', function () {
         });
 
         let [result, error] = checkAdd({a: 3, b: 2});
-        expect(error).to.equal(null);
+        expect(result).to.equal(5);
+    });
+
+    it('should properly run if array type arguments are given', function () {
+        let checkAdd = validateFunction(add, [["number","number"]]);
+
+        let [result, error] = checkAdd({a: 3, b: 2});
         expect(result).to.equal(5);
     });
 });
