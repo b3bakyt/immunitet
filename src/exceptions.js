@@ -1,12 +1,17 @@
 
-export function ImmunitetException(message, argNumber) {
+function ImmunitetException(message, argName) {
     this.message = message;
     this.name = "immunity.js has found an error!";
-    this.argNumber = argNumber;
+    this.argName = argName;
 }
 
-export function ImmunitetEmptyValueException(arg, argNumber) {
+function ImmunitetEmptyValueException(arg, argName) {
     this.arg = arg;
     this.message = "Let the argument be empty!";
-    this.argNumber = argNumber;
+    this.argName = argName;
 }
+
+module.exports = {
+    ImmunitetException,
+    ImmunitetEmptyValueException,
+};

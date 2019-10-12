@@ -1,7 +1,9 @@
-import {
+const {
     getPromiseValues,
-} from '../src/immunitet';
-import Chai from 'chai';
+} = require('../src/immunitet');
+
+const Chai = require('chai');
+
 const {
     expect,
     assert,

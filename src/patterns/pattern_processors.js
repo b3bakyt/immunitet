@@ -1,4 +1,4 @@
-import {ImmunitetException} from "../exceptions";
+const { ImmunitetException } = require("../exceptions");
 
 const REGEXP_FLAGS = {
     'g': 'Global matching',
@@ -7,7 +7,7 @@ const REGEXP_FLAGS = {
     // 'y': 'Match after',// :todo
 };
 
-const getProcessorNFlag = (pattern, argNumber) => {
+const getProcessorNFlag = (pattern, argName) => {
     let flag = undefined;
 
     if (pattern[0] !== '/' || (pattern[pattern.length - 1] !== '/' && pattern[pattern.length - 2] !== '/'))
@@ -20,7 +20,7 @@ const getProcessorNFlag = (pattern, argNumber) => {
         flag = REGEXP_FLAGS[flag] ? flag : undefined;
         pattern = pattern.substring(0, pattern.length - 2);
         if (!flag)
-            throw new ImmunitetException('Supplied regexp pattern flag is not supported.', argNumber);
+            throw new ImmunitetException('Supplied regexp pattern flag is not supported.', argName);
 
         return [pattern, flag];
     }
@@ -30,12 +30,16 @@ const getProcessorNFlag = (pattern, argNumber) => {
     return [pattern, flag];
 };
 
-export const processRegexp = (value, pattern, argNumber) => {
-    let [cleanPattern, flag] = getProcessorNFlag(pattern, argNumber);
+const processRegexp = (value, pattern, argName) => {
+    let [cleanPattern, flag] = getProcessorNFlag(pattern, argName);
 
     const regexp = new RegExp(cleanPattern, flag);
     if (!regexp.test(value))
         return false;
 
     return true;
+};
+
+module.exports = {
+    processRegexp,
 };

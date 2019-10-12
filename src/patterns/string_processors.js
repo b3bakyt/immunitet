@@ -1,4 +1,4 @@
-import {ImmunitetException} from "../exceptions";
+const { ImmunitetException } = require("../exceptions");
 
 const STRING_PROCESSORS = {
     'toUpperCase': (value) => {
@@ -18,7 +18,7 @@ const STRING_PROCESSORS = {
     },
 };
 
-export const processString = (value, processors, argNumber) => {
+const processString = (value, processors, argName) => {
     const processorsList = processors.split(',');
 
     if (processorsList.length === 0)
@@ -26,10 +26,14 @@ export const processString = (value, processors, argNumber) => {
 
     processorsList.map((processor) => {
         if (!STRING_PROCESSORS[processor])
-            throw new ImmunitetException('Wrong keyword given as an argument for String type processor.', argNumber);
+            throw new ImmunitetException('Wrong keyword given as an argument for String type processor.', argName);
 
         value = STRING_PROCESSORS[processor].call(null, value);
     });
 
     return value;
+};
+
+module.exports = {
+    processString,
 };

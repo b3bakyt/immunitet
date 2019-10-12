@@ -1,4 +1,4 @@
-import {ImmunitetException} from "../exceptions";
+const { ImmunitetException } = require("../exceptions");
 
 const BOOLEAN_PROCESSORS = {
     'convert': (value) => {
@@ -12,7 +12,7 @@ const BOOLEAN_PROCESSORS = {
     },
 };
 
-export const processBoolean = (value, processors, argNumber) => {
+const processBoolean = (value, processors, argName) => {
     const processorsList = processors.split(',');
 
     if (processorsList.length === 0)
@@ -20,10 +20,14 @@ export const processBoolean = (value, processors, argNumber) => {
 
     processorsList.map((processor) => {
         if (!BOOLEAN_PROCESSORS[processor])
-            throw new ImmunitetException('Wrong keyword given as an argument for Boolean type processor.', argNumber);
+            throw new ImmunitetException('Wrong keyword given as an argument for Boolean type processor.', argName);
 
         value = BOOLEAN_PROCESSORS[processor].call(null, value);
     });
 
     return value;
+};
+
+module.exports = {
+    processBoolean,
 };

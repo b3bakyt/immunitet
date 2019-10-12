@@ -1,4 +1,8 @@
 
-export const processFunctionPatterns = (argumentValue, processors, argNumber) => {
-    return processors.call(null, argumentValue, argNumber);
+const processFunctionPatterns = (argumentValue, processors, argName) => {
+    return processors.call(null, argumentValue, argName);
+};
+
+module.exports = {
+    processFunctionPatterns,
 };

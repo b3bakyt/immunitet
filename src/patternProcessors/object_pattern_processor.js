@@ -1,4 +1,8 @@
 
-export const processObjectPatterns = (argumentValue, processors, argNumber) => {
+const processObjectPatterns = (argumentValue, processors, argName) => {
     return argumentValue;
+};
+
+module.exports = {
+    processObjectPatterns,
 };

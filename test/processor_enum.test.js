@@ -1,11 +1,12 @@
-import im, {
+const {
     validateValue,
     validatePromise,
     validateFunction,
-    ImmunitetException
-} from '../src/immunitet';
+    ImmunitetException,
+} = require('../src/immunitet');
 
-import Chai from 'chai';
+const Chai = require('chai');
+
 const {
     expect,
     assert,

@@ -1,17 +1,18 @@
-import im, {
+const {
     validateValue,
     validatePromise,
     validateFunction,
-    ImmunitetException
-} from '../src/immunitet';
+    ImmunitetException,
+} = require('../src/immunitet');
 
-import Chai from 'chai';
+const Chai = require('chai');
 
 const {
     expect,
     assert,
     should,
 } = Chai;
+
 describe('check "not-empty" pattern processor on incorrect work.', function () {
     describe('check for whitespaces', function () {
         describe('check on incorrect work', function () {

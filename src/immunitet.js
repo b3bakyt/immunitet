@@ -1,26 +1,26 @@
-import {ImmunitetException} from './exceptions';
-import {
+const { ImmunitetException } = require('./exceptions');
+const {
     isPromise,
     hasPromiseValues,
-    convertToArray,
+    convertToObject,
     isEmpty,
-} from './utils';
+} = require('./utils');
 
-import {
+const {
     setAlias,
     createStringPatternProcessor,
     pluginPatternProcessors,
-} from './patternProcessors/string_pattern_processor';
+} = require('./patternProcessors/string_pattern_processor');
 
-import {
+const {
     processFunctionPatterns,
-} from './patternProcessors/function_pattern_processor';
+} = require('./patternProcessors/function_pattern_processor');
 
-import {
+const {
     processObjectPatterns,
-} from './patternProcessors/object_pattern_processor';
+} = require('./patternProcessors/object_pattern_processor');
 
-import {PATTERN_PROCESSORS, PATTERN_PROCESSOR_ALIASES} from './patterns/string_patterns';
+const {PATTERN_PROCESSORS, PATTERN_PROCESSOR_ALIASES} = require('./patterns/string_patterns');
 
 const ProcessorHandlers = {
     'string': createStringPatternProcessor(PATTERN_PROCESSORS, PATTERN_PROCESSOR_ALIASES),
@@ -45,7 +45,7 @@ const im = {
         if (isEmpty(processors))
             throw new Error('Processor must be specified!');
 
-        const arrayProcessors = convertToArray(processors);
+        const arrayProcessors = convertToObject(processors);
 
         return (...args) => {
             try {
@@ -77,7 +77,7 @@ const im = {
         if (!processors)
             throw new Error('Argument must be specified!');
 
-        const arrayProcessors = convertToArray(processors);
+        const arrayProcessors = convertToObject(processors);
 
         return (...args) => {
             try {
@@ -106,7 +106,7 @@ const im = {
         if (isEmpty(processors))
             throw new Error('Processor must be specified!');
 
-        const arrayProcessors = convertToArray(processors);
+        const arrayProcessors = convertToObject(processors);
 
         return (...args) => {
             try {
@@ -170,7 +170,10 @@ const runFunction = (fn, argArray) => {
 const processArguments = (args, argumentsProcessors) => {
     const processedArguments = [];
 
-    for (let i = 0; i < argumentsProcessors.length; i++) {
+    for (let i in argumentsProcessors) {
+        if (!argumentsProcessors.hasOwnProperty(i))
+            continue;
+
         const processors = argumentsProcessors[i];
         if (!processors)
             continue;
@@ -180,7 +183,7 @@ const processArguments = (args, argumentsProcessors) => {
         const processorsType = typeof processors;
         if (!ProcessorHandlers[processorsType]) {
             const error = new Error('Unknown argument processor "' + processorsType + '"');
-            error.argNumber = i;
+            error.argName = i;
             throw error;
         }
 

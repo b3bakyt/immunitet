@@ -1,8 +1,8 @@
-import {
+const {
     validateValue,
-} from '../src/immunitet';
+} = require('../src/immunitet');
 
-import Chai from 'chai';
+const Chai = require('chai');
 
 const {
     expect,

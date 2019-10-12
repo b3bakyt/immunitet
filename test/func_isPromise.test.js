@@ -1,7 +1,8 @@
-import {
+const {
     isPromise,
-} from '../src/immunitet';
-import Chai from 'chai';
+} = require('../src/immunitet');
+
+const Chai = require('chai');
 const {
     expect,
     should,

@@ -1,4 +1,4 @@
-import {ImmunitetException} from "../exceptions";
+const { ImmunitetException } = require("../exceptions");
 
 const NUMBER_PROCESSORS = {
     'convert': (value) => {
@@ -18,7 +18,7 @@ const NUMBER_PROCESSORS = {
     },
 };
 
-export const processNumber = (value, processors, argNumber) => {
+const processNumber = (value, processors, argName) => {
     const processorsList = processors.split(',');
 
     if (processorsList.length === 0)
@@ -26,10 +26,14 @@ export const processNumber = (value, processors, argNumber) => {
 
     processorsList.map((processor) => {
         if (!NUMBER_PROCESSORS[processor])
-            throw new ImmunitetException('Wrong keyword given as an argument for Number type processor.', argNumber);
+            throw new ImmunitetException('Wrong keyword given as an argument for Number type processor.', argName);
 
         value = NUMBER_PROCESSORS[processor].call(null, value);
     });
 
     return value;
+};
+
+module.exports = {
+    processNumber,
 };

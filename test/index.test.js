@@ -1,10 +1,13 @@
-import im, {
+const im = require('../src/immunitet');
+const {
     validateValue,
     validatePromise,
     validateFunction,
-    ImmunitetException
-} from '../src/immunitet';
-import Chai from 'chai';
+    ImmunitetException,
+} = require('../src/immunitet');
+
+const Chai = require('chai');
+
 const {
     expect,
     assert,
@@ -71,15 +74,15 @@ describe('"check" function tests', function () {
 
     it('may throw an exception from inside a custom function', function () {
         checkAdd = validateFunction(add, {
-            a: (argValue, argNumber) => {
-                throw new ImmunitetException('Test exception', argNumber);
+            a: (argValue, argName) => {
+                throw new ImmunitetException('Test exception', argName);
             },
             b: (argValue) => Math.floor(argValue),
         });
 
         let [result1, error1] = checkAdd('2.2', 3.9);
         expect(error1).not.equal(null);
-        expect(error1.argNumber).to.equal(0);
+        expect(error1.argName).to.equal('a');
     });
 
     it('should catch ImmunitetException thrown from inside a user function', function () {
@@ -145,7 +148,7 @@ describe('"check" function promise tests', function () {
                 expect(result).to.equal(null);
             })
             .catch((error) => {
-                expect(error.argNumber).to.equal(0);
+                expect(error.argName).to.equal(0);
             });
     });
 
@@ -159,7 +162,7 @@ describe('"check" function promise tests', function () {
                 expect(result).to.equal(null);
             })
             .catch((error) => {
-                expect(error.argNumber).to.equal(0);
+                expect(error.argName).to.equal(0);
             });
     });
 
@@ -364,7 +367,7 @@ describe('"check"  validate functions must accept multiple arguments', function 
                 expect(result).to.equal(null);
             })
             .catch(error => {
-                expect(error.argNumber).to.equal(1);
+                expect(error.argName).to.equal(1);
             })
     });
 });

@@ -22,8 +22,8 @@
   "scripts": {
     "compile": "babel src --out-dir compiled",
     "start": "node --harmony index.js",
-    "mocha": "mocha --require babel-core/register",
-    "testr": "mocha -R spec --require babel-core/register --recursive ./test/",
-    "test":  "mocha --require babel-core/register ./test/"
+    "mocha": "mocha",
+    "testr": "mocha -R spec --recursive ./test/",
+    "test":  "mocha ./test/"
   }
 }

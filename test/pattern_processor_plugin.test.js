@@ -1,6 +1,13 @@
-import im, {validateFunction, pluginPatternProcessors} from '../src/immunitet';
-import Chai from 'chai';
-import {ImmunitetException} from "../src/exceptions";
+const {
+    validateValue,
+    validatePromise,
+    validateFunction,
+    ImmunitetException,
+    pluginPatternProcessors,
+} = require('../src/immunitet');
+
+const Chai = require('chai');
+
 const {
     expect,
     assert,
