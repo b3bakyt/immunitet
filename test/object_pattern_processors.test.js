@@ -1,5 +1,5 @@
-const { validateFunction, ImmunitetException }  = require('../src/immunitet');
-const { processObjectPatterns }                 = require('../src/patternProcessors/object_pattern_processor');
+const { validateFunction, validateValue }   = require('../src/immunitet');
+const { processObjectPatterns }             = require('../src/patternProcessors/object_pattern_processor');
 const Chai = require('chai');
 const {
     expect,
@@ -31,5 +31,12 @@ describe('check object type pattern processors', function () {
 
         let [result, error] = checkAdd({a: 3, b: 2});
         expect(result).to.equal(5);
+    });
+
+    it('should properly validate object arguments', function () {
+        const getValidObject = validateValue([["number","number"]]);
+
+        let [result, error] = getValidObject({a: 3, b: 2});
+        expect(result.a).to.equal(3);
     });
 });

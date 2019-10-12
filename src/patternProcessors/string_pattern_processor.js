@@ -55,12 +55,10 @@ const applyStringProcessors = (argumentValue, processorsList, argName) => {
                 return result;
             }
 
-            console.log('applyStringProcessors:', processorType, result, params, argName);
             return PATTERN_PROCESSORS[processorType].call(null, result, params.join(':'), argName);
 
         }, argumentValue);
     } catch (e) {
-        console.log('applyStringProcessors exception:', e.className, e instanceof ImmunitetEmptyValueException);
         if (e instanceof ImmunitetEmptyValueException)
             return e.arg;
         throw e;

@@ -30,6 +30,19 @@ let [result, error] = getVar("-33");
 // result: -33
 ```
 
+#### Object validation
+
+```
+import {validateValue} from 'immunitet.js';
+ 
+let getVar = validateValue({
+    a: 'number:convert',
+});
+ 
+let [result, error] = getVar({a: -33});
+// result: {a: -33}
+```
+
 Multiple variables validation
 
 ```
@@ -302,10 +315,13 @@ let [result, error] = getVar({toString: () => 31, valueOf: () => 32});
 
 * integer
     * convert, floor, round, ceil
+    * enum
 * string
     * toUpperCase, toLowerCase, capitalFirst, capitalFirstLetter
+    * enum
 * promise
 * array
+    * each
 * object
 
 Example:
