@@ -10,7 +10,8 @@ const processObjectPatterns = (argumentValue, processors, argNumber) => {
     let i = 0;
     for (let argName in argumentValue) {
         let val = argumentValue[argName] || argumentValue[i];
-        let processor = [processors[argName] || processors[i]];
+        let processor = processors[argName] || processors[i];
+        processor = processor.split('|');
         result[argName] = applyStringProcessors(val, processor, argName);
         i++
     }

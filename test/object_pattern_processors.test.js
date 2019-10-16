@@ -39,4 +39,16 @@ describe('check object type pattern processors', function () {
         let [result, error] = getValidObject({a: 3, b: 2});
         expect(result.a).to.equal(3);
     });
+
+    it('should properly run if object type argument processor not is given', function () {
+        let validate = validateValue({
+            id: 'empty|number',
+            title: 'string|maxLength:100',
+            country_id: 'numeric|maximum:1000',
+            status: 'default:1|enum:-1,0,1',
+        });
+
+        let [result, error] = validate({ id: null, title: 'Test-Tokyo', country_id: 1, status: 1 });
+        expect(Object.keys(result).length).to.equal(3);
+    });
 });
