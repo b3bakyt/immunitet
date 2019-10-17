@@ -170,6 +170,7 @@ const runFunction = (fn, argArray) => {
 
 const processArguments = (args, argumentsProcessors, strict) => {
     const processedArguments = [];
+    let argIndex = 0;
 
     if (args.length === 1 && !isBaseType(args[0]) && isPlainObject(argumentsProcessors))
         argumentsProcessors = [argumentsProcessors];
@@ -178,6 +179,7 @@ const processArguments = (args, argumentsProcessors, strict) => {
         if (!argumentsProcessors.hasOwnProperty(varName))
             continue;
 
+        argIndex++;
         const processors = argumentsProcessors[varName];
         if (!processors)
             continue;
@@ -185,12 +187,20 @@ const processArguments = (args, argumentsProcessors, strict) => {
         let argumentValue = args.shift();
 
         const processorsType = typeof processors;
-        if (!ProcessorHandlers[processorsType]) {
+        if (!ProcessorHandlers[processorsType])
             throw new ImmunitetException('Unknown argument processor "' + processorsType + '"', varName);
-        }
 
         let processedArgument = ProcessorHandlers[processorsType].call(null, argumentValue, processors, varName, strict);
         processedArguments.push(processedArgument);
+    }
+
+    if (strict && args.length > 0) {
+        let errors = [];
+        args.map((val, index) => errors.push({
+            message: 'No validator specified for object field',
+            argName: argIndex + index,
+        }));
+        throw new ImmunitetExceptions(errors);
     }
 
     return [...processedArguments, ...args];

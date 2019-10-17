@@ -16,4 +16,14 @@ describe('check validateValue function', function () {
         console.log('error:', error);
         expect(error.getErrors().length).equal(1);
     });
+
+    it('validateValue should expect all fields to be supplied by validators by default', function () {
+        const rule = {
+            a: 'number',
+        };
+        let validate = validateValue(rule);
+
+        let [result, error] = validate(1, 2, 3);
+        expect(error.getErrors().length).equal(2);
+    });
 });
