@@ -4,13 +4,22 @@ const {
     ImmunitetException,
     ImmunitetExceptions}        = require('../exceptions');
 
-const processObjectPatterns = (argumentValue, processors, argNumber, strict) => {
+const processObjectPatterns = (arguments, processors, argNumber, strict) => {
     const result = {};
+    const argumentValues = {...arguments};
     let errors = [];
     let i = 0;
 
-    for (let argName in argumentValue) {
-        let val = argumentValue[argName] || argumentValue[i];
+    if (isPlainObject(arguments) && isPlainObject(processors)) {
+        Object.keys(processors).forEach(fieldName => {
+            if (arguments[fieldName] === undefined)
+                argumentValues[fieldName] = undefined;
+
+        });
+    }
+
+    for (let argName in argumentValues) {
+        let val = argumentValues[argName];
         let processor = processors[argName] || processors[i];
         if (processor) {
             processor = processor.split('|');

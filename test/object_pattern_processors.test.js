@@ -29,7 +29,7 @@ describe('check object type pattern processors', function () {
     it('should properly run if array type arguments are given', function () {
         let checkAdd = validateFunction(add, ["number","number"]);
 
-        let [result, error] = checkAdd({a: 3, b: 2});
+        let [result, error] = checkAdd({a: 3, b: 2, c: 3});
         expect(result).to.equal(5);
     });
 
@@ -80,7 +80,7 @@ describe('check object type pattern processors', function () {
 
     it('should set object field default value with strict set to false', function () {
         const rule = {
-            id: 'default:1|number|maxLength:100',
+            id: 'default:1|number:convert|maxLength:100',
             title: 'string|maxLength:100',
             country_id: 'numeric|maximum:1000',
             status: 'default:1|enum:-1,0,1',
