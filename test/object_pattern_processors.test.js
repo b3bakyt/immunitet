@@ -64,4 +64,17 @@ describe('check object type pattern processors', function () {
         console.log('error:', error);
         expect(error.getErrors().length).equal(2);
     });
+
+    it('should return data if object field validator is not specified, but strict is set to false', function () {
+        const rule = {
+            id: 'empty|number|maxLength:100',
+            title: 'string|maxLength:100',
+            country_id: 'numeric|maximum:1000',
+            status: 'default:1|enum:-1,0,1',
+        };
+        let validate = validateValue(rule, false);
+
+        let [result, error] = validate({ id: null, title: 'Test-Tokyo', country_id: 1, status: 1, description: 'test' });
+        expect(Object.values(result).length).equal(5);
+    });
 });
