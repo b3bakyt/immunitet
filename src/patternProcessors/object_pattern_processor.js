@@ -1,16 +1,14 @@
-const { isBaseType }            = require('../utils');
-const { applyStringProcessors } = require('./string_pattern_processor');
+const { isBaseType, isPlainObject } = require('../utils');
+const { applyStringProcessors }     = require('./string_pattern_processor');
 const {
     ImmunitetException,
     ImmunitetExceptions}        = require('../exceptions');
 
 const processObjectPatterns = (argumentValue, processors, argNumber, strict) => {
     const result = {};
-    if (isBaseType(argumentValue))
-        return applyStringProcessors(argumentValue, processors, argNumber);
-
     let errors = [];
     let i = 0;
+
     for (let argName in argumentValue) {
         let val = argumentValue[argName] || argumentValue[i];
         let processor = processors[argName] || processors[i];

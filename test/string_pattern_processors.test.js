@@ -24,19 +24,19 @@ describe('"check" function', function () {
     it('should properly run if only one argument processor is given', function () {
         checkAdd = validateFunction(add, {
             a: 'number',
-        });
+        }, false);
 
         let [result] = checkAdd(33, 2);
         expect(result).to.equal(35);
     });
 
     it('should properly run if empty argument processor is given', function () {
-        checkAdd = validateFunction(add, {a: 'default:0'});
+        checkAdd = validateFunction(add, {a: 'default:0'}, false);
 
         let [result1] = checkAdd(5, 2);
         expect(result1).to.equal(7);
 
-        checkAdd = validateFunction(add, 'default:0');
+        checkAdd = validateFunction(add, ['default:0'], false);
         let [result2] = checkAdd(5, 2);
         expect(result2).to.equal(7);
 
@@ -53,7 +53,7 @@ describe('"check" function', function () {
         }
         checkAdd = validateFunction(addArray, {
             a: 'split:,',
-        });
+        }, false);
 
         const [result] = checkAdd('2,3', [3, 4]);
         expect(result).to.deep.equal(['23', '34']);
@@ -65,7 +65,7 @@ describe('"check" function', function () {
         }
         checkAdd = validateFunction(addArray, {
             a: 'split:,|each:number:convert',
-        });
+        }, false);
 
         const [result] = checkAdd('2,3', [3, 4]);
         expect(result).to.deep.equal([5, 7]);

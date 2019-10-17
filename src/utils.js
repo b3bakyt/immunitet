@@ -80,10 +80,15 @@ function isPlainObject(input){
     return input && !Array.isArray(input) && typeof input === 'object';
 }
 
+function isObject(input) {
+    return input && typeof input === 'object';
+}
+
 module.exports = {
     isEmpty,
     isBaseType,
     isBaseTypeEmpty,
+    isObject,
     isPlainObject,
     isPromise,
     hasPromiseValues,
