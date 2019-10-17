@@ -91,4 +91,18 @@ describe('check object type pattern processors', function () {
         expect(Object.values(result).length).equal(5);
         expect(result.id).equal(1);
     });
+
+    it('should set field default value with strict set to false', function () {
+        const rule = {
+            title: 'string|maxLength:100',
+            country_id: 'numeric|maximum:1000',
+            status: 'default:1|enum:-1,0,1',
+            id: 'default:1|number:convert|maxLength:100',
+        };
+        let validate = validateValue(rule, false);
+
+        let [result, error] = validate('Test-Tokyo', 1, 1);
+        expect(Object.values(result).length).equal(4);
+        expect(result[3]).equal(1);
+    });
 });
