@@ -1,4 +1,4 @@
-const { ImmunitetException } = require('./exceptions');
+const { ImmunitetException, ImmunitetExceptions } = require('./exceptions');
 const {
     isEmpty,
     isPromise,
@@ -62,10 +62,7 @@ const im = {
         }
     },
 
-    validateValue(...processors) {
-        if (processors.length === 1)
-            processors = processors.shift();
-
+    validateValue(processors, strict = true) {
         if (isEmpty(processors))
             throw new Error('Processor must be specified!');
 
@@ -83,10 +80,12 @@ const im = {
 
         return (...args) => {
             try {
-                return processArgumentsNRun(fn, args, arrayProcessors);
+                return processArgumentsNRun(fn, args, arrayProcessors, strict);
             }
             catch (exception) {
                 if (exception instanceof ImmunitetException)
+                    return [null, exception];
+                if (exception instanceof ImmunitetExceptions)
                     return [null, exception];
 
                 throw exception;
@@ -128,11 +127,11 @@ const im = {
 
 };
 
-const processArgumentsNRun = (fn, args, processors) => {
+const processArgumentsNRun = (fn, args, processors, strict) => {
     if (isEmpty(processors))
         return runFunction(fn, args);
 
-    let argArray = processArguments(args, processors);
+    let argArray = processArguments(args, processors, strict);
 
     return runFunction(fn, argArray);
 };
@@ -169,7 +168,7 @@ const runFunction = (fn, argArray) => {
         .catch(catchHandler);
 };
 
-const processArguments = (args, argumentsProcessors) => {
+const processArguments = (args, argumentsProcessors, strict) => {
     const processedArguments = [];
 
     if (args.length === 1 && !isBaseType(args[0]) && isPlainObject(argumentsProcessors))
@@ -187,12 +186,10 @@ const processArguments = (args, argumentsProcessors) => {
 
         const processorsType = typeof processors;
         if (!ProcessorHandlers[processorsType]) {
-            const error = new Error('Unknown argument processor "' + processorsType + '"');
-            error.argName = varName;
-            throw error;
+            throw new ImmunitetException('Unknown argument processor "' + processorsType + '"', varName);
         }
 
-        let processedArgument = ProcessorHandlers[processorsType].call(null, argumentValue, processors, varName);
+        let processedArgument = ProcessorHandlers[processorsType].call(null, argumentValue, processors, varName, strict);
         processedArguments.push(processedArgument);
     }
 

@@ -1,20 +1,35 @@
-const { isBaseType } = require('../utils');
-
+const { isBaseType }            = require('../utils');
 const { applyStringProcessors } = require('./string_pattern_processor');
+const {
+    ImmunitetException,
+    ImmunitetExceptions}        = require('../exceptions');
 
-const processObjectPatterns = (argumentValue, processors, argNumber) => {
+const processObjectPatterns = (argumentValue, processors, argNumber, strict) => {
     const result = {};
     if (isBaseType(argumentValue))
         return applyStringProcessors(argumentValue, processors, argNumber);
 
+    let errors = [];
     let i = 0;
     for (let argName in argumentValue) {
         let val = argumentValue[argName] || argumentValue[i];
         let processor = processors[argName] || processors[i];
-        processor = processor.split('|');
-        result[argName] = applyStringProcessors(val, processor, argName);
-        i++
+        if (processor) {
+            processor = processor.split('|');
+            result[argName] = applyStringProcessors(val, processor, argName);
+            i++;
+            continue;
+        }
+
+        if (strict)
+            errors.push({message: 'No validator specified for object field', argName});
+
+        result[argName] = val;
+        i++;
     }
+
+    if (errors.length > 0)
+        throw new ImmunitetExceptions(errors);
 
     return result;
 };

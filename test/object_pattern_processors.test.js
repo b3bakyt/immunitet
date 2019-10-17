@@ -49,6 +49,19 @@ describe('check object type pattern processors', function () {
         });
 
         let [result, error] = validate({ id: null, title: 'Test-Tokyo', country_id: 1, status: 1 });
-        expect(Object.keys(result).length).to.equal(3);
+        expect(Object.keys(result).length).to.equal(4);
+    });
+
+    it('should return error if object field validator is not specified', function () {
+        const rule = {
+            title: 'string|maxLength:100',
+            country_id: 'numeric|maximum:1000',
+            status: 'default:1|enum:-1,0,1',
+        };
+        let validate = validateValue(rule);
+
+        let [result, error] = validate({ id: null, title: 'Test-Tokyo', country_id: 1, status: 1, description: 'test' });
+        console.log('error:', error);
+        expect(error.getErrors().length).equal(2);
     });
 });
