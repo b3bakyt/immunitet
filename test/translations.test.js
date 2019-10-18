@@ -26,4 +26,13 @@ describe('check "translations" for correct work ', function () {
         }
     });
 
+    it('should throw ru errors if such was set', function () {
+        setLanguage('ru');
+        try {
+            let noValidFunction = validateFunction('test');
+        } catch (error) {
+            expect(error.message).to.equal('Первый аргумен должен быть функцией!');
+        }
+    });
+
 });
