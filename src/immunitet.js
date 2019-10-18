@@ -1,5 +1,6 @@
 const { ImmunitetException, ImmunitetExceptions }   = require('./exceptions');
 const { ARG_TYPES }                                 = require('./constants/general');
+const {setLanguage, tr}                             = require('./languages');
 const {
     isEmpty,
     isObject,
@@ -40,10 +41,10 @@ const im = {
             fn = val => val;
 
         if (typeof fn !== 'function')
-            throw new Error('First argument must be a type of function or null!');
+            throw new Error(tr['First argument must be a type of function or null!']);
 
         if (!processors || isEmpty(processors))
-            throw new Error('Processor must be specified!');
+            throw new Error(tr['Processor must be specified!']);
 
         return (...args) => {
             try {
@@ -63,7 +64,7 @@ const im = {
 
     validateValue(processors, strict = true) {
         if (!processors || isEmpty(processors))
-            throw new Error('Processor must be specified!');
+            throw new Error(tr['Processor must be specified!']);
 
         let fn = (...values) => {
             if (values.length <= 1)
@@ -250,4 +251,5 @@ module.exports = {
     valuesToPromises,
     getPromiseValues,
     pluginPatternProcessors,
+    setLanguage,
 };
