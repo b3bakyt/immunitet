@@ -1,4 +1,5 @@
-const { ImmunitetException } = require("../exceptions");
+const { tr }                    = require('../languages');
+const { ImmunitetException }    = require('../exceptions');
 
 const STRING_PROCESSORS = {
     'toUpperCase': (value) => {
@@ -26,7 +27,7 @@ const processString = (value, processors, argName) => {
 
     processorsList.map((processor) => {
         if (!STRING_PROCESSORS[processor])
-            throw new ImmunitetException('Wrong keyword given as an argument for String type processor.', argName);
+            throw new ImmunitetException(tr['Wrong keyword given as an argument for String type processor.'], argName);
 
         value = STRING_PROCESSORS[processor].call(null, value);
     });

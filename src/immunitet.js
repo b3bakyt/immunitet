@@ -1,6 +1,7 @@
+const { setLanguage, tr }                           = require('./languages');
 const { ImmunitetException, ImmunitetExceptions }   = require('./exceptions');
 const { ARG_TYPES }                                 = require('./constants/general');
-const {setLanguage, tr}                             = require('./languages');
+
 const {
     isEmpty,
     isObject,
@@ -41,10 +42,10 @@ const im = {
             fn = val => val;
 
         if (typeof fn !== 'function')
-            throw new Error(tr['First argument must be a type of function or null!']);
+            throw new Error(tr['First argument must be a type of function or null.']);
 
         if (!processors || isEmpty(processors))
-            throw new Error(tr['Processor must be specified!']);
+            throw new Error(tr['Processor must be specified.']);
 
         return (...args) => {
             try {
@@ -64,7 +65,7 @@ const im = {
 
     validateValue(processors, strict = true) {
         if (!processors || isEmpty(processors))
-            throw new Error(tr['Processor must be specified!']);
+            throw new Error(tr['Processor must be specified.']);
 
         let fn = (...values) => {
             if (values.length <= 1)
@@ -94,10 +95,10 @@ const im = {
             fn = val => val;
 
         if (typeof fn !== 'function')
-            throw new Error('First argument must be a type of function or null!');
+            throw new Error('First argument must be a type of function or null.');
 
         if (!processors || isEmpty(processors))
-            throw new Error('Processor must be specified!');
+            throw new Error('Processor must be specified.');
 
         return (...args) => {
             try {
@@ -134,7 +135,6 @@ const runFunctionWithPromiseArguments = function (fn, args, processors, strict) 
             return processArgumentsNRun(fn, resolvedArguments, processors, strict)
         })
         .catch(error => {
-            console.error('processArgumentsNRun.error:', error);
             return Promise.reject(error);
         })
 };
@@ -163,10 +163,10 @@ const processArguments = (args, argumentsProcessors, strict) => {
     const argsType       = args.length <= 1 ? ARG_TYPES.simple : ARG_TYPES.multiple;
 
     if (!ProcessorHandlers[processorsType])
-        throw new ImmunitetException('Unknown argument processor "' + processorsType + '"', 0);
+        throw new ImmunitetException(tr['Unknown argument processor "{0}"'].format(processorsType), 0);
 
     if (argsType === ARG_TYPES.multiple && processorsType !== 'object')
-        throw new ImmunitetException('Multiple arguments found! Validation rules must be type of object or array!');
+        throw new ImmunitetException(tr['Multiple arguments found! Validation rules must be type of object or array.']);
 
     const isSimpleValueSimpleProcessor  = argsType === ARG_TYPES.simple && isBaseType(args[0])   && isBaseType(argumentsProcessors);
     const isSimpleValueObjectProcessor  = argsType === ARG_TYPES.simple && isBaseType(args[0])   && (isObject(argumentsProcessors) && argumentsProcessors.length === 1);
@@ -194,7 +194,7 @@ const processArguments = (args, argumentsProcessors, strict) => {
 
         const processorsType = typeof processors;
         if (!ProcessorHandlers[processorsType])
-            throw new ImmunitetException('Unknown argument processor "' + processorsType + '"', varName);
+            throw new ImmunitetException(tr['Unknown argument processor "{0}"'].format(processorsType), varName);
 
         let processedArgument = ProcessorHandlers[processorsType].call(null, argumentValue, processors, varName, strict);
         processedArguments.push(processedArgument);
@@ -203,7 +203,7 @@ const processArguments = (args, argumentsProcessors, strict) => {
     if (strict && args.length > 0) {
         let errors = [];
         args.map((val, index) => errors.push({
-            message: 'No validator specified for object field',
+            message: tr['No validator specified for object field'],
             argName: argIndex + index,
         }));
         throw new ImmunitetExceptions(errors);

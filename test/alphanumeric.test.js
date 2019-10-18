@@ -22,35 +22,35 @@ describe('check "alphanumeric" pattern processor on incorrect work', function ()
     it('given  value should return error', function () {
         checkAlphaNum = validateValue('alpha-numeric');
         let [result, error] = checkAlphaNum('565666323*');
-        expect(error.message).to.equal('Given value is not type of string or number.');
+        expect(error.message).to.equal('Argument is not type of string or number.');
         expect(result).to.equal(null);
     });
 
    /* it('given  value should return error', function () {
         checkAlphaNum = validateValue('alpha-numeric');
         let [result, error] = checkAlphaNum('      ');
-        expect(error.message).to.equal('Given value is not type of string or number.');
+        expect(error.message).to.equal('Argument is not type of string or number.');
         expect(result).to.equal(null);
     });*/
 
     it('given  value should return error', function () {
         checkAlphaNum = validateValue('alpha-numeric');
         let [result, error] = checkAlphaNum('аопичсломиджчваоли');
-        expect(error.message).to.equal('Given value is not type of string or number.');
+        expect(error.message).to.equal('Argument is not type of string or number.');
         expect(result).to.equal(null);
     });
 
     it('given  value should return error', function () {
         checkAlphaNum = validateValue('alpha-numeric');
         let [result, error] = checkAlphaNum('fgjhdfk45()');
-        expect(error.message).to.equal('Given value is not type of string or number.');
+        expect(error.message).to.equal('Argument is not type of string or number.');
         expect(result).to.equal(null);
     });
 
     it('given  value should return error', function () {
         checkAlphaNum = validateValue('alpha-numeric');
         let [result, error] = checkAlphaNum(':fgjhdfk45');
-        expect(error.message).to.equal('Given value is not type of string or number.');
+        expect(error.message).to.equal('Argument is not type of string or number.');
         expect(result).to.equal(null);
     });
 });

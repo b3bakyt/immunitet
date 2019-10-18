@@ -1,6 +1,7 @@
+const { tr }                            = require('../languages');
 const { PATTERN_FLAGS }                 = require('../constants/general');
 const { isEmpty }                       = require('../utils');
-const { ImmunitetEmptyValueException }  = require("../exceptions");
+const { ImmunitetEmptyValueException }  = require('../exceptions');
 
 let PATTERN_PROCESSOR_ALIASES = {};
 let PATTERN_PROCESSORS        = {};
@@ -11,7 +12,7 @@ const setAlias = (newProcessorName, processors) => {
 
 const pluginPatternProcessors = (patternProcessors) => {
     if (Array.isArray(patternProcessors) || isEmpty(patternProcessors) || !patternProcessors)
-        throw new Error('The pattern processors object must not be empty! '+ JSON.stringify(patternProcessors));
+        throw new Error(tr['The pattern processors object must not be empty. ']+ JSON.stringify(patternProcessors));
 
     PATTERN_PROCESSORS = {...PATTERN_PROCESSORS, ...patternProcessors};
     return true;
@@ -26,7 +27,7 @@ const createStringPatternProcessor = (patternProcessors, patternProcessorAliases
 
 const processStringPatterns = (argumentValue, processors, argName) => {
     let processorsList;
-    if (processors.indexOf("||") === -1)
+    if (processors.indexOf('||') === -1)
         processorsList = processors.split('|');
     else
         processorsList = [processors];
@@ -46,7 +47,7 @@ const applyStringProcessors = (argumentValue, processorsList, argName) => {
                 return result;
 
             if (!PATTERN_PROCESSORS[processorType])
-                throw new Error('Unknown argument processor "'+ processorType +'"!');
+                throw new Error(tr['Unknown argument processor "{0}"'].format(processorType));
 
             if (PATTERN_PROCESSORS[processorType] === PATTERN_FLAGS.PASS)
                 return result;

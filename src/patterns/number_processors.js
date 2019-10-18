@@ -1,4 +1,5 @@
-const { ImmunitetException } = require("../exceptions");
+const { tr }                 = require('../languages');
+const { ImmunitetException } = require('../exceptions');
 
 const NUMBER_PROCESSORS = {
     'convert': (value) => {
@@ -26,7 +27,7 @@ const processNumber = (value, processors, argName) => {
 
     processorsList.map((processor) => {
         if (!NUMBER_PROCESSORS[processor])
-            throw new ImmunitetException('Wrong keyword given as an argument for Number type processor.', argName);
+            throw new ImmunitetException(tr['Wrong keyword given as an argument for Number type processor.'], argName);
 
         value = NUMBER_PROCESSORS[processor].call(null, value);
     });

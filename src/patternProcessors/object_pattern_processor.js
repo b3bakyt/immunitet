@@ -1,8 +1,7 @@
+const { tr }                        = require('../languages');
 const { isBaseType, isPlainObject } = require('../utils');
 const { applyStringProcessors }     = require('./string_pattern_processor');
-const {
-    ImmunitetException,
-    ImmunitetExceptions}        = require('../exceptions');
+const { ImmunitetExceptions }       = require('../exceptions');
 
 const processObjectPatterns = (arguments, processors, argNumber, strict) => {
     const result = {};
@@ -29,7 +28,7 @@ const processObjectPatterns = (arguments, processors, argNumber, strict) => {
         }
 
         if (strict)
-            errors.push({message: 'No validator specified for object field', argName});
+            errors.push({message: tr['No validator specified for object field'], argName});
 
         result[argName] = val;
         i++;

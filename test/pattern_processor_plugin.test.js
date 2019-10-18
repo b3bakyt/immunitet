@@ -49,13 +49,13 @@ describe('check plugable pattern processors', function () {
         let patterns = {
             'minLen': (value, length) => {
                 if ((value+'').length < length)
-                    throw new ImmunitetException('String min length is '+ length + ' symbols!');
+                    throw new ImmunitetException('String min length is '+ length + ' symbols.');
 
                 return value;
             },
             'maxLen': (value, length) => {
                 if ((value+'').length > length)
-                    throw new ImmunitetException('String max length is '+ length + ' symbols!');
+                    throw new ImmunitetException('String max length is '+ length + ' symbols.');
 
                 return value;
             },

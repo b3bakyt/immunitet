@@ -22,7 +22,7 @@ describe('check "translations" for correct work ', function () {
         try {
             let noValidFunction = validateFunction('test');
         } catch (error) {
-            expect(error.message).to.equal('First argument must be a type of function or null!');
+            expect(error.message).to.equal('First argument must be a type of function or null.');
         }
     });
 
@@ -31,8 +31,15 @@ describe('check "translations" for correct work ', function () {
         try {
             let noValidFunction = validateFunction('test');
         } catch (error) {
-            expect(error.message).to.equal('Первый аргумен должен быть функцией!');
+            expect(error.message).to.equal('Первый аргумен должен быть функцией.');
         }
+    });
+
+    it('should return ru errors if such was found', function () {
+        let validate = validateValue('number');
+        const [result, error] = validate('test');
+        console.log('error:', error);
+        expect(error.message).to.equal('Аргумент должен иметь числовое значение.');
     });
 
 });

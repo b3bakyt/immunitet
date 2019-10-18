@@ -86,10 +86,10 @@ let [result] = checkAdd(5, 3);
 // result: 8
  
 let [, error] = checkAdd(-2, 7);
-// error.message: 'The given value is less then 5'
+// error.message: 'Argument is less then 5'
  
 let [, error] = checkAdd(5, 12);
-// error.message: 'The given value is greater then 10'
+// error.message: 'Argument is greater then 10'
 ```
 
 #### Custom validators\processors
@@ -437,7 +437,7 @@ let checkAdd = validateFunction(add, {
 });
  
 let [, error] = checkAdd(5, 12);
-// error.message: 'The given value is greater then 10'
+// error.message: 'Argument is greater then 10'
 // error.argNumber: 1
 ```
 

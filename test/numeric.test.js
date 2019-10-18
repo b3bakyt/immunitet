@@ -23,21 +23,21 @@ describe('check "numeric" pattern processor on incorrect work', function () {
     it('given  value should return error', function () {
         checkNumeric = validateValue('numeric');
         let [result, error] = checkNumeric('565666323a');
-        expect(error.message).to.equal('Given value is not type of number.');
+        expect(error.message).to.equal('Argument is not type of number.');
         expect(result).to.equal(null);
     });
 
     it('given  value should return error', function () {
         checkNumeric = validateValue('numeric');
         let [result, error] = checkNumeric('165415*');
-        expect(error.message).to.equal('Given value is not type of number.');
+        expect(error.message).to.equal('Argument is not type of number.');
         expect(result).to.equal(null);
     });
 
     it('given  value should return error', function () {
         checkNumeric = validateValue('numeric');
         let [result, error] = checkNumeric('  ');
-        expect(error.message).to.equal('Given value is not type of number.');
+        expect(error.message).to.equal('Argument is not type of number.');
         expect(result).to.equal(null);
     });
 

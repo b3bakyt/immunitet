@@ -183,7 +183,7 @@ describe('"check" function promise tests', function () {
     it('should process ImmunitetException thrown from inside a custom processor callback', function () {
         checkAdd = validatePromise(add, {
             a: (val) => {
-                throw new ImmunitetException('Test promise Error!');
+                throw new ImmunitetException('Test promise Error.');
             }
         });
 
@@ -199,7 +199,7 @@ describe('"check" function promise tests', function () {
     it('should process js Error exception thrown from inside a custom callback', function () {
         checkAdd = validatePromise(add, {
             a: (val) => {
-                throw new Error('Test promise Error!');
+                throw new Error('Test promise Error.');
             }
         });
 
@@ -216,7 +216,7 @@ describe('"check" function promise tests', function () {
         function add(a, b) {
             return new Promise((res, rej) => {
                 setTimeout(() => {
-                    rej(new Error('Error rejected from inside a user function!'));
+                    rej(new Error('Error rejected from inside a user function.'));
                 })
             });
         }
@@ -236,7 +236,7 @@ describe('"check" function promise tests', function () {
     it('should process Error exception thrown from inside a user function', function () {
         function add(a, b) {
             return new Promise((res, rej) => {
-                throw new Error('Error thrown from inside a user function!')
+                throw new Error('Error thrown from inside a user function.')
             });
         }
 
@@ -249,7 +249,7 @@ describe('"check" function promise tests', function () {
             })
             .catch((error) => {
                 expect(error).to.not.equal(null);
-                expect(error.message).to.equal('Error thrown from inside a user function!');
+                expect(error.message).to.equal('Error thrown from inside a user function.');
             });
     });
 });
@@ -314,7 +314,7 @@ describe('"check" function promise arguments', function () {
                 expect(result).to.equal(null);
             })
             .catch((error) => {
-                expect(error.message).to.equal('Given argument is not type of promise!');
+                expect(error.message).to.equal('Given argument is not type of promise.');
             });
     });
 });

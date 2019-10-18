@@ -1,14 +1,15 @@
+const { tr } = require('./languages');
 
 function ImmunitetException(message, argName) {
     const error = new Error();
     this.message = message;
-    this.name = "immunity.js has found an error!";
+    this.name = tr['Data validation error.'];
     this.argName = argName;
 }
 
 function ImmunitetExceptions(errors) {
     this.errors = errors;
-    this.message = "immunity.js has found an error!";
+    this.message = tr['Data validation error.'];
 
     this.getErrors = () => {
         return this.errors;
@@ -17,7 +18,7 @@ function ImmunitetExceptions(errors) {
 
 function ImmunitetEmptyValueException(arg, argName) {
     this.arg = arg;
-    this.message = "Let the argument be empty!";
+    this.message = tr['Let the argument be empty.'];
     this.argName = argName;
 }
 

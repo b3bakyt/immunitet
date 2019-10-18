@@ -1,4 +1,5 @@
-const { ImmunitetException } = require("../exceptions");
+const { tr }                 = require('../languages');
+const { ImmunitetException } = require('../exceptions');
 
 const REGEXP_FLAGS = {
     'g': 'Global matching',
@@ -20,7 +21,7 @@ const getProcessorNFlag = (pattern, argName) => {
         flag = REGEXP_FLAGS[flag] ? flag : undefined;
         pattern = pattern.substring(0, pattern.length - 2);
         if (!flag)
-            throw new ImmunitetException('Supplied regexp pattern flag is not supported.', argName);
+            throw new ImmunitetException(tr['Supplied regexp pattern flag is not supported.'], argName);
 
         return [pattern, flag];
     }

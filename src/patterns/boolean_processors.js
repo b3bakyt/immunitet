@@ -1,4 +1,5 @@
-const { ImmunitetException } = require("../exceptions");
+const { tr }                 = require('../languages');
+const { ImmunitetException } = require('../exceptions');
 
 const BOOLEAN_PROCESSORS = {
     'convert': (value) => {
@@ -20,7 +21,7 @@ const processBoolean = (value, processors, argName) => {
 
     processorsList.map((processor) => {
         if (!BOOLEAN_PROCESSORS[processor])
-            throw new ImmunitetException('Wrong keyword given as an argument for Boolean type processor.', argName);
+            throw new ImmunitetException(tr['Wrong keyword given as an argument for Boolean type processor.'], argName);
 
         value = BOOLEAN_PROCESSORS[processor].call(null, value);
     });
