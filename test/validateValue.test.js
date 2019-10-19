@@ -13,7 +13,6 @@ describe('check validateValue function', function () {
         let validate = validateValue(rule);
 
         let [result, error] = validate({a: 1, b: 2});
-        console.log('error:', error);
         expect(error.getErrors().length).equal(1);
     });
 

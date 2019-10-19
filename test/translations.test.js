@@ -38,7 +38,6 @@ describe('check "translations" for correct work ', function () {
     it('should return ru errors if such was found', function () {
         let validate = validateValue('number');
         const [result, error] = validate('test');
-        console.log('error:', error);
         expect(error.message).to.equal('Аргумент должен иметь числовое значение.');
     });
 

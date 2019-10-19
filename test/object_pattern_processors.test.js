@@ -61,7 +61,6 @@ describe('check object type pattern processors', function () {
         let validate = validateValue(rule);
 
         let [result, error] = validate({ id: null, title: 'Test-Tokyo', country_id: 1, status: 1, description: 'test' });
-        console.log('error:', error);
         expect(error.getErrors().length).equal(2);
     });
 
