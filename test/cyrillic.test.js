@@ -22,42 +22,35 @@ describe('check "cyrillic" pattern processor on incorrect work', function () {
     it('given  value should return error', function () {
         checkCyrillic = validateValue('cyrillic');
         let [result, error] = checkCyrillic('565666323');
-        expect(error.message).to.equal('Argument is not cyrillic letters.');
+        expect(error.getError().message).to.equal('Argument is not cyrillic letters.');
         expect(result).to.equal(null);
     });
-
-  /*  it('given  value should return error', function () {
-        checkCyrillic = validateValue('cyrillic');
-        let [result, error] = checkCyrillic(' ');
-        expect(error.message).to.equal('Argument is not cyrillic letters.');
-        expect(result).to.equal(null);
-    });*/
 
     it('given  value should return error', function () {
         checkCyrillic = validateValue('cyrillic');
         let [result, error] = checkCyrillic('asjkfhskdj');
-        expect(error.message).to.equal('Argument is not cyrillic letters.');
+        expect(error.getError().message).to.equal('Argument is not cyrillic letters.');
         expect(result).to.equal(null);
     });
 
     it('given  value should return error', function () {
         checkCyrillic = validateValue('cyrillic');
         let [result, error] = checkCyrillic('аждппппп4');
-        expect(error.message).to.equal('Argument is not cyrillic letters.');
+        expect(error.getError().message).to.equal('Argument is not cyrillic letters.');
         expect(result).to.equal(null);
     });
 
     it('given  value should return error', function () {
         checkCyrillic = validateValue('cyrillic');
         let [result, error] = checkCyrillic('аждпппппcjff');
-        expect(error.message).to.equal('Argument is not cyrillic letters.');
+        expect(error.getError().message).to.equal('Argument is not cyrillic letters.');
         expect(result).to.equal(null);
     });
 
     it('given  value should return error', function () {
         checkCyrillic = validateValue('cyrillic');
         let [result, error] = checkCyrillic('аждпппппc,');
-        expect(error.message).to.equal('Argument is not cyrillic letters.');
+        expect(error.getError().message).to.equal('Argument is not cyrillic letters.');
         expect(result).to.equal(null);
     });
 });

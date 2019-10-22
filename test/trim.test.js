@@ -47,28 +47,28 @@ describe('check "trim" pattern processor for incorrect work', function () {
     it('given numeric value should return error', function () {
         checkTrimmedValue = validateValue('trim');
         let [result, error] = checkTrimmedValue(55);
-        expect(error.message).to.equal('Argument must be a string.');
+        expect(error.getError().message).to.equal('Argument must be a string.');
         expect(result).to.equal(null);
     });
 
     it('given null value should return error', function () {
         checkTrimmedValue = validateValue('trim');
         let [result, error] = checkTrimmedValue(null);
-        expect(error.message).to.equal('Argument must be a string.');
+        expect(error.getError().message).to.equal('Argument must be a string.');
         expect(result).to.equal(null);
     });
 
     it('given undefined value should return error', function () {
         checkTrimmedValue = validateValue('trim');
         let [result, error] = checkTrimmedValue(undefined);
-        expect(error.message).to.equal('Argument must be a string.');
+        expect(error.getError().message).to.equal('Argument must be a string.');
         expect(result).to.equal(null);
     });
 
     it('given NaN value should return error', function () {
         checkTrimmedValue = validateValue('trim');
         let [result, error] = checkTrimmedValue(NaN);
-        expect(error.message).to.equal('Argument must be a string.');
+        expect(error.getError().message).to.equal('Argument must be a string.');
         expect(result).to.equal(null);
     });
 

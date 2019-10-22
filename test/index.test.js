@@ -82,7 +82,7 @@ describe('"check" function tests', function () {
 
         let [result1, error1] = checkAdd('2.2', 3.9);
         expect(error1).not.equal(null);
-        expect(error1.argName).to.equal('a');
+        expect(error1.getError().argName).to.equal('a');
     });
 
     it('should catch ImmunitetException thrown from inside a user function', function () {
@@ -148,7 +148,7 @@ describe('"check" function promise tests', function () {
                 expect(result).to.equal(null);
             })
             .catch((error) => {
-                expect(error.argName).to.equal('a');
+                expect(error.getError().argName).to.equal('a');
             });
     });
 
@@ -162,7 +162,7 @@ describe('"check" function promise tests', function () {
                 expect(result).to.equal(null);
             })
             .catch((error) => {
-                expect(error.argName).to.equal('a');
+                expect(error.getError().argName).to.equal('a');
             });
     });
 
@@ -249,7 +249,7 @@ describe('"check" function promise tests', function () {
             })
             .catch((error) => {
                 expect(error).to.not.equal(null);
-                expect(error.message).to.equal('Error thrown from inside a user function.');
+                expect(error.getError().message).to.equal('Error thrown from inside a user function.');
             });
     });
 });
@@ -314,7 +314,7 @@ describe('"check" function promise arguments', function () {
                 expect(result).to.equal(null);
             })
             .catch((error) => {
-                expect(error.message).to.equal('Given argument is not type of promise.');
+                expect(error.getError().message).to.equal('Given argument is not type of promise.');
             });
     });
 });
@@ -367,7 +367,7 @@ describe('"check"  validate functions must accept multiple arguments', function 
                 expect(result).to.equal(null);
             })
             .catch(error => {
-                expect(error.argName).to.equal('1');
+                expect(error.getError().argName).to.equal('1');
             })
     });
 });

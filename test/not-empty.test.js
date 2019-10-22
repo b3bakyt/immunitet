@@ -44,7 +44,7 @@ describe('check "not-empty" pattern processor on incorrect work.', function () {
             it('given  value should return error', function () {
                 checkNotNaN = validateValue('not-empty');
                 let [result, error] = checkNotNaN(NaN);
-                expect(error.message).to.equal('Argument must not be NaN.');
+                expect(error.getError().message).to.equal('Argument must not be NaN.');
                 expect(result).to.equal(null);
             });
         });
@@ -67,7 +67,7 @@ describe('check "not-empty" pattern processor on incorrect work.', function () {
             it('given  value should return error', function () {
                 checkNotNull = validateValue('not-empty');
                 let [result, error] = checkNotNull(null);
-                expect(error.message).to.equal('Argument must not be null.');
+                expect(error.getError().message).to.equal('Argument must not be null.');
                 expect(result).to.equal(null);
             });
         });
@@ -91,7 +91,7 @@ describe('check "not-empty" pattern processor on incorrect work.', function () {
             it('given  value should return error', function () {
                 checkNotUndefined = validateValue('not-empty');
                 let [result, error] = checkNotUndefined(undefined);
-                expect(error.message).to.equal('Argument must not be undefined.');
+                expect(error.getError().message).to.equal('Argument must not be undefined.');
                 expect(result).to.equal(null);
             });
         });

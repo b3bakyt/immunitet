@@ -45,7 +45,7 @@ describe('check "enum" pattern processor', function () {
     it('given wrong value should return error', function () {
         checkHello = validateValue('enum:one,two');
         let [, error] = checkHello('three');
-        expect(error.message).to.equal('Supplied value does not match given enum values.');
+        expect(error.getError().message).to.equal('Supplied value does not match given enum values.');
     });
 
     it('given right String value should return value', function () {

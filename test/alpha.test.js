@@ -25,35 +25,35 @@ describe('check "alpha" pattern processor on incorrect work', function () {
     it('given  value should return error', function () {
         checkAlpha = validateValue('alpha');
         let [result, error] = checkAlpha('565666323a');
-        expect(error.message).to.equal('Argument is not type of alpha string.');
+        expect(error.getError().message).to.equal('Argument is not type of alpha string.');
         expect(result).to.equal(null);
     });
 
     it('given  value should return error', function () {
         checkAlpha = validateValue('alpha');
         let [result, error] = checkAlpha('165415*');
-        expect(error.message).to.equal('Argument is not type of alpha string.');
+        expect(error.getError().message).to.equal('Argument is not type of alpha string.');
         expect(result).to.equal(null);
     });
 
     it('given  value should return error', function () {
         checkAlpha = validateValue('alpha');
         let [result, error] = checkAlpha('  ');
-        expect(error.message).to.equal('Argument is not type of alpha string.');
+        expect(error.getError().message).to.equal('Argument is not type of alpha string.');
         expect(result).to.equal(null);
     });
 
     it('given  value should return error', function () {
         checkAlpha = validateValue('alpha');
         let [result, error] = checkAlpha('kcfjbhkорлосдм  ');
-        expect(error.message).to.equal('Argument is not type of alpha string.');
+        expect(error.getError().message).to.equal('Argument is not type of alpha string.');
         expect(result).to.equal(null);
     });
 
     it('given  value should return error', function () {
         checkAlpha = validateValue('alpha');
         let [result, error] = checkAlpha('123');
-        expect(error.message).to.equal('Argument is not type of alpha string.');
+        expect(error.getError().message).to.equal('Argument is not type of alpha string.');
         expect(result).to.equal(null);
     });
 

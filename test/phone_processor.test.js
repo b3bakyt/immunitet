@@ -23,63 +23,63 @@ describe('check "phone" pattern processor.Error ', function () {
     it('given alpha value should return error (+)', function () {
         checkPhoneNumber = validateValue('phone');
         let [result, error] = checkPhoneNumber('9 8 10+77652030');
-        expect(error.message).to.equal('Argument is not type of Phone number.');
+        expect(error.getError().message).to.equal('Argument is not type of Phone number.');
         expect(result).to.equal(null);
     });
 
     it('given alpha value should return error (/)', function () {
         checkPhoneNumber = validateValue('phone');
         let [result, error] = checkPhoneNumber('9 8 10/77652030');
-        expect(error.message).to.equal('Argument is not type of Phone number.');
+        expect(error.getError().message).to.equal('Argument is not type of Phone number.');
         expect(result).to.equal(null);
     });
 
     it('given alpha value should return error (*)', function () {
         checkPhoneNumber = validateValue('phone');
         let [result, error] = checkPhoneNumber('9 8 1077652*030');
-        expect(error.message).to.equal('Argument is not type of Phone number.');
+        expect(error.getError().message).to.equal('Argument is not type of Phone number.');
         expect(result).to.equal(null);
     });
 
     it('given alpha value should return error (=)', function () {
         checkPhoneNumber = validateValue('phone');
         let [result, error] = checkPhoneNumber('9 8 10=77652030');
-        expect(error.message).to.equal('Argument is not type of Phone number.');
+        expect(error.getError().message).to.equal('Argument is not type of Phone number.');
         expect(result).to.equal(null);
     });
 
     it('given alpha value should return error ("(")', function () {
         checkPhoneNumber = validateValue('phone');
         let [result, error] = checkPhoneNumber('9 8 107765(2030');
-        expect(error.message).to.equal('Argument is not type of Phone number.');
+        expect(error.getError().message).to.equal('Argument is not type of Phone number.');
         expect(result).to.equal(null);
     });
 
     it('given alpha value should return error (,)', function () {
         checkPhoneNumber = validateValue('phone');
         let [result, error] = checkPhoneNumber('9 8 107765,2030');
-        expect(error.message).to.equal('Argument is not type of Phone number.');
+        expect(error.getError().message).to.equal('Argument is not type of Phone number.');
         expect(result).to.equal(null);
     });
 
     it('given alpha value should return error', function () {
         checkPhoneNumber = validateValue('phone');
         let [result, error] = checkPhoneNumber('abc');
-        expect(error.message).to.equal('Argument is not type of Phone number.');
+        expect(error.getError().message).to.equal('Argument is not type of Phone number.');
         expect(result).to.equal(null);
     });
 
     it('given alpha value should return error', function () {
         checkPhoneNumber = validateValue('phone');
         let [result, error] = checkPhoneNumber('0555-12-31-23     ');
-        expect(error.message).to.equal('Argument is not type of Phone number.');
+        expect(error.getError().message).to.equal('Argument is not type of Phone number.');
         expect(result).to.equal(null);
     });
 
     it('given alpha value should return error', function () {
         checkPhoneNumber = validateValue('phone');
         let [result, error] = checkPhoneNumber(' ');
-        expect(error.message).to.equal('Argument is not type of Phone number.');
+        expect(error.getError().message).to.equal('Argument is not type of Phone number.');
         expect(result).to.equal(null);
     });
 });

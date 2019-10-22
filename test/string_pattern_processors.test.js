@@ -376,24 +376,24 @@ describe('check "minimum" pattern processor', function () {
         expect(result1).to.equal(10);
 
         let [, error2] = checkAdd(2);
-        expect(error2.message).to.equal('Argument is less then 5');
+        expect(error2.getError().message).to.equal('Argument is less then 5');
 
         let [, error3] = checkAdd(0);
-        expect(error3.message).to.equal('Argument is less then 5');
+        expect(error3.getError().message).to.equal('Argument is less then 5');
 
         let [, error4] = checkAdd(-2);
-        expect(error4.message).to.equal('Argument is less then 5');
+        expect(error4.getError().message).to.equal('Argument is less then 5');
 
         let [result3] = checkAdd('55');
         expect(result3).to.equal(60);
 
         checkAdd = validateFunction(add, 'minimum:5s');
         let [, error5] = checkAdd(-2);
-        expect(error5.message).to.equal('Minimum parameter is not type of number.');
+        expect(error5.getError().message).to.equal('Minimum parameter is not type of number.');
 
         checkAdd = validateFunction(add, 'minimum:5');
         let [, error6] = checkAdd('as5');
-        expect(error6.message).to.equal('Given argument is not type of number.');
+        expect(error6.getError().message).to.equal('Given argument is not type of number.');
     });
 
     it('should properly run if "maximum" processor is given', function () {
@@ -408,7 +408,7 @@ describe('check "minimum" pattern processor', function () {
         expect(result1).to.equal(15);
 
         let [, error2] = checkAdd(12);
-        expect(error2.message).to.equal('Argument is greater then 10');
+        expect(error2.getError().message).to.equal('Argument is greater then 10');
 
         let [result2] = checkAdd(-2);
         expect(result2).to.equal(3);
@@ -421,11 +421,11 @@ describe('check "minimum" pattern processor', function () {
 
         checkAdd = validateFunction(add, 'maximum:5s');
         let [, error5] = checkAdd(5);
-        expect(error5.message).to.equal('Maximum parameter is not type of number.');
+        expect(error5.getError().message).to.equal('Maximum parameter is not type of number.');
 
         checkAdd = validateFunction(add, 'maximum:10');
         let [, error6] = checkAdd('as5');
-        expect(error6.message).to.equal('Given argument is not type of number.');
+        expect(error6.getError().message).to.equal('Given argument is not type of number.');
     });
 
     it('should properly run if "minLength" processor is given', function () {
@@ -434,13 +434,13 @@ describe('check "minimum" pattern processor', function () {
         });
 
         let [, error] = checkAdd('');
-        expect(error.message).to.equal('String minimum length must be 2 symbols.');
+        expect(error.getError().message).to.equal('String minimum length must be 2 symbols.');
 
         let [, error2] = checkAdd(4);
-        expect(error2.message).to.equal('String minimum length must be 2 symbols.');
+        expect(error2.getError().message).to.equal('String minimum length must be 2 symbols.');
 
         let [, error3] = checkAdd(0);
-        expect(error3.message).to.equal('String minimum length must be 2 symbols.');
+        expect(error3.getError().message).to.equal('String minimum length must be 2 symbols.');
 
         let [result3] = checkAdd(-1);
         expect(result3).to.equal(4);
@@ -450,7 +450,7 @@ describe('check "minimum" pattern processor', function () {
 
         checkAdd = validateFunction(add, 'minLength:2s');
         let [, error5] = checkAdd(5);
-        expect(error5.message).to.equal('minLength parameter is not type of number.');
+        expect(error5.getError().message).to.equal('minLength parameter is not type of number.');
 
         checkAdd = validateFunction(add, 'minLength:2');
         let [result5] = checkAdd('as5');
@@ -481,11 +481,11 @@ describe('check "minimum" pattern processor', function () {
         expect(result5).to.equal(128);
 
         let [, error] = checkAdd(5321);
-        expect(error.message).to.equal('String maximum length must be 3 symbols.');
+        expect(error.getError().message).to.equal('String maximum length must be 3 symbols.');
 
         checkAdd = validateFunction(add, 'maxLength:2s');
         let [, error5] = checkAdd(5);
-        expect(error5.message).to.equal('maxLength parameter is not type of number.');
+        expect(error5.getError().message).to.equal('maxLength parameter is not type of number.');
 
         checkAdd = validateFunction(add, 'maxLength:3');
         let [result6] = checkAdd('as5');
@@ -810,13 +810,13 @@ describe('check "object" pattern processor', function () {
         expect(result3).to.deep.equal({a: 33, b: -9});
 
         let [result4, error4] = validateValue('object:(a)number:floor||(c)number:ceil')({a: '33', b: '-9'});
-        expect(error4.message).to.equal('No validation processor is specified for an Object property b.');
+        expect(error4.getError().message).to.equal('No validation processor is specified for an Object property b.');
 
         let [result5] = validateValue('object:(a)number:floor||(b)number:ceil||(c)function')({a: '33', b: '-9', c: () => {}});
         expect(typeof result5.c).to.equal('function');
 
         let [,error6] = validateValue('object:(a)number:floor||(b)number:ceil||(c)function')({a: '33', b: '-9', c: []});
-        expect(error6.message).to.equal('Given argument is not type of function.');
+        expect(error6.getError().message).to.equal('Given argument is not type of function.');
     });
 
     it('given an Object field default value should pass them to object properties', function () {
@@ -827,7 +827,7 @@ describe('check "object" pattern processor', function () {
 
     it('given an Object wrong field should return an error object with proper argName', function () {
         let [, error] = validateValue('object:(a)minimum:10||(b)default:3.3|number:ceil')({a: undefined, b: undefined});
-        expect(error.argName).to.equal('0:a');
+        expect(error.getError().argName).to.equal('0:a');
     });
 
     it('given an Object with no field validated field should return an error object with proper argName', function () {

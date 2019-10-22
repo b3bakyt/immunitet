@@ -38,13 +38,13 @@ const processStringPatterns = (argumentValue, processors, argName) => {
 const applyStringProcessors = (argumentValue, processorsList, argName) => {
     try {
         return processorsList.reduce((result, processor) => {
-            if (PATTERN_PROCESSOR_ALIASES[processor]) {
-                return applyStringProcessors(result, PATTERN_PROCESSOR_ALIASES[processor].split('|'), argName);
-            }
-
             const [processorType, ...params] = processor.split(':');
             if (!processorType)
                 return result;
+
+            if (PATTERN_PROCESSOR_ALIASES[processorType]) {
+                return applyStringProcessors(result, PATTERN_PROCESSOR_ALIASES[processorType].split('|'), argName);
+            }
 
             if (!PATTERN_PROCESSORS[processorType])
                 throw new Error(tr['Unknown argument processor "{0}"'].format(processorType));

@@ -36,9 +36,10 @@ describe('check "translations" for correct work ', function () {
     });
 
     it('should return ru errors if such was found', function () {
+        setLanguage('ru');
         let validate = validateValue('number');
         const [result, error] = validate('test');
-        expect(error.message).to.equal('Аргумент должен иметь числовое значение.');
+        expect(error.getError().message).to.equal('Аргумент должен иметь числовое значение.');
     });
 
 });

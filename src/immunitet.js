@@ -167,16 +167,18 @@ function combineArguments(args, argumentsProcessors) {
     const processorsType  = typeof argumentsProcessors;
     const argsType        = typeof combinedArguments;
 
-    if (!Array.isArray(combinedArguments) && processorsType === 'object' &&  argsType === 'object') {
+    if (!combinedArguments)
+        return [combinedArguments];
+
+    if (!Array.isArray(combinedArguments) && !Array.isArray(argumentsProcessors) && processorsType === 'object' &&  argsType === 'object') {
         Object.keys(argumentsProcessors)
             .forEach(key => {
                 if (!combinedArguments[key])
                     combinedArguments[key] = undefined;
             });
-        combinedArguments = [combinedArguments];
     }
 
-    return combinedArguments;
+    return args.length === 1 ? [combinedArguments]: combinedArguments;
 }
 
 const processArguments = (arguments, argumentsProcessors, strict) => {
@@ -227,7 +229,10 @@ const processArguments = (arguments, argumentsProcessors, strict) => {
             let processedArgument = ProcessorHandlers[processorsType].call(null, argumentValue, processors, varName, strict);
             processedArgs.push(processedArgument);
         } catch (error) {
-            errors.push(error);
+            if (error instanceof ImmunitetException)
+                errors.push(error);
+            else
+                throw error;
         }
     }
 
@@ -236,8 +241,10 @@ const processArguments = (arguments, argumentsProcessors, strict) => {
             message: tr['No validator specified for object field'],
             argName: argIndex + index,
         }));
-        throw new ImmunitetExceptions(errors);
     }
+
+    if (errors.length > 0)
+        throw new ImmunitetExceptions(errors);
 
     return [...processedArgs, ...args];
 };

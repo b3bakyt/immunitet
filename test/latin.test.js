@@ -23,41 +23,41 @@ describe('check "latin" pattern processor on incorrect work', function () {
     it('given  value should return error', function () {
         checkLatin = validateValue('latin');
         let [result, error] = checkLatin('565666323a');
-        expect(error.message).to.equal('Argument is not latin letters.');
+        expect(error.getError().message).to.equal('Argument is not latin letters.');
         expect(result).to.equal(null);
     });
 
     it('given  value should return error', function () {
         checkLatin = validateValue('latin');
         let [result, error] = checkLatin('165415*');
-        expect(error.message).to.equal('Argument is not latin letters.');
+        expect(error.getError().message).to.equal('Argument is not latin letters.');
         expect(result).to.equal(null);
     });
 
     it('given  value should return error', function () {
         checkLatin = validateValue('latin');
         let [result, error] = checkLatin('  ');
-        expect(error.message).to.equal('Argument is not latin letters.');
+        expect(error.getError().message).to.equal('Argument is not latin letters.');
         expect(result).to.equal(null);
     });
 
     it('given  value should return error', function () {
         checkLatin = validateValue('latin');
         let [result, error] = checkLatin('kcfjbhkорлосдм  ');
-        expect(error.message).to.equal('Argument is not latin letters.');
+        expect(error.getError().message).to.equal('Argument is not latin letters.');
         expect(result).to.equal(null);
     });
 
     it('given  value should return error', function () {
         checkLatin = validateValue('latin');
         let [result, error] = checkLatin('123');
-        expect(error.message).to.equal('Argument is not latin letters.');
+        expect(error.getError().message).to.equal('Argument is not latin letters.');
         expect(result).to.equal(null);
     });
     it('given  value should return error', function () {
         checkLatin = validateValue('latin');
         let [result, error] = checkLatin('Этонелатынь');
-        expect(error.message).to.equal('Argument is not latin letters.');
+        expect(error.getError().message).to.equal('Argument is not latin letters.');
         expect(result).to.equal(null);
     });
 
