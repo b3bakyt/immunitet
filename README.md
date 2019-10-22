@@ -326,13 +326,35 @@ let [result, error] = getVar({toString: () => 31, valueOf: () => 32});
 
 Example:
 ``` 
-let getVar = validateValue('object:number:floor||default:1|number:ceil||function');
-let [result] = getVar({a: '33', b: '-9', c: () => {}});
-// result: {a: 33, b: -9, c: () => {}}
+let getVar = validateValue('object:number:floor||function||default:1|enum:-1,0,1');
+// The above is the same as:
+let getVar = validateValue({a: 'number:floor', c: 'function', status: 'default:1|enum:-1,0,1'});
+let [result] = getVar({a: '33', b: '0', c: () => {}});
+// result: {a: 33, c: () => {}, status: 0}
  
 let getVar = validateValue('object:(a)minimum:10||(b)number:ceil');
+// The above is the same as:
+let getVar = validateValue({a: 'minimum:10', b: 'number:ceil'});
 let [result, error] = getVar({a: 1, b: '-9'});
 // error.argNumber: '0:a'
+```
+
+Object validation error:
+``` 
+let validate = validateValue({title: 'string|maxLength:100'});
+let [result, error] = validate({ title: 'test', status: 1 });
+/*
+error: ImmunitetExceptions {
+  errors: [
+    {
+      message: 'No validator specified for object field',
+      argName: 'status'
+    }
+  ],
+  message: 'Data validation error.',
+  getErrors: [Function]
+}
+*/
 ```
 
 * minimum

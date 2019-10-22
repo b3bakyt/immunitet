@@ -53,7 +53,7 @@ const im = {
             }
             catch (exception) {
                 if (exception instanceof ImmunitetException)
-                    return [null, exception];
+                    return [null, new ImmunitetExceptions([exception])];
 
                 if (exception instanceof ImmunitetExceptions)
                     return [null, exception];
@@ -80,7 +80,8 @@ const im = {
             }
             catch (exception) {
                 if (exception instanceof ImmunitetException)
-                    return [null, exception];
+                    return [null, new ImmunitetExceptions([exception])];
+
                 if (exception instanceof ImmunitetExceptions)
                     return [null, exception];
 
@@ -109,6 +110,9 @@ const im = {
             }
             catch (exception) {
                 if (exception instanceof ImmunitetException)
+                    return Promise.reject(new ImmunitetExceptions([exception]));
+
+                if (exception instanceof ImmunitetExceptions)
                     return Promise.reject(exception);
 
                 return Promise.reject(exception);
@@ -158,8 +162,28 @@ const runFunction = (fn, argArray) => {
         .catch(catchHandler);
 };
 
-const processArguments = (args, argumentsProcessors, strict) => {
+function combineArguments(args, argumentsProcessors) {
+    let combinedArguments = args.length === 1 ? args[0] : args;
+    const processorsType  = typeof argumentsProcessors;
+    const argsType        = typeof combinedArguments;
+
+    if (!Array.isArray(combinedArguments) && processorsType === 'object' &&  argsType === 'object') {
+        Object.keys(argumentsProcessors)
+            .forEach(key => {
+                if (!combinedArguments[key])
+                    combinedArguments[key] = undefined;
+            });
+        combinedArguments = [combinedArguments];
+    }
+
+    return combinedArguments;
+}
+
+const processArguments = (arguments, argumentsProcessors, strict) => {
+    const errors         = [];
+    const processedArgs  = [];
     const processorsType = typeof argumentsProcessors;
+    const args           = combineArguments(arguments, argumentsProcessors);
     const argsType       = args.length <= 1 ? ARG_TYPES.simple : ARG_TYPES.multiple;
 
     if (!ProcessorHandlers[processorsType])
@@ -178,7 +202,6 @@ const processArguments = (args, argumentsProcessors, strict) => {
         return [result];
     }
 
-    const processedArguments = [];
     let argIndex = 0;
 
     for (let varName in argumentsProcessors) {
@@ -193,23 +216,30 @@ const processArguments = (args, argumentsProcessors, strict) => {
         let argumentValue = args.shift();
 
         const processorsType = typeof processors;
-        if (!ProcessorHandlers[processorsType])
-            throw new ImmunitetException(tr['Unknown argument processor "{0}"'].format(processorsType), varName);
+        if (!ProcessorHandlers[processorsType]) {
+            errors.push({
+                message: tr['Unknown argument processor "{0}"'].format(processorsType),
+                argName: varName,
+            });
+        }
 
-        let processedArgument = ProcessorHandlers[processorsType].call(null, argumentValue, processors, varName, strict);
-        processedArguments.push(processedArgument);
+        try {
+            let processedArgument = ProcessorHandlers[processorsType].call(null, argumentValue, processors, varName, strict);
+            processedArgs.push(processedArgument);
+        } catch (error) {
+            errors.push(error);
+        }
     }
 
     if (strict && args.length > 0) {
-        let errors = [];
-        args.map((val, index) => errors.push({
+        args.forEach((val, index) => errors.push({
             message: tr['No validator specified for object field'],
             argName: argIndex + index,
         }));
         throw new ImmunitetExceptions(errors);
     }
 
-    return [...processedArguments, ...args];
+    return [...processedArgs, ...args];
 };
 
 const getPromiseValues = (values) => {

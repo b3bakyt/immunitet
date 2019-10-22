@@ -104,4 +104,15 @@ describe('check object type pattern processors', function () {
         expect(Object.values(result).length).equal(4);
         expect(result[3]).equal(1);
     });
+
+    it('should return error with arg name if validation rule was not set', function () {
+        const rule = {
+            title: 'string|maxLength:100',
+        };
+        let validate = validateValue(rule);
+
+        let [result, error] = validate({ status: 1 });
+        console.log('error:', error);
+        expect(error.getError().argName).equal('status');
+    });
 });

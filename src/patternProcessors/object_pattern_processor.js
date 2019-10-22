@@ -9,20 +9,18 @@ const processObjectPatterns = (arguments, processors, argNumber, strict) => {
     let errors = [];
     let i = 0;
 
-    if (isPlainObject(arguments) && isPlainObject(processors)) {
-        Object.keys(processors).forEach(fieldName => {
-            if (arguments[fieldName] === undefined)
-                argumentValues[fieldName] = undefined;
-
-        });
-    }
-
     for (let argName in argumentValues) {
         let val = argumentValues[argName];
         let processor = processors[argName] || processors[i];
         if (processor) {
-            processor = processor.split('|');
-            result[argName] = applyStringProcessors(val, processor, argName);
+            try {
+                processor = processor.split('|');
+                result[argName] = applyStringProcessors(val, processor, argName);
+            }
+            catch (exception) {
+                errors.push({message: tr['No validator specified for object field'], argName});
+            }
+
             i++;
             continue;
         }
