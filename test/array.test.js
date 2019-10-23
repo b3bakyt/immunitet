@@ -16,17 +16,21 @@ describe('check array object validation', function () {
         let validate = validateValue(['string|maxLength:100', 'string|maxLength:100']);
 
         let [result, error] = validate(['barak', 'obama']);
-        console.log('error:', error);
         expect(error).equal(null);
         expect(result.length).equal(2);
     });
 
-    it('should validate values in array if validation object passed', function () {
-        let validate = validateValue({a: 'string|maxLength:100', b: 'string|maxLength:100'});
+    it('should validate objects in array', function () {
+        let validate = validateValue([{a: 'string|maxLength:100'}]);
 
-        let [result, error] = validate(['barak', 'obama']);
-        console.log('error:', error);
-        expect(error).equal(null);
+        let [result, error] = validate([{a: 'barak'}, {a: 'obama'}]);
         expect(result.length).equal(2);
+    });
+
+    it('should return error if objects do not have required field', function () {
+        let validate = validateValue([{a: 'string|maxLength:100', b: 'string'}]);
+
+        let [result, error] = validate([{a: 'barak'}, {a: 'obama', b: 'foo'}]);
+        expect(error.getErrors()[0].argName).equal('0:b');
     });
 });

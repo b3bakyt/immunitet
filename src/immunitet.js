@@ -164,13 +164,26 @@ const runFunction = (fn, argArray) => {
 
 function combineArguments(args, argumentsProcessors) {
     let combinedArguments = args.length === 1 ? args[0] : args;
-    const processorsType  = typeof argumentsProcessors;
-    const argsType        = typeof combinedArguments;
+    const processorsType  = Array.isArray(argumentsProcessors) && 'array' || typeof argumentsProcessors;
+    const argsType        = Array.isArray(combinedArguments)   && 'array' || typeof combinedArguments;
 
     if (!combinedArguments)
-        return [combinedArguments];
+        return [[combinedArguments], argumentsProcessors];
 
-    if (!Array.isArray(combinedArguments) && !Array.isArray(argumentsProcessors) && processorsType === 'object' &&  argsType === 'object') {
+    if (processorsType === 'array' && argsType === 'array') {
+        const processor = argumentsProcessors[0];
+        Object.keys(combinedArguments)
+            .forEach(key => {
+                let arg = combinedArguments[key];
+
+                if (isPlainObject(arg) && isObject(processor)) {
+                    let [objectArgs] = combineArguments(arg, processor);
+                    combinedArguments[key] = objectArgs;
+                }
+            })
+    }
+
+    if (processorsType === 'object' &&  argsType === 'object') {
         Object.keys(argumentsProcessors)
             .forEach(key => {
                 if (!combinedArguments[key])
@@ -178,14 +191,14 @@ function combineArguments(args, argumentsProcessors) {
             });
     }
 
-    return args.length === 1 ? [combinedArguments]: combinedArguments;
+    return args.length === 1 ? [[combinedArguments], argumentsProcessors]: [combinedArguments, argumentsProcessors];
 }
 
-const processArguments = (arguments, argumentsProcessors, strict) => {
+const processArguments = (arguments, argProcessors, strict) => {
     const errors         = {};
     const processedArgs  = [];
-    const processorsType = typeof argumentsProcessors;
-    const args           = combineArguments(arguments, argumentsProcessors);
+    const processorsType = typeof argProcessors;
+    const [args, argumentsProcessors] = combineArguments(arguments, argProcessors);
     const argsType       = args.length <= 1 ? ARG_TYPES.simple : ARG_TYPES.multiple;
 
     if (!ProcessorHandlers[processorsType])
