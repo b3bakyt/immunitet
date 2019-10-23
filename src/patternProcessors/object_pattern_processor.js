@@ -4,8 +4,8 @@ const { applyStringProcessors }     = require('./string_pattern_processor');
 const { ImmunitetExceptions }       = require('../exceptions');
 
 const processObjectPatterns = (arguments, processors, argNumber, strict) => {
-    const result = {};
-    const argumentValues = {...arguments};
+    const result = Array.isArray(arguments) ? [] : {};
+    const argumentValues = Array.isArray(arguments) ? [...arguments] : {...arguments};
     let errors = {};
     let i = 0;
 

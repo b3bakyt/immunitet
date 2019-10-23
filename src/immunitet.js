@@ -194,12 +194,15 @@ const processArguments = (arguments, argumentsProcessors, strict) => {
     if (argsType === ARG_TYPES.multiple && processorsType !== 'object')
         throw new ImmunitetException(tr['Multiple arguments found! Validation rules must be type of object or array.']);
 
-    const isSimpleValueSimpleProcessor  = argsType === ARG_TYPES.simple && isBaseType(args[0])   && isBaseType(argumentsProcessors);
-    const isSimpleValueObjectProcessor  = argsType === ARG_TYPES.simple && isBaseType(args[0])   && (isObject(argumentsProcessors) && argumentsProcessors.length === 1);
+    const isSimpleValueSimpleProcessor  = argsType === ARG_TYPES.simple && isBaseType(args[0])    && isBaseType(argumentsProcessors);
+    const isSimpleValueObjectProcessor  = argsType === ARG_TYPES.simple && isBaseType(args[0])    && (isObject(argumentsProcessors) && argumentsProcessors.length === 1);
     const isObjectValueSimpleProcessor  = argsType === ARG_TYPES.simple && isObject(args[0])      && isBaseType(argumentsProcessors);
     const isObjectValueObjectProcessor  = argsType === ARG_TYPES.simple && isPlainObject(args[0]) && (isObject(argumentsProcessors) || argumentsProcessors.length === 1);
+    const isArrayValueArrayProcessor    = argsType === ARG_TYPES.simple && Array.isArray(args[0]) && (Array.isArray(argumentsProcessors) || argumentsProcessors.length === 1);
 
-    if (isSimpleValueSimpleProcessor || isSimpleValueObjectProcessor || isObjectValueSimpleProcessor || isObjectValueObjectProcessor) {
+    if (isSimpleValueSimpleProcessor
+        || isSimpleValueObjectProcessor || isObjectValueSimpleProcessor
+        || isObjectValueObjectProcessor || isArrayValueArrayProcessor) {
         const result = ProcessorHandlers[processorsType].call(null, args.shift(), argumentsProcessors, 0, strict);
         return [result];
     }
