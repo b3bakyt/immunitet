@@ -53,7 +53,7 @@ const im = {
             }
             catch (exception) {
                 if (exception instanceof ImmunitetException)
-                    return [null, new ImmunitetExceptions([exception])];
+                    return [null, new ImmunitetExceptions({0: exception})];
 
                 if (exception instanceof ImmunitetExceptions)
                     return [null, exception];
@@ -80,7 +80,7 @@ const im = {
             }
             catch (exception) {
                 if (exception instanceof ImmunitetException)
-                    return [null, new ImmunitetExceptions([exception])];
+                    return [null, new ImmunitetExceptions({0: exception})];
 
                 if (exception instanceof ImmunitetExceptions)
                     return [null, exception];
@@ -110,7 +110,7 @@ const im = {
             }
             catch (exception) {
                 if (exception instanceof ImmunitetException)
-                    return Promise.reject(new ImmunitetExceptions([exception]));
+                    return Promise.reject(new ImmunitetExceptions({0: exception}));
 
                 if (exception instanceof ImmunitetExceptions)
                     return Promise.reject(exception);
@@ -182,7 +182,7 @@ function combineArguments(args, argumentsProcessors) {
 }
 
 const processArguments = (arguments, argumentsProcessors, strict) => {
-    const errors         = [];
+    const errors         = {};
     const processedArgs  = [];
     const processorsType = typeof argumentsProcessors;
     const args           = combineArguments(arguments, argumentsProcessors);
@@ -219,10 +219,10 @@ const processArguments = (arguments, argumentsProcessors, strict) => {
 
         const processorsType = typeof processors;
         if (!ProcessorHandlers[processorsType]) {
-            errors.push({
+            errors[varName] = {
                 message: tr['Unknown argument processor "{0}"'].format(processorsType),
                 argName: varName,
-            });
+            };
         }
 
         try {
@@ -230,20 +230,23 @@ const processArguments = (arguments, argumentsProcessors, strict) => {
             processedArgs.push(processedArgument);
         } catch (error) {
             if (error instanceof ImmunitetException)
-                errors.push(error);
+                errors[varName] = error;
             else
                 throw error;
         }
     }
 
     if (strict && args.length > 0) {
-        args.forEach((val, index) => errors.push({
-            message: tr['No validator specified for object field'],
-            argName: argIndex + index,
-        }));
+        args.forEach((val, index) => {
+            const argName = argIndex + index;
+            errors[argName] = {
+                message: tr['No validator specified for object field'],
+                argName,
+            };
+        });
     }
 
-    if (errors.length > 0)
+    if (Object.keys(errors).length > 0)
         throw new ImmunitetExceptions(errors);
 
     return [...processedArgs, ...args];

@@ -112,7 +112,6 @@ describe('check object type pattern processors', function () {
         let validate = validateValue(rule);
 
         let [result, error] = validate({ status: 1 });
-        console.log('error:', error);
         expect(error.getError().argName).equal('status');
     });
 });
