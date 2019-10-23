@@ -6,7 +6,7 @@ const { ImmunitetExceptions }       = require('../exceptions');
 const processObjectPatterns = (arguments, processors, argNumber, strict) => {
     const result = {};
     const argumentValues = {...arguments};
-    let errors = [];
+    let errors = {};
     let i = 0;
 
     for (let argName in argumentValues) {
@@ -18,7 +18,7 @@ const processObjectPatterns = (arguments, processors, argNumber, strict) => {
                 result[argName] = applyStringProcessors(val, processor, argName);
             }
             catch (exception) {
-                errors.push({message: tr['No validator specified for object field'], argName});
+                errors[argName] = {message: tr['No validator specified for object field'], argName};
             }
 
             i++;
@@ -26,13 +26,13 @@ const processObjectPatterns = (arguments, processors, argNumber, strict) => {
         }
 
         if (strict)
-            errors.push({message: tr['No validator specified for object field'], argName});
+            errors[argName] = {message: tr['No validator specified for object field'], argName};
 
         result[argName] = val;
         i++;
     }
 
-    if (errors.length > 0)
+    if (Object.values(errors).length > 0)
         throw new ImmunitetExceptions(errors);
 
     return result;
