@@ -33,4 +33,23 @@ describe('check array object validation', function () {
         let [result, error] = validate([{a: 'barak'}, {a: 'obama', b: 'foo'}]);
         expect(error.getErrors()[0].argName).equal('0:b');
     });
+
+    it('should validate nested objects', function () {
+        let validate = validateValue({id: 'numeric', data: [{a: 'string|maxLength:100', b: 'string'}]});
+
+        let [result, error] = validate({id: 1, data: [{a: 'barak'}, {a: 'obama', b: 'foo'}]});
+        expect(error.getErrors()[0].argName).equal('data:0:b');
+    });
+
+    it('should return error if objects validator was not specified', function () {
+        let validate = validateValue({
+            country_id:     'number',
+            title:          'string|maxLength:60',
+            status:         'empty|number|maxLength:2'
+        });
+
+        let [result, error] = validate({id: 11, title: 'Obama', country_id: 1, status: 1});
+        console.log('error:', error);
+        expect(error.getErrors().length).equal(1);
+    });
 });
