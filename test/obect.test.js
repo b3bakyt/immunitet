@@ -49,7 +49,14 @@ describe('check array object validation', function () {
         });
 
         let [result, error] = validate({id: 11, title: 'Obama', country_id: 1, status: 1});
-        console.log('error:', error);
+
         expect(error.getErrors().length).equal(1);
+    });
+
+    it('given value 0 should return 0', function () {
+        let checkNotEmpty = validateValue({status: 'number:convert|enum:-1,0,1'});
+        let [result, error] = checkNotEmpty({status: '0'});
+        expect(error).to.equal(null);
+        expect(result.status).to.equal(0);
     });
 });

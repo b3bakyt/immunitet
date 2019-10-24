@@ -186,7 +186,7 @@ function combineArguments(args, argumentsProcessors) {
     if (processorsType === 'object' &&  argsType === 'object') {
         Object.keys(argumentsProcessors)
             .forEach(key => {
-                if (!combinedArguments[key])
+                if ([undefined, null].includes(combinedArguments[key]))
                     combinedArguments[key] = undefined;
             });
     }
