@@ -976,7 +976,7 @@ describe('check "date" RFC3339 pattern processor', function () {
     let getDate = date => date;
 
     it('given empty values should return error', function () {
-        checkDate = validateFunction(getDate, 'date');
+        checkDate = validateFunction(getDate, 'date-time');
         let [, error1] = checkDate('');
         expect(error1).not.equal(null);
 
@@ -997,66 +997,66 @@ describe('check "date" RFC3339 pattern processor', function () {
     });
 
     it('given wrong value should return error', function () {
-        let [,error] = validateValue('date')('44');
+        let [,error] = validateValue('date-time')('44');
         expect(error).not.equal(null);
 
-        let [,error2] = validateValue('date')(234);
+        let [,error2] = validateValue('date-time')(234);
         expect(error2).not.equal(null);
 
-        let [,error3] = validateValue('date')({});
+        let [,error3] = validateValue('date-time')({});
         expect(error3).not.equal(null);
 
-        let [,error4] = validateValue('date')([]);
+        let [,error4] = validateValue('date-time')([]);
         expect(error4).not.equal(null);
 
-        let [,error5] = validateValue('date')(true);
+        let [,error5] = validateValue('date-time')(true);
         expect(error5).not.equal(null);
 
-        let [,error6] = validateValue('date')('123-123-123');
+        let [,error6] = validateValue('date-time')('123-123-123');
         expect(error6).not.equal(null);
 
-        let [,error8] = validateValue('date')('2015-01-17T28:23:02Z');
+        let [,error8] = validateValue('date-time')('2015-01-17T28:23:02Z');
         expect(error8).not.equal(null);
 
-        let [,error9] = validateValue('date')('2015-02-29T18:23:02Z');
+        let [,error9] = validateValue('date-time')('2015-02-29T18:23:02Z');
         expect(error9).not.equal(null);
 
-        let [,error10] = validateValue('date')('2015-01-17T18:23:02+20:00');
+        let [,error10] = validateValue('date-time')('2015-01-17T18:23:02+20:00');
         expect(error10).not.equal(null);
 
-        let [,error11] = validateValue('date')('2015-01-17T18:23:02Y');
+        let [,error11] = validateValue('date-time')('2015-01-17T18:23:02Y');
         expect(error11).not.equal(null);
 
-        let [,error12] = validateValue('date')('2015-01-17');
+        let [,error12] = validateValue('date-time')('2015-01-17');
         expect(error12).not.equal(null);
 
-        let [,error13] = validateValue('date')('2015-01-17 20:33:02');
+        let [,error13] = validateValue('date-time')('2015-01-17 20:33:02');
         expect(error13).not.equal(null);
 
-        let [,error14] = validateValue('date')('2015-01-17T20:33:02');
+        let [,error14] = validateValue('date-time')('2015-01-17T20:33:02');
         expect(error14).not.equal(null);
 
-        let [,error15] = validateValue('date')('2015-01-17T20:33:02Y');
+        let [,error15] = validateValue('date-time')('2015-01-17T20:33:02Y');
         expect(error15).not.equal(null);
     });
 
     it('given right value should return same value', function () {
-        let [result] = validateValue('date')('2015-01-17T01:23:02Z');
+        let [result] = validateValue('date-time')('2015-01-17T01:23:02Z');
         expect(result).not.equal(null);
 
-        let [result1] = validateValue('date')('2015-01-17T18:23:02Z');
+        let [result1] = validateValue('date-time')('2015-01-17T18:23:02Z');
         expect(result1).not.equal(null);
 
-        let [result2] = validateValue('date')('2015-01-17T18:23:02+06:45');
+        let [result2] = validateValue('date-time')('2015-01-17T18:23:02+06:45');
         expect(result2).not.equal(null);
 
-        let [result3] = validateValue('date')('2015-01-17T18:23:02-00:00');
+        let [result3] = validateValue('date-time')('2015-01-17T18:23:02-00:00');
         expect(result3).not.equal(null);
 
-        let [result4] = validateValue('date')('2015-03-29T18:23:02+00:00');
+        let [result4] = validateValue('date-time')('2015-03-29T18:23:02+00:00');
         expect(result4).not.equal(null);
 
-        let [result5] = validateValue('date')('2015-01-17T23:23:02Z');
+        let [result5] = validateValue('date-time')('2015-01-17T23:23:02Z');
         expect(result5).not.equal(null);
     });
 

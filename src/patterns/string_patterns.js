@@ -311,7 +311,19 @@ const PATTERN_PROCESSORS = {
         return value;
     },
 
-    'date': (value, format, argName) => { // RFC 3339
+    'date': (value, argument, argName) => {
+        if (!value)
+            throw new ImmunitetException(tr['Argument can not be empty.'], argName);
+
+        let pattern = '^(19|20)\\d\\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$';
+        let regexp = new RegExp(pattern, 'i');
+        if (!regexp.test(value))
+            throw new ImmunitetException(tr['Argument is not type of date.'], argName);
+
+        return value;
+    },
+
+    'date-time': (value, format, argName) => { // RFC 3339
         if (!value)
             throw new ImmunitetException(tr['Argument can not be empty.'], argName);
 
@@ -430,11 +442,6 @@ const PATTERN_PROCESSORS = {
     },
 
     'time': (value, argument, argName) => {
-
-        return null;
-    },
-
-    'date-time': (value, argument, argName) => {
 
         return null;
     },

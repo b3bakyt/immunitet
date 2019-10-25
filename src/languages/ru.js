@@ -32,6 +32,7 @@ module.exports = {
     'Pattern can not be empty.': 'Pattern can not be empty.',
     'Supplied value does not match given pattern.': 'Supplied value does not match given pattern.',
     'Default value was not specified.': 'Default value was not specified.',
+    'Argument is not type of date.': 'Argument is not type of date.',
     'Argument is not type of RFC3339 date.': 'Argument is not type of RFC3339 date.',
     'Argument is not type of RFC5322 email.': 'Argument is not type of RFC5322 email.',
     'Given argument is not type of string.': 'Given argument is not type of string.',
