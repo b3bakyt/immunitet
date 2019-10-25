@@ -60,6 +60,13 @@ let getPropertyProcessors = function (processorsList, prop, argName) {
 
 const PATTERN_PROCESSORS = {
 
+    'null': (value, splitter, argName) => {
+        if (value === '' || value === null || value === undefined || value !== value)
+            throw new ImmunitetEmptyValueException(null, argName);
+
+        return value;
+    },
+
     'empty': (value, splitter, argName) => {
         if (value === '' || value === null || value === undefined)
             throw new ImmunitetEmptyValueException(value, argName);
