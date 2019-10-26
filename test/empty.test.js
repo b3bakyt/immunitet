@@ -71,6 +71,7 @@ describe('check "empty" pattern processor on correct work.', function () {
         it('given NaN value should return error', function () {
             checkEmpty = validateValue('empty|string');
             let [result, error] = checkEmpty(NaN);
+            expect(result).to.equal(null);
             expect(error).to.equal(null);
         });
     });

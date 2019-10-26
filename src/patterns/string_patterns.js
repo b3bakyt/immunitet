@@ -68,8 +68,10 @@ const PATTERN_PROCESSORS = {
     },
 
     'empty': (value, splitter, argName) => {
-        if (value === '' || value === null || value === undefined)
-            throw new ImmunitetEmptyValueException(value, argName);
+        if (value === '' || value === null || value === undefined || value !== value) {
+            let val = value != value ? null : value;
+            throw new ImmunitetEmptyValueException(val, argName);
+        }
 
         return value;
     },
