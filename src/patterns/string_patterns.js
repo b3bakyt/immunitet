@@ -204,9 +204,13 @@ const PATTERN_PROCESSORS = {
 
         const processorsList = processors.split(',');
 
-        return values.map(value => {
-            return applyStringProcessors(value, processorsList, argName);
+        let result = Array.isArray(values) && [] || {};
+
+        Object.keys(values).forEach(key => {
+            result[key] = applyStringProcessors(values[key], processorsList, argName);
         });
+
+        return result;
     },
 
     'enum': (value, processors, argName) => {
@@ -455,7 +459,7 @@ const PATTERN_PROCESSORS = {
         let pattern = '^([01][0-9]|2[0-3]):([012345][0-9]):([012345][0-9])$';
         let regexp = new RegExp(pattern);
         if (!regexp.test(value))
-            throw new ImmunitetException(tr['Argument is not type of Phone number.'], argName);
+            throw new ImmunitetException(tr['Argument is not type of time.'], argName);
         return value;
     },
 

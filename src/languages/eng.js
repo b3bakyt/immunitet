@@ -49,4 +49,5 @@ module.exports = {
     'Argument must not be empty.': 'Argument must not be empty.',
     'Argument must be a string.': 'Argument must be a string.',
     'Wrong keyword given as an argument for String type processor.': 'Wrong keyword given as an argument for String type processor.',
+    'Argument is not type of time.': 'Argument is not type of time.',
 };

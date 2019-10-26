@@ -295,25 +295,30 @@ If you want to do shallow checking use processors to do conversion.
 
 * nullify
 * empty
+* not-empty
+* default
 * promise
 * number
 * integer
-* array
-* object
+    * convert, floor, round, ceil
+* integer
+    * convert, floor, round, ceil
+* string
+    * toUpperCase, toLowerCase, capitalFirst, capitalFirstLetter
 * boolean
-* split
-* each
+    * convert
+* array
+    * each
+* object
 * enum
 * minimum
 * maximum
 * minLength
 * maxLength
 * pattern
-* default
 * date
 * date-time
 * email
-* string
 * alpha-numeric
 * numeric
 * alpha
@@ -321,31 +326,10 @@ If you want to do shallow checking use processors to do conversion.
 * cyrillic
 * phone
 * time
-* uri
 * uuid
-* not-empty
 * trim
-    
-* nullify
-* uuid
-* empty
-* not-empty
-* numeric
-* integer
-    * convert, floor, round, ceil
-    * enum
-* string
-    * toUpperCase, toLowerCase, capitalFirst, capitalFirstLetter
-    * enum
-* promise
-* array
-    * each
-* minimum
-* maximum
-* maximum
-* minLength
-* minLength
-* maxLength
+* split
+* each
 
 ##### nullify
     
@@ -530,7 +514,7 @@ Example:
 ```
 let getVar = validateValue('split:,');
 let [result] = getVar('1,2,3');
-// result: [1,2,3]
+// result: ['1', '2' , '3']
 ```
 
 * each
@@ -539,6 +523,10 @@ Example:
 let getVar = validateValue('each:number:ceil');
 let [result] = getVar([1.4, 2.1, 3.9]);
 // result: [2,3,4]
+
+let getVar = validateValue('each:number:ceil');
+let [result] = getVar({a: 1.4, b: 2.1, c: 3.9});
+// result: {a: 2, b: 3, c: 4}
 ```
 
 #### Errors

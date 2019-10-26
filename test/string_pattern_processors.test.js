@@ -58,34 +58,6 @@ describe('"check" function', function () {
         const [result] = checkAdd('2,3', [3, 4]);
         expect(result).to.deep.equal(['23', '34']);
     });
-
-    it('should process "each" keyword with arguments to parse array values', function () {
-        function addArray(a, b) {
-            return a.map((val, key) => val + b[key]);
-        }
-        checkAdd = validateFunction(addArray, {
-            a: 'split:,|each:number:convert',
-        }, false);
-
-        const [result] = checkAdd('2,3', [3, 4]);
-        expect(result).to.deep.equal([5, 7]);
-    });
-
-    it('should process a single value', function () {
-        let splitString = validateFunction(null, 'split:,|each:number:convert');
-
-        const [result] = splitString('3,4');
-        expect(result).to.deep.equal([3, 4]);
-    });
-
-    it('should use a composite processor', function () {
-        im.setAlias('toNumericArray', 'each:number:ceil');
-
-        let splitString = validateFunction(null, 'toNumericArray');
-
-        const [result] = splitString([3.2, 4.5, 7.9]);
-        expect(result).to.deep.equal([4, 5, 8]);
-    });
 });
 
 describe('"validateValue" function', function () {
@@ -121,6 +93,13 @@ describe('"validateValue" function', function () {
         expect(() => validateValue(NaN)).to.throw(Error);
         expect(() => validateValue({})).to.throw(Error);
         expect(() => validateValue([])).to.throw(Error);
+    });
+
+    it('should process a string value', function () {
+        let splitString = validateValue('split:,');
+
+        const [result] = splitString('3,4');
+        expect(result).to.deep.equal(['3', '4']);
     });
 
     it('should process a single value', function () {
