@@ -68,7 +68,7 @@ const [result] = splitString('3,4');
 // result: [3, 4]
 ```
 
-Function argument validation
+#### Function argument validation
 
 ```
 import {validateFunction} from 'immunitet.js';
@@ -288,9 +288,94 @@ checkAdd(a, b)
 
 ### List of validators, converters and processors
 
-##### Validators
+#### Validators
+All the validators does strict type checking.
 
+If you want to do shallow checking use processors to do conversion.
+
+* nullify
+* empty
+* promise
 * number
+* integer
+* array
+* object
+* boolean
+* split
+* each
+* enum
+* minimum
+* maximum
+* minLength
+* maxLength
+* pattern
+* default
+* date
+* date-time
+* email
+* string
+* alpha-numeric
+* numeric
+* alpha
+* latin
+* cyrillic
+* phone
+* time
+* uri
+* uuid
+* not-empty
+* trim
+    
+* nullify
+* uuid
+* empty
+* not-empty
+* numeric
+* integer
+    * convert, floor, round, ceil
+    * enum
+* string
+    * toUpperCase, toLowerCase, capitalFirst, capitalFirstLetter
+    * enum
+* promise
+* array
+    * each
+* minimum
+* maximum
+* maximum
+* minLength
+* minLength
+* maxLength
+
+##### nullify
+    
+Checks if the given value is one of: null, undefined, '', NaN
+
+and replaces them with null.
+
+This is useful if you need to accept only numeric values or null if empty values was given. 
+
+Example:
+```
+checkEmpty = validateValue('nullify|number');
+let [result, error] = checkEmpty('');
+// result: null
+ 
+checkEmpty = validateValue('nullify|string');
+let [result, error] = checkEmpty(NaN);
+// result: null
+ 
+checkEmpty = validateValue('nullify|number');
+let [result, error] = checkEmpty(undefined);
+// result: null
+```
+
+##### number
+    
+Checks if the given value type of number.
+
+To convert value use:
+
     * convert, floor, round, ceil
 
 Example:
@@ -313,22 +398,22 @@ let [result, error] = getVar({toString: () => 31, valueOf: () => 32});
 // result: 32
 ```
 
-* integer
-    * convert, floor, round, ceil
-    * enum
-* string
-    * toUpperCase, toLowerCase, capitalFirst, capitalFirstLetter
-    * enum
-* promise
-* array
-    * each
-* object
+#### object
 
 Example:
-``` 
+
+String notation:
+```
 let getVar = validateValue('object:number:floor||function||default:1|enum:-1,0,1');
-// The above is the same as:
+// Same with property names:
+let getVar = validateValue('object:(a)number:floor||(b)function||(c)default:1|(d)enum:-1,0,1');
+```
+Object notation. The above is the same as:
+```
 let getVar = validateValue({a: 'number:floor', c: 'function', status: 'default:1|enum:-1,0,1'});
+```
+Result:
+```
 let [result] = getVar({a: '33', b: '0', c: () => {}});
 // result: {a: 33, c: () => {}, status: 0}
  
@@ -339,31 +424,34 @@ let [result, error] = getVar({a: 1, b: '-9'});
 // error.argNumber: '0:a'
 ```
 
+#### ImmunitetExceptions
+
 Object validation error:
 ``` 
 let validate = validateValue({title: 'string|maxLength:100'});
 let [result, error] = validate({ title: 'test', status: 1 });
 /*
 error: ImmunitetExceptions {
-  errors: [
-    {
+  errors: {
+    status: {
       message: 'No validator specified for object field',
       argName: 'status'
     }
-  ],
+    ...
+  },
   message: 'Data validation error.',
   getErrors: [Function]
+  getError:  [Function]
 }
 */
 ```
+Methods
 
-* minimum
-* maximum
-* maximum
-* minLength
-* minLength
-* maxLength
-* boolean
+    getErrors(isObject = false)
+By default getErrors() returns array of errors.
+But if isObject = true returns object with field names as object keys.
+
+#### boolean
     * convert
     
 Example:
@@ -372,7 +460,7 @@ let getVar = validateValue('boolean:convert');
 let [result] = getVar('true');
 // result: true
 ```
-* pattern
+#### pattern
     
 Example:
 ```
@@ -385,7 +473,7 @@ let [result] = getVar('Test');
 // result: Test
 ```
 
-* default
+#### default
     * true, false, null
     
 Example:
@@ -399,7 +487,20 @@ let [result] = getVar();
 // result: 11
 ```
 
-* date (RFC3339)
+#### date
+
+Example:
+```
+let getVar = validateValue('date');
+let [result] = getVar('2015-01-17');
+// result: '2015-01-17'
+ 
+let getVar = validateValue('date');
+let [result] = getVar('01-17-2015');
+// error
+```
+
+#### date-time (RFC3339)
 
 Example:
 ```
@@ -412,7 +513,7 @@ let [result] = getVar('2015-01-17T18:23:02+06:45');
 // result: '2015-01-17T18:23:02+06:45'
 ```
 
-* email (RFC5322)
+#### email (RFC5322)
 
 Example:
 ```

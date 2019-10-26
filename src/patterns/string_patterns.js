@@ -60,8 +60,8 @@ let getPropertyProcessors = function (processorsList, prop, argName) {
 
 const PATTERN_PROCESSORS = {
 
-    'null': (value, splitter, argName) => {
-        if (value === '' || value === null || value === undefined || value !== value)
+    'nullify': (value, splitter, argName) => {
+        if ([null, undefined, '', NaN].includes(value))
             throw new ImmunitetEmptyValueException(null, argName);
 
         return value;
@@ -449,8 +449,14 @@ const PATTERN_PROCESSORS = {
     },
 
     'time': (value, argument, argName) => {
+        if (!value)
+            throw new ImmunitetException('Argument can not be empty.', argName);
 
-        return null;
+        let pattern = '^([01][0-9]|2[0-3]):([012345][0-9]):([012345][0-9])$';
+        let regexp = new RegExp(pattern);
+        if (!regexp.test(value))
+            throw new ImmunitetException(tr['Argument is not type of Phone number.'], argName);
+        return value;
     },
 
     'uri': (value, argument, argName) => {
@@ -474,7 +480,6 @@ const PATTERN_PROCESSORS = {
     },
 
     'uuid': (value, argument, argName) => {
-
         if (!value)
             throw new ImmunitetException(tr['Argument can not be empty.'], argName);
         let pattern = '^([a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}){1}$';
